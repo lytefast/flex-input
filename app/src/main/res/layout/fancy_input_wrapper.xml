@@ -1,0 +1,88 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/main_input_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:background="@drawable/rect_rounded_black_alpha_25"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="4dp">
+
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/add_btn"
+            style="@style/Input.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="Add content"
+            android:src="@drawable/ic_add_24dp"/>
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/text_input"
+            android:background="@android:color/transparent"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:contentDescription="Message text entry"
+            android:hint="Send a message"/>
+
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/emoji_btn"
+            style="@style/Input.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:contentDescription="Open Emoji picker"
+            android:src="@drawable/ic_insert_emoticon_24dp"/>
+
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/send_btn"
+            style="@style/Input.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="Send Message"
+            android:src="@drawable/ic_send_24dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/emoji_container"
+        android:layout_width="match_parent"
+        android:layout_height="320dp"
+        android:layout_below="@id/main_input_container"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:background="#6b7ba1"
+        tools:visibility="visible">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Recent"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_image_24dp"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_image_24dp"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_image_24dp"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_image_24dp"/>
+
+    </LinearLayout>
+
+</RelativeLayout>
