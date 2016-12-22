@@ -1,15 +1,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
     <LinearLayout
         android:id="@+id/main_input_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_margin="4dp"
         android:background="@drawable/rect_rounded_black_alpha_25"
-        android:orientation="horizontal"
         android:gravity="center_vertical"
         android:padding="4dp">
 
@@ -50,6 +50,59 @@
 
     </LinearLayout>
 
+    <RelativeLayout
+        android:id="@+id/add_content_container"
+        android:layout_width="match_parent"
+        android:layout_height="320dp"
+        android:layout_below="@id/main_input_container"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/add_content_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rect_rounded_accent"
+            android:layout_margin="4dp"
+            android:layout_alignParentBottom="true"
+            android:gravity="center_vertical"
+            android:padding="4dp">
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/add_content_keyboard_btn"
+                style="@style/Input.Button.Tab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/ic_keyboard_24dp"/>
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/add_content_file_btn"
+                style="@style/Input.Button.Tab"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_attach_file_24dp"/>
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/add_content_image_btn"
+                style="@style/Input.Button.Tab"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_image_24dp"/>
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/add_content_photo_btn"
+                style="@style/Input.Button.Tab"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_add_a_photo_24dp"/>
+        </LinearLayout>
+    </RelativeLayout>
+
     <LinearLayout
         android:id="@+id/emoji_container"
         android:layout_width="match_parent"
@@ -58,7 +111,7 @@
         android:orientation="vertical"
         android:visibility="gone"
         tools:background="#6b7ba1"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <TextView
             android:layout_width="match_parent"

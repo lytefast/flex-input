@@ -2,18 +2,16 @@ package com.lytefast.fancyinput.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageButton;
-import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -32,8 +30,14 @@ public class FancyInput extends RelativeLayout {
     private float mExampleDimension = 0; // TODO: use a default from R.dimen...
     private Drawable mExampleDrawable;
 
+
+    @BindView(R.id.main_input_container) View inputContainer;
+    @BindView(R.id.add_content_container) View addContentContainer;
     @BindView(R.id.emoji_container) View emojiContainer;
+
     @BindView(R.id.text_input) AppCompatEditText textEt;
+    @BindView(R.id.add_content_pager) ViewPager addPager;
+
 
     public FancyInput(Context context) {
         super(context);
@@ -105,8 +109,13 @@ public class FancyInput extends RelativeLayout {
      *
      * @param exampleString The example string attribute value to use.
      */
-    public void setExampleString(String exampleString) {
+    public void setExampleString(final String exampleString) {
         textEt.setText(exampleString);
+    }
+
+    public void setPagerAdapter(final PagerAdapter pagerAdapter) {
+        addPager.setAdapter(pagerAdapter);
+        addPager.setOffscreenPageLimit(0);  // Don't preload anything as some are expensive
     }
 
     @OnClick(R.id.send_btn)
@@ -128,5 +137,22 @@ public class FancyInput extends RelativeLayout {
             imm.hideSoftInputFromWindow(this.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             btn.setImageResource(R.drawable.ic_keyboard_24dp);
         }
+
+        addPager.setVisibility(GONE);
+    }
+
+    @OnClick({R.id.add_btn, R.id.add_content_keyboard_btn})
+    void onAddToggle() {
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (addContentContainer.getVisibility() == VISIBLE) {
+            addContentContainer.setVisibility(GONE);
+            inputContainer.setVisibility(VISIBLE);
+            imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
+        } else {
+            addContentContainer.setVisibility(VISIBLE);
+            inputContainer.setVisibility(GONE);
+            imm.hideSoftInputFromWindow(this.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+        emojiContainer.setVisibility(GONE);
     }
 }
