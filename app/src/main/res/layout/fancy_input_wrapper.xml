@@ -1,17 +1,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:id="@+id/main_input_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/input_height"
         android:orientation="horizontal"
         android:layout_margin="4dp"
         android:background="@drawable/rect_rounded_black_alpha_25"
-        android:gravity="center_vertical"
-        android:padding="4dp">
+        android:gravity="center_vertical">
 
         <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/add_btn"
@@ -35,8 +35,6 @@
             style="@style/Input.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
             android:contentDescription="Open Emoji picker"
             android:src="@drawable/ic_insert_emoticon_24dp"/>
 
@@ -53,7 +51,7 @@
     <RelativeLayout
         android:id="@+id/add_content_container"
         android:layout_width="match_parent"
-        android:layout_height="320dp"
+        android:layout_height="@dimen/default_keyboard_height"
         android:layout_below="@id/main_input_container"
         android:visibility="gone"
         tools:visibility="visible">
@@ -62,17 +60,20 @@
             android:id="@+id/add_content_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"/>
+            android:background="@color/colorPrimary"
+            android:visibility="gone"
+            android:paddingTop="8dp"/>
 
         <android.support.design.widget.TabLayout
             android:id="@+id/add_content_tabs"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rect_rounded_accent"
+            android:layout_height="@dimen/input_height"
+            android:background="@drawable/rect_rounded_black_alpha_25"
             android:layout_margin="4dp"
-            android:padding="4dp"
             android:layout_alignParentBottom="true"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            app:tabGravity="fill"
+            app:tabMode="fixed">
             <android.support.design.widget.TabItem
                 android:id="@+id/add_content_keyboard_btn"
                 android:layout_width="wrap_content"
@@ -105,7 +106,7 @@
     <LinearLayout
         android:id="@+id/emoji_container"
         android:layout_width="match_parent"
-        android:layout_height="320dp"
+        android:layout_height="@dimen/default_keyboard_height"
         android:layout_below="@id/main_input_container"
         android:orientation="vertical"
         android:visibility="gone"

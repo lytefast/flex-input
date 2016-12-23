@@ -21,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.lytefast.fancyinput.R;
+import com.lytefast.fancyinput.fragment.RecyclerViewFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,6 +43,7 @@ public class FancyInput extends RelativeLayout {
   @BindView(R.id.emoji_container) View emojiContainer;
 
   @BindView(R.id.text_input) AppCompatEditText textEt;
+  @BindView(R.id.emoji_btn) AppCompatImageButton emojiBtn;
   @BindView(R.id.add_content_pager) ViewPager addContentPager;
   @BindView(R.id.add_content_tabs) TabLayout addContentTabs;
 
@@ -126,20 +128,24 @@ public class FancyInput extends RelativeLayout {
       public Fragment getItem(final int position) {
         switch (position) {
           default:
-          case 0:
             return null;
+          case 0:
+          case 1:
+          case 2:
+            return new RecyclerViewFragment();
         }
       }
 
       @Override
       public int getCount() {
-        return 0;
+        return 3;
       }
     };
 
     addContentPager.setAdapter(pagerAdapter);
     addContentPager.setOffscreenPageLimit(0);  // Don't preload anything as some are expensive
 
+    //<editor-fold desc="Synchronize tab and pager with eachother">
     addContentTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
       @Override
       public void onTabSelected(final TabLayout.Tab tab) {
@@ -152,15 +158,25 @@ public class FancyInput extends RelativeLayout {
       }
 
       @Override
-      public void onTabUnselected(final TabLayout.Tab tab) {
+      public void onTabUnselected(final TabLayout.Tab tab) { }
 
+      @Override
+      public void onTabReselected(final TabLayout.Tab tab) { }
+    });
+
+    addContentPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+      @Override
+      public void onPageScrolled(final int position, final float positionOffset, final int positionOffsetPixels) { }
+
+      @Override
+      public void onPageSelected(final int position) {
+        addContentTabs.getTabAt(position + 1).select();
       }
 
       @Override
-      public void onTabReselected(final TabLayout.Tab tab) {
-
-      }
+      public void onPageScrollStateChanged(final int state) { }
     });
+    //</editor-fold>
   }
 
   @OnClick(R.id.send_btn)
@@ -170,17 +186,19 @@ public class FancyInput extends RelativeLayout {
     textEt.setText("");
   }
 
+  @OnClick(R.id.text_input)
+  void onTextInputTouch() {
+    InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+    hideEmojiTray(imm);
+  }
+
   @OnClick(R.id.emoji_btn)
-  void onEmojiToggle(AppCompatImageButton btn) {
+  void onEmojiToggle() {
     InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
     if (emojiContainer.getVisibility() == VISIBLE) {
-      emojiContainer.setVisibility(GONE);
-      imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
-      btn.setImageResource(R.drawable.ic_insert_emoticon_24dp);
+      hideEmojiTray(imm);
     } else {
-      emojiContainer.setVisibility(VISIBLE);
-      imm.hideSoftInputFromWindow(this.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-      btn.setImageResource(R.drawable.ic_keyboard_24dp);
+      showEmojiTray(imm);
     }
 
     addContentPager.setVisibility(GONE);
@@ -191,17 +209,32 @@ public class FancyInput extends RelativeLayout {
     InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
     if (addContentContainer.getVisibility() == VISIBLE) {
       addContentContainer.setVisibility(GONE);
+      addContentPager.setVisibility(GONE);  // set this to force destroy fragments
       inputContainer.setVisibility(VISIBLE);
       imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
     } else {
       addContentContainer.setVisibility(VISIBLE);
+      addContentPager.setVisibility(VISIBLE);
       inputContainer.setVisibility(GONE);
       imm.hideSoftInputFromWindow(this.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+      addContentTabs.getTabAt(1).select(); // TODO: remember last saved tab selection
     }
-    emojiContainer.setVisibility(GONE);
+    hideEmojiTray(imm);
   }
 
   void onAddFile() {
     // TODO: open file browser
+  }
+
+  private void hideEmojiTray(final InputMethodManager imm) {
+    emojiContainer.setVisibility(GONE);
+    imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
+    emojiBtn.setImageResource(R.drawable.ic_insert_emoticon_24dp);
+  }
+
+  private void showEmojiTray(final InputMethodManager imm) {
+    emojiContainer.setVisibility(VISIBLE);
+    imm.hideSoftInputFromWindow(this.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    emojiBtn.setImageResource(R.drawable.ic_keyboard_24dp);
   }
 }

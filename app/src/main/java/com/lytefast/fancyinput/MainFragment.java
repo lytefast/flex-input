@@ -2,12 +2,12 @@ package com.lytefast.fancyinput;
 
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.plus.PlusOneButton;
 import com.lytefast.fancyinput.widget.FancyInput;
 
 import butterknife.BindView;
@@ -34,21 +34,21 @@ public class MainFragment extends Fragment {
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
                            Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.fragment_main, container, false);
+    View view = inflater.inflate(R.layout.fragment_message_main, container, false);
     return view;
   }
 
   @Override
-  public void onStart() {
-    super.onStart();
+  public void onViewCreated(final View view, @Nullable final Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
     unbinder = ButterKnife.bind(this, getView());
 
     fancyInput.initContentPages(getFragmentManager());
   }
 
   @Override
-  public void onStop() {
+  public void onDestroyView() {
     unbinder.unbind();
-    super.onStop();
+    super.onDestroyView();
   }
 }
