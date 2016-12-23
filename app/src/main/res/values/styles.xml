@@ -14,8 +14,7 @@
 
     <style name="Input.Button" parent="Input">
         <item name="android:tint">@color/colorPrimary</item>
-        <item name="android:paddingLeft">4dp</item>
-        <item name="android:paddingRight">4dp</item>
+        <item name="android:padding">8dp</item>
     </style>
 
     <style name="Input.Button.Tab" parent="Input.Button">
