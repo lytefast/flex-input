@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -46,6 +47,7 @@ public class FancyInput extends RelativeLayout {
   @BindView(R.id.emoji_btn) AppCompatImageButton emojiBtn;
   @BindView(R.id.add_content_pager) ViewPager addContentPager;
   @BindView(R.id.add_content_tabs) TabLayout addContentTabs;
+  private KeyboardManager keyboardManager;
 
 
   public FancyInput(Context context) {
@@ -66,6 +68,9 @@ public class FancyInput extends RelativeLayout {
   private void init(AttributeSet attrs, int defStyle) {
     initAttributes(attrs, defStyle);
     inflate(getContext(), R.layout.fancy_input_wrapper, this);
+
+    setFocusable(true);
+    setFocusableInTouchMode(true);
   }
 
   @Override
@@ -122,8 +127,13 @@ public class FancyInput extends RelativeLayout {
     textEt.setText(exampleString);
   }
 
-  public void initContentPages(final FragmentManager fragmentManager) {
-    final FragmentPagerAdapter pagerAdapter = new FragmentPagerAdapter(fragmentManager) {
+  public FancyInput setKeyboardManager(KeyboardManager keyboardManager) {
+    this.keyboardManager = keyboardManager;
+    return this;
+  }
+
+  public FancyInput initContentPages(final FragmentManager fragmentManager) {
+    return initContentPages(new FragmentPagerAdapter(fragmentManager) {
       @Override
       public Fragment getItem(final int position) {
         switch (position) {
@@ -140,12 +150,17 @@ public class FancyInput extends RelativeLayout {
       public int getCount() {
         return 3;
       }
-    };
+    });
+  }
 
+  public FancyInput initContentPages(final FragmentPagerAdapter pagerAdapter) {
     addContentPager.setAdapter(pagerAdapter);
     addContentPager.setOffscreenPageLimit(0);  // Don't preload anything as some are expensive
+    synchronizeTabAndPagerEvents();
+    return this;
+  }
 
-    //<editor-fold desc="Synchronize tab and pager with eachother">
+  public void synchronizeTabAndPagerEvents() {
     addContentTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
       @Override
       public void onTabSelected(final TabLayout.Tab tab) {
@@ -176,7 +191,6 @@ public class FancyInput extends RelativeLayout {
       @Override
       public void onPageScrollStateChanged(final int state) { }
     });
-    //</editor-fold>
   }
 
   @OnClick(R.id.send_btn)
@@ -188,17 +202,15 @@ public class FancyInput extends RelativeLayout {
 
   @OnClick(R.id.text_input)
   void onTextInputTouch() {
-    InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-    hideEmojiTray(imm);
+    hideEmojiTray();
   }
 
   @OnClick(R.id.emoji_btn)
   void onEmojiToggle() {
-    InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
     if (emojiContainer.getVisibility() == VISIBLE) {
-      hideEmojiTray(imm);
+      hideEmojiTray();
     } else {
-      showEmojiTray(imm);
+      showEmojiTray();
     }
 
     addContentPager.setVisibility(GONE);
@@ -206,35 +218,37 @@ public class FancyInput extends RelativeLayout {
 
   @OnClick(R.id.add_btn)
   void onAddToggle() {
-    InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+    hideEmojiTray();
     if (addContentContainer.getVisibility() == VISIBLE) {
       addContentContainer.setVisibility(GONE);
       addContentPager.setVisibility(GONE);  // set this to force destroy fragments
+
+      inputContainer.requestFocus();
       inputContainer.setVisibility(VISIBLE);
-      imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
+      keyboardManager.requestDisplay();
     } else {
       addContentContainer.setVisibility(VISIBLE);
       addContentPager.setVisibility(VISIBLE);
-      inputContainer.setVisibility(GONE);
-      imm.hideSoftInputFromWindow(this.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
       addContentTabs.getTabAt(1).select(); // TODO: remember last saved tab selection
+
+      inputContainer.setVisibility(GONE);
+      keyboardManager.requestHide();  // Make sure the keyboard is hidden
     }
-    hideEmojiTray(imm);
   }
 
   void onAddFile() {
     // TODO: open file browser
   }
 
-  private void hideEmojiTray(final InputMethodManager imm) {
+  private void hideEmojiTray() {
     emojiContainer.setVisibility(GONE);
-    imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
+    keyboardManager.requestDisplay();
     emojiBtn.setImageResource(R.drawable.ic_insert_emoticon_24dp);
   }
 
-  private void showEmojiTray(final InputMethodManager imm) {
+  private void showEmojiTray() {
     emojiContainer.setVisibility(VISIBLE);
-    imm.hideSoftInputFromWindow(this.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    keyboardManager.requestHide();
     emojiBtn.setImageResource(R.drawable.ic_keyboard_24dp);
   }
 }

@@ -1,14 +1,17 @@
 package com.lytefast.fancyinput;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import com.lytefast.fancyinput.widget.FancyInput;
+import com.lytefast.fancyinput.widget.KeyboardManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,7 +46,23 @@ public class MainFragment extends Fragment {
     super.onViewCreated(view, savedInstanceState);
     unbinder = ButterKnife.bind(this, getView());
 
-    fancyInput.initContentPages(getFragmentManager());
+    final InputMethodManager imm =
+        (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+    fancyInput
+        .initContentPages(getFragmentManager())
+        .setKeyboardManager(new KeyboardManager() {
+          @Override
+          public void requestDisplay() {
+            imm.showSoftInput(fancyInput, InputMethodManager.SHOW_IMPLICIT);
+          }
+
+          @Override
+          public void requestHide() {
+            imm.hideSoftInputFromWindow(
+                fancyInput.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+          }
+        });
   }
 
   @Override
