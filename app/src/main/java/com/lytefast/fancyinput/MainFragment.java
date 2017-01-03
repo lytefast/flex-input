@@ -1,0 +1,73 @@
+package com.lytefast.fancyinput;
+
+
+import android.content.Context;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+
+import com.lytefast.fancyinput.widget.FancyInput;
+import com.lytefast.fancyinput.widget.KeyboardManager;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
+
+public class MainFragment extends Fragment {
+
+  @BindView(R.id.fancy_input) FancyInput fancyInput;
+
+  private Unbinder unbinder;
+
+  public MainFragment() {
+    // Required empty public constructor
+  }
+
+
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+  }
+
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                           Bundle savedInstanceState) {
+    View view = inflater.inflate(R.layout.fragment_message_main, container, false);
+    return view;
+  }
+
+  @Override
+  public void onViewCreated(final View view, @Nullable final Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    unbinder = ButterKnife.bind(this, getView());
+
+    final InputMethodManager imm =
+        (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+    fancyInput
+        .initContentPages(getFragmentManager())
+        .setKeyboardManager(new KeyboardManager() {
+          @Override
+          public void requestDisplay() {
+            imm.showSoftInput(fancyInput, InputMethodManager.SHOW_IMPLICIT);
+          }
+
+          @Override
+          public void requestHide() {
+            imm.hideSoftInputFromWindow(
+                fancyInput.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+          }
+        });
+  }
+
+  @Override
+  public void onDestroyView() {
+    unbinder.unbind();
+    super.onDestroyView();
+  }
+}

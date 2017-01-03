@@ -1,0 +1,141 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/main_input_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/input_height"
+        android:orientation="horizontal"
+        android:layout_margin="4dp"
+        android:background="@drawable/rect_rounded_black_alpha_25"
+        android:gravity="center_vertical">
+
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/add_btn"
+            style="@style/Input.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="Add content"
+            android:src="@drawable/ic_add_24dp"/>
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/text_input"
+            android:background="@android:color/transparent"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:contentDescription="Message text entry"
+            android:hint="Send a message"/>
+
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/emoji_btn"
+            style="@style/Input.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="Open Emoji picker"
+            android:src="@drawable/ic_insert_emoticon_24dp"/>
+
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/send_btn"
+            style="@style/Input.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="Send Message"
+            android:src="@drawable/ic_send_24dp"/>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/add_content_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/default_keyboard_height"
+        android:layout_below="@id/main_input_container"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/add_content_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorPrimary"
+            android:visibility="gone"
+            android:paddingTop="8dp"/>
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/add_content_tabs"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/input_height"
+            android:background="@drawable/rect_rounded_black_alpha_25"
+            android:layout_margin="4dp"
+            android:layout_alignParentBottom="true"
+            android:gravity="center_vertical"
+            app:tabGravity="fill"
+            app:tabMode="fixed">
+            <android.support.design.widget.TabItem
+                android:id="@+id/add_content_keyboard_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="Show keyboard"
+                android:icon="@drawable/ic_keyboard_24dp"/>
+            <android.support.design.widget.TabItem
+                android:id="@+id/add_content_file_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="Show file browser"
+                android:icon="@drawable/ic_attach_file_24dp"/>
+            <android.support.design.widget.TabItem
+                android:id="@+id/add_content_image_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="Show image browser"
+                android:icon="@drawable/ic_image_24dp"
+                android:foregroundTint="@android:color/white"
+                android:foregroundTintMode="src_in"/>
+            <android.support.design.widget.TabItem
+                android:id="@+id/add_content_photo_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="Show camera"
+                android:icon="@drawable/ic_add_a_photo_24dp"/>
+        </android.support.design.widget.TabLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/emoji_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/default_keyboard_height"
+        android:layout_below="@id/main_input_container"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:background="#6b7ba1"
+        tools:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Recent"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_image_24dp"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_image_24dp"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_image_24dp"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_image_24dp"/>
+
+    </LinearLayout>
+
+</RelativeLayout>
