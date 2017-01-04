@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -19,7 +20,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.fragment.RecyclerViewFragment;
@@ -34,11 +34,6 @@ import butterknife.OnTouch;
  * Text, emoji, and media input field.
  */
 public class FlexInput extends RelativeLayout {
-  private String mExampleString; // TODO: use a default from R.string...
-  private int mExampleColor = Color.RED; // TODO: use a default from R.color...
-  private float mExampleDimension = 0; // TODO: use a default from R.dimen...
-  private Drawable mExampleDrawable;
-
 
   @BindView(R.id.main_input_container) View inputContainer;
   @BindView(R.id.add_content_container) View addContentContainer;
@@ -69,46 +64,44 @@ public class FlexInput extends RelativeLayout {
   }
 
   private void init(AttributeSet attrs, int defStyle) {
-    initAttributes(attrs, defStyle);
     inflate(getContext(), R.layout.fancy_input_wrapper, this);
+    ButterKnife.bind(this);
+
+    initAttributes(attrs, defStyle);
 
     setFocusable(true);
     setFocusableInTouchMode(true);
-  }
-
-  @Override
-  protected void onFinishInflate() {
-    super.onFinishInflate();
-
-    ButterKnife.bind(this);
-
-    if (!TextUtils.isEmpty(mExampleString)) {
-      textEt.setText(mExampleString);
-    }
   }
 
   private void initAttributes(final AttributeSet attrs, final int defStyle) {
     final TypedArray a = getContext().obtainStyledAttributes(
         attrs, R.styleable.FlexInput, defStyle, 0);
 
-    mExampleString = a.getString(
-        R.styleable.FlexInput_exampleString);
-    mExampleColor = a.getColor(
-        R.styleable.FlexInput_exampleColor,
-        mExampleColor);
-    // Use getDimensionPixelSize or getDimensionPixelOffset when dealing with
-    // values that should fall on pixel boundaries.
-    mExampleDimension = a.getDimension(
-        R.styleable.FlexInput_exampleDimension,
-        mExampleDimension);
+    try {
+      final CharSequence hintText = a.getText(R.styleable.FlexInput_hint);
+      if (!TextUtils.isEmpty(hintText)) {
+        textEt.setHint(hintText);
+      }
 
-    if (a.hasValue(R.styleable.FlexInput_exampleDrawable)) {
-      mExampleDrawable = a.getDrawable(
-          R.styleable.FlexInput_exampleDrawable);
-      mExampleDrawable.setCallback(this);
+      if (a.hasValue(R.styleable.FlexInput_hintColor)) {
+        @ColorInt final int hintColor = a.getColor(R.styleable.FlexInput_hintColor, Color.LTGRAY);
+        textEt.setHintTextColor(hintColor);
+      }
+
+      if (a.hasValue(R.styleable.FlexInput_inputBackground)) {
+        Drawable backgroundDrawable = a.getDrawable(R.styleable.FlexInput_inputBackground);
+        backgroundDrawable.setCallback(this);
+        inputContainer.setBackground(backgroundDrawable);
+      }
+
+      if (a.hasValue(R.styleable.FlexInput_tabsBackground)) {
+        Drawable backgroundDrawable = a.getDrawable(R.styleable.FlexInput_tabsBackground);
+        backgroundDrawable.setCallback(this);
+        addContentTabs.setBackground(backgroundDrawable);
+      }
+    } finally {
+      a.recycle();
     }
-
-    a.recycle();
   }
 
   public FlexInput setInputListener(@NonNull final InputListener inputListener) {

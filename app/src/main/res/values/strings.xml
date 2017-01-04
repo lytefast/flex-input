@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">FlexInput</string>
+    <string name="msg_hint">Type a message</string>
+    <string name="chat_title">Chat List</string>
 </resources>

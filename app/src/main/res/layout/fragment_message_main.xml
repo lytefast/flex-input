@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@android:color/white">
 
     <LinearLayout
@@ -17,7 +16,7 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Chat List"
+            android:text="@string/chat_title"
             android:textColor="@color/colorPrimary"
             android:textStyle="bold"/>
 
@@ -37,6 +36,9 @@
         android:layout_height="wrap_content"
         android:focusable="true"
         android:focusableInTouchMode="true"
+        app:inputBackground="@drawable/rect_rounded_black_alpha_25"
+        app:tabsBackground="@drawable/rect_rounded_accent_alpha_50"
+        app:hint="@string/msg_hint"
         android:layout_gravity="bottom"/>
 
 </android.support.design.widget.CoordinatorLayout>

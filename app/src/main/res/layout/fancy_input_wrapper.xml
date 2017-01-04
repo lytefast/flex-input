@@ -10,7 +10,6 @@
         android:layout_height="@dimen/input_height"
         android:orientation="horizontal"
         android:layout_margin="4dp"
-        android:background="@drawable/rect_rounded_black_alpha_25"
         android:gravity="center_vertical">
 
         <android.support.v7.widget.AppCompatImageButton
@@ -60,7 +59,6 @@
             android:id="@+id/add_content_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorPrimary"
             android:visibility="gone"
             android:paddingTop="8dp"/>
 
@@ -68,7 +66,6 @@
             android:id="@+id/add_content_tabs"
             android:layout_width="match_parent"
             android:layout_height="@dimen/input_height"
-            android:background="@drawable/rect_rounded_black_alpha_25"
             android:layout_margin="4dp"
             android:layout_alignParentBottom="true"
             android:gravity="center_vertical"
@@ -91,9 +88,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="Show image browser"
-                android:icon="@drawable/ic_image_24dp"
-                android:foregroundTint="@android:color/white"
-                android:foregroundTintMode="src_in"/>
+                android:icon="@drawable/ic_image_24dp"/>
             <android.support.design.widget.TabItem
                 android:id="@+id/add_content_photo_btn"
                 android:layout_width="wrap_content"
