@@ -1,4 +1,4 @@
-package com.lytefast.flexinput;
+package com.lytefast.flexinput.sampleapp;
 
 
 import android.content.Context;
@@ -12,17 +12,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.lytefast.flexinput.widget.FlexInput;
-import com.lytefast.flexinput.widget.InputListener;
-import com.lytefast.flexinput.widget.KeyboardManager;
+import com.lytefast.flexinput.FlexInput;
+import com.lytefast.flexinput.InputListener;
+import com.lytefast.flexinput.KeyboardManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Optional;
 import butterknife.Unbinder;
 
 

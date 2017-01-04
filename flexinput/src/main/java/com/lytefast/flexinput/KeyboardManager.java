@@ -1,5 +1,4 @@
-package com.lytefast.flexinput.widget;
-
+package com.lytefast.flexinput;
 
 /**
  * Defines interactions with the on screen keyboard.

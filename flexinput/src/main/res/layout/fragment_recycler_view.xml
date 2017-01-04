@@ -4,7 +4,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/list"
-        android:name="com.lytefast.flexinput.fragment.RecyclerViewFragment"
+        android:name="com.lytefast.flexinput.RecyclerViewFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="16dp"
@@ -12,5 +12,5 @@
         android:orientation="vertical"
         app:layoutManager="GridLayoutManager"
         app:spanCount="3"
-        tools:context="com.lytefast.flexinput.fragment.RecyclerViewFragment"
+        tools:context="com.lytefast.flexinput.RecyclerViewFragment"
         tools:listitem="@layout/fragment_imageview"/>

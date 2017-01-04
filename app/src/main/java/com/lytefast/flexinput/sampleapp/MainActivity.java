@@ -1,4 +1,4 @@
-package com.lytefast.flexinput;
+package com.lytefast.flexinput.sampleapp;
 
 
 import android.support.v7.app.AppCompatActivity;

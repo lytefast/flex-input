@@ -1,5 +1,4 @@
-package com.lytefast.flexinput.widget;
-
+package com.lytefast.flexinput;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -21,7 +20,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.fragment.RecyclerViewFragment;
 
 import butterknife.BindView;
@@ -34,15 +32,14 @@ import butterknife.OnTouch;
  * Text, emoji, and media input field.
  */
 public class FlexInput extends RelativeLayout {
+  @BindView(R2.id.main_input_container) View inputContainer;
+  @BindView(R2.id.add_content_container) View addContentContainer;
+  @BindView(R2.id.emoji_container) View emojiContainer;
 
-  @BindView(R.id.main_input_container) View inputContainer;
-  @BindView(R.id.add_content_container) View addContentContainer;
-  @BindView(R.id.emoji_container) View emojiContainer;
-
-  @BindView(R.id.text_input) AppCompatEditText textEt;
-  @BindView(R.id.emoji_btn) AppCompatImageButton emojiBtn;
-  @BindView(R.id.add_content_pager) ViewPager addContentPager;
-  @BindView(R.id.add_content_tabs) TabLayout addContentTabs;
+  @BindView(R2.id.text_input) AppCompatEditText textEt;
+  @BindView(R2.id.emoji_btn) AppCompatImageButton emojiBtn;
+  @BindView(R2.id.add_content_pager) ViewPager addContentPager;
+  @BindView(R2.id.add_content_tabs) TabLayout addContentTabs;
 
   private KeyboardManager keyboardManager;
   private InputListener inputListener;
@@ -194,7 +191,7 @@ public class FlexInput extends RelativeLayout {
     });
   }
 
-  @OnClick(R.id.send_btn)
+  @OnClick(R2.id.send_btn)
   void onSend() {
     if (textEt.length() == 0) {
       return;  // Nothing to do here
@@ -203,7 +200,7 @@ public class FlexInput extends RelativeLayout {
     textEt.setText("");
   }
 
-  @OnTouch(R.id.text_input)
+  @OnTouch(R2.id.text_input)
   boolean onTextInputTouch(MotionEvent motionEvent) {
     switch (motionEvent.getAction()) {
       case MotionEvent.ACTION_UP:
@@ -215,7 +212,7 @@ public class FlexInput extends RelativeLayout {
     return false;  // Passthrough
   }
 
-  @OnClick(R.id.emoji_btn)
+  @OnClick(R2.id.emoji_btn)
   void onEmojiToggle() {
     if (emojiContainer.getVisibility() == VISIBLE) {
       hideEmojiTray();
@@ -227,7 +224,7 @@ public class FlexInput extends RelativeLayout {
     addContentPager.setVisibility(GONE);
   }
 
-  @OnClick(R.id.add_btn)
+  @OnClick(R2.id.add_btn)
   void onAddToggle() {
     hideEmojiTray();
     if (addContentContainer.getVisibility() == VISIBLE) {
