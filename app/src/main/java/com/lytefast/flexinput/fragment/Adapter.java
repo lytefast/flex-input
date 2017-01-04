@@ -1,4 +1,4 @@
-package com.lytefast.fancyinput.fragment;
+package com.lytefast.flexinput.fragment;
 
 
 import android.support.v7.widget.RecyclerView;
@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.lytefast.fancyinput.R;
+import com.lytefast.flexinput.R;
 
 import java.util.List;
 

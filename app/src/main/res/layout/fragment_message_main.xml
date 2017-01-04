@@ -28,10 +28,12 @@
 
     </RelativeLayout>
 
-    <com.lytefast.fancyinput.widget.FancyInput
+    <com.lytefast.flexinput.widget.FlexInput
         android:id="@+id/fancy_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:layout_gravity="bottom"/>
 
 </android.support.design.widget.CoordinatorLayout>

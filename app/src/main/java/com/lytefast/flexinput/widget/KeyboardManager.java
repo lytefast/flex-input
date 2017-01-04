@@ -1,4 +1,4 @@
-package com.lytefast.fancyinput.widget;
+package com.lytefast.flexinput.widget;
 
 
 /**

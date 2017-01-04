@@ -1,4 +1,4 @@
-package com.lytefast.fancyinput;
+package com.lytefast.flexinput;
 
 
 import android.content.Context;
@@ -10,8 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
-import com.lytefast.fancyinput.widget.FancyInput;
-import com.lytefast.fancyinput.widget.KeyboardManager;
+import com.lytefast.flexinput.widget.FlexInput;
+import com.lytefast.flexinput.widget.KeyboardManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -20,7 +20,7 @@ import butterknife.Unbinder;
 
 public class MainFragment extends Fragment {
 
-  @BindView(R.id.fancy_input) FancyInput fancyInput;
+  @BindView(R.id.fancy_input) FlexInput flexInput;
 
   private Unbinder unbinder;
 
@@ -49,18 +49,18 @@ public class MainFragment extends Fragment {
     final InputMethodManager imm =
         (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
-    fancyInput
+    flexInput
         .initContentPages(getFragmentManager())
         .setKeyboardManager(new KeyboardManager() {
           @Override
           public void requestDisplay() {
-            imm.showSoftInput(fancyInput, InputMethodManager.SHOW_IMPLICIT);
+            imm.showSoftInput(flexInput, InputMethodManager.SHOW_IMPLICIT);
           }
 
           @Override
           public void requestHide() {
             imm.hideSoftInputFromWindow(
-                fancyInput.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                flexInput.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
           }
         });
   }

@@ -1,11 +1,10 @@
-package com.lytefast.fancyinput.widget;
+package com.lytefast.flexinput.widget;
 
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,12 +16,11 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.lytefast.fancyinput.R;
-import com.lytefast.fancyinput.fragment.RecyclerViewFragment;
+import com.lytefast.flexinput.R;
+import com.lytefast.flexinput.fragment.RecyclerViewFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,7 +30,7 @@ import butterknife.OnClick;
 /**
  * Text, emoji, and media input field.
  */
-public class FancyInput extends RelativeLayout {
+public class FlexInput extends RelativeLayout {
   private String mExampleString; // TODO: use a default from R.string...
   private int mExampleColor = Color.RED; // TODO: use a default from R.color...
   private float mExampleDimension = 0; // TODO: use a default from R.dimen...
@@ -50,17 +48,17 @@ public class FancyInput extends RelativeLayout {
   private KeyboardManager keyboardManager;
 
 
-  public FancyInput(Context context) {
+  public FlexInput(Context context) {
     super(context);
     init(null, 0);
   }
 
-  public FancyInput(Context context, AttributeSet attrs) {
+  public FlexInput(Context context, AttributeSet attrs) {
     super(context, attrs);
     init(attrs, 0);
   }
 
-  public FancyInput(Context context, AttributeSet attrs, int defStyle) {
+  public FlexInput(Context context, AttributeSet attrs, int defStyle) {
     super(context, attrs, defStyle);
     init(attrs, defStyle);
   }
@@ -86,22 +84,22 @@ public class FancyInput extends RelativeLayout {
 
   private void initAttributes(final AttributeSet attrs, final int defStyle) {
     final TypedArray a = getContext().obtainStyledAttributes(
-        attrs, R.styleable.FancyInput, defStyle, 0);
+        attrs, R.styleable.FlexInput, defStyle, 0);
 
     mExampleString = a.getString(
-        R.styleable.FancyInput_exampleString);
+        R.styleable.FlexInput_exampleString);
     mExampleColor = a.getColor(
-        R.styleable.FancyInput_exampleColor,
+        R.styleable.FlexInput_exampleColor,
         mExampleColor);
     // Use getDimensionPixelSize or getDimensionPixelOffset when dealing with
     // values that should fall on pixel boundaries.
     mExampleDimension = a.getDimension(
-        R.styleable.FancyInput_exampleDimension,
+        R.styleable.FlexInput_exampleDimension,
         mExampleDimension);
 
-    if (a.hasValue(R.styleable.FancyInput_exampleDrawable)) {
+    if (a.hasValue(R.styleable.FlexInput_exampleDrawable)) {
       mExampleDrawable = a.getDrawable(
-          R.styleable.FancyInput_exampleDrawable);
+          R.styleable.FlexInput_exampleDrawable);
       mExampleDrawable.setCallback(this);
     }
 
@@ -127,12 +125,12 @@ public class FancyInput extends RelativeLayout {
     textEt.setText(exampleString);
   }
 
-  public FancyInput setKeyboardManager(KeyboardManager keyboardManager) {
+  public FlexInput setKeyboardManager(KeyboardManager keyboardManager) {
     this.keyboardManager = keyboardManager;
     return this;
   }
 
-  public FancyInput initContentPages(final FragmentManager fragmentManager) {
+  public FlexInput initContentPages(final FragmentManager fragmentManager) {
     return initContentPages(new FragmentPagerAdapter(fragmentManager) {
       @Override
       public Fragment getItem(final int position) {
@@ -153,7 +151,7 @@ public class FancyInput extends RelativeLayout {
     });
   }
 
-  public FancyInput initContentPages(final FragmentPagerAdapter pagerAdapter) {
+  public FlexInput initContentPages(final FragmentPagerAdapter pagerAdapter) {
     addContentPager.setAdapter(pagerAdapter);
     addContentPager.setOffscreenPageLimit(0);  // Don't preload anything as some are expensive
     synchronizeTabAndPagerEvents();

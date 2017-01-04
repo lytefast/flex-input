@@ -1,4 +1,4 @@
-package com.lytefast.fancyinput.fragment;
+package com.lytefast.flexinput.fragment;
 
 
 import android.content.Context;
@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.lytefast.fancyinput.R;
+import com.lytefast.flexinput.R;
 
 import java.util.Arrays;
 import java.util.List;

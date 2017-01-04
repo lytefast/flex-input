@@ -1,4 +1,4 @@
-package com.lytefast.fancyinput;
+package com.lytefast.flexinput;
 
 import org.junit.Test;
 
