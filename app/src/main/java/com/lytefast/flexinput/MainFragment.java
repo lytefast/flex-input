@@ -5,12 +5,15 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import com.lytefast.flexinput.widget.FlexInput;
+import com.lytefast.flexinput.widget.InputListener;
 import com.lytefast.flexinput.widget.KeyboardManager;
 
 import butterknife.BindView;
@@ -51,6 +54,7 @@ public class MainFragment extends Fragment {
 
     flexInput
         .initContentPages(getFragmentManager())
+        .setInputListener(flexInputListener)
         .setKeyboardManager(new KeyboardManager() {
           @Override
           public void requestDisplay() {
@@ -70,4 +74,11 @@ public class MainFragment extends Fragment {
     unbinder.unbind();
     super.onDestroyView();
   }
+
+  private final InputListener flexInputListener = new InputListener() {
+    @Override
+    public void onSend(final Editable data) {
+      Toast.makeText(getContext(), "Text Sent: " + data.toString(), Toast.LENGTH_SHORT).show();
+    }
+  };
 }

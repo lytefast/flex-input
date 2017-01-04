@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -47,7 +48,9 @@ public class FlexInput extends RelativeLayout {
   @BindView(R.id.emoji_btn) AppCompatImageButton emojiBtn;
   @BindView(R.id.add_content_pager) ViewPager addContentPager;
   @BindView(R.id.add_content_tabs) TabLayout addContentTabs;
+
   private KeyboardManager keyboardManager;
+  private InputListener inputListener;
 
 
   public FlexInput(Context context) {
@@ -106,6 +109,11 @@ public class FlexInput extends RelativeLayout {
     }
 
     a.recycle();
+  }
+
+  public FlexInput setInputListener(@NonNull final InputListener inputListener) {
+    this.inputListener = inputListener;
+    return this;
   }
 
   /**
@@ -195,8 +203,10 @@ public class FlexInput extends RelativeLayout {
 
   @OnClick(R.id.send_btn)
   void onSend() {
-    // TODO: figure out a way to publish events
-    Toast.makeText(getContext(), "Text Sent: " + textEt.getText().toString(), Toast.LENGTH_SHORT).show();
+    if (textEt.length() == 0) {
+      return;  // Nothing to do here
+    }
+    inputListener.onSend(textEt.getText());
     textEt.setText("");
   }
 
