@@ -1,14 +1,16 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@android:color/white">
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/activity_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:paddingTop="@dimen/activity_vertical_margin">
 
         <android.support.v7.widget.AppCompatTextView
@@ -19,14 +21,15 @@
             android:textColor="@color/colorPrimary"
             android:textStyle="bold"/>
 
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/result"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/message_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/title"
-            tools:text="Result row"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layoutManager="LinearLayoutManager">
 
-    </RelativeLayout>
+        </android.support.v7.widget.RecyclerView>
+    </LinearLayout>
 
     <com.lytefast.flexinput.widget.FlexInput
         android:id="@+id/fancy_input"
