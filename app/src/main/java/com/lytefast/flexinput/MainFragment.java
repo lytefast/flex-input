@@ -54,13 +54,13 @@ public class MainFragment extends Fragment {
         .setKeyboardManager(new KeyboardManager() {
           @Override
           public void requestDisplay() {
+            flexInput.requestFocus();
             imm.showSoftInput(flexInput, InputMethodManager.SHOW_IMPLICIT);
           }
 
           @Override
           public void requestHide() {
-            imm.hideSoftInputFromWindow(
-                flexInput.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            imm.hideSoftInputFromWindow(flexInput.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
           }
         });
   }

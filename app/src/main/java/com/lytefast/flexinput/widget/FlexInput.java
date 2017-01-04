@@ -15,6 +15,7 @@ import android.support.v7.widget.AppCompatImageButton;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -25,6 +26,7 @@ import com.lytefast.flexinput.fragment.RecyclerViewFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTouch;
 
 
 /**
@@ -198,15 +200,23 @@ public class FlexInput extends RelativeLayout {
     textEt.setText("");
   }
 
-  @OnClick(R.id.text_input)
-  void onTextInputTouch() {
-    hideEmojiTray();
+  @OnTouch(R.id.text_input)
+  boolean onTextInputTouch(MotionEvent motionEvent) {
+    switch (motionEvent.getAction()) {
+      case MotionEvent.ACTION_UP:
+        hideEmojiTray();
+        keyboardManager.requestDisplay();
+        break;
+    }
+
+    return false;  // Passthrough
   }
 
   @OnClick(R.id.emoji_btn)
   void onEmojiToggle() {
     if (emojiContainer.getVisibility() == VISIBLE) {
       hideEmojiTray();
+      keyboardManager.requestDisplay();
     } else {
       showEmojiTray();
     }
@@ -240,7 +250,6 @@ public class FlexInput extends RelativeLayout {
 
   private void hideEmojiTray() {
     emojiContainer.setVisibility(GONE);
-    keyboardManager.requestDisplay();
     emojiBtn.setImageResource(R.drawable.ic_insert_emoticon_24dp);
   }
 
