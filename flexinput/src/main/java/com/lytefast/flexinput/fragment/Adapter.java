@@ -23,10 +23,11 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     mValues = items;
   }
 
+
   @Override
   public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
     View view = LayoutInflater.from(parent.getContext())
-        .inflate(R.layout.fragment_imageview, parent, false);
+        .inflate(R.layout.view_grid_image, parent, false);
     return new ViewHolder(view);
   }
 
