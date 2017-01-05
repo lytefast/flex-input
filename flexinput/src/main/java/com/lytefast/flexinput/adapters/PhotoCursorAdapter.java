@@ -1,6 +1,7 @@
 package com.lytefast.flexinput.adapters;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -14,6 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.lytefast.flexinput.R;
 
 import java.util.Set;
@@ -25,8 +29,8 @@ import java.util.Set;
 public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.ViewHolder> {
 
   private final ContentResolver contentResolver;
-
   private Cursor cursor;
+
   private final int colId;
   private final int colData;
   private final int colName;
@@ -90,7 +94,7 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
   }
 
   protected class ViewHolder extends RecyclerView.ViewHolder {
-    public final ImageView imageView;
+    public final SimpleDraweeView imageView;
 
     public final ClickListener clickListener;
     private final View checkIndicator;
@@ -99,23 +103,33 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
     public ViewHolder(final View itemView) {
       super(itemView);
       this.clickListener = new ClickListener();
+      this.itemView.setOnClickListener(clickListener);
 
-      // TODO consider using fresco for perf reasons
-      this.imageView = (ImageView) itemView.findViewById(R.id.content_iv);
-      this.imageView.setOnClickListener(clickListener);
-
-      checkIndicator = itemView.findViewById(R.id.item_check_indicator);
+      this.imageView = (SimpleDraweeView) itemView.findViewById(R.id.content_iv);
+      this.checkIndicator = itemView.findViewById(R.id.item_check_indicator);
     }
 
     public void bind(final Photo photo, final int position) {
       clickListener.bind(photo, position);
 
-      Bitmap thumbnail = MediaStore.Images.Thumbnails.getThumbnail(
-          contentResolver,
-          photo.id,
-          MediaStore.Images.Thumbnails.MINI_KIND,
-          null /* Options */);
-      imageView.setImageBitmap(thumbnail);
+      final Cursor cursor = contentResolver.query(
+          MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
+          new String[]{MediaStore.Images.Thumbnails._ID},
+          MediaStore.Images.Thumbnails.IMAGE_ID + "= ? AND KIND = ?",
+          new String[]{String.valueOf(photo.id), Integer.toString(MediaStore.Images.Thumbnails.MINI_KIND)},
+          null);
+
+      if (cursor == null || !cursor.moveToFirst()) {
+        imageView.setImageURI((String) null);
+        return;
+      }
+      try {
+        final long thumbId = cursor.getLong(0);
+        imageView.setImageURI(
+            ContentUris.withAppendedId(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, thumbId));
+      } finally {
+        cursor.close();
+      }
     }
 
     void setSelected(boolean isSelected) {

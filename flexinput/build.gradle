@@ -14,7 +14,6 @@ apply plugin: 'com.jakewharton.butterknife' // needed to use butterknife in libr
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.0"
-//    buildToolsVersion "24.0.2"
 
     defaultConfig {
         minSdkVersion 16
@@ -46,6 +45,8 @@ dependencies {
 
     compile 'com.jakewharton:butterknife:8.4.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+
+    compile 'com.facebook.fresco:fresco:1.0.+'
 
     testCompile 'junit:junit:4.12'
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
