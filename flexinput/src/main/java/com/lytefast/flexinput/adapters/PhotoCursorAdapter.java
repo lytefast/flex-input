@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.util.ArraySet;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.lytefast.flexinput.R;
+
+import java.util.Set;
 
 
 /**
@@ -28,7 +31,10 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
   private final int colData;
   private final int colName;
 
-  @Nullable private OnItemClickListener<Photo> onItemClickListener;
+  private Set<Integer> selectedItems;
+
+  @Nullable
+  private OnItemClickListener<Photo> onItemClickListener;
 
 
   public PhotoCursorAdapter(ContentResolver contentResolver, @NonNull Cursor cursor) {
@@ -40,6 +46,8 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
     this.colName = cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME);
 
     setHasStableIds(true);
+
+    this.selectedItems = new ArraySet(4);
   }
 
   @Override
@@ -84,16 +92,19 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
   protected class ViewHolder extends RecyclerView.ViewHolder {
     public final ImageView imageView;
 
-    public final PhotoCursorAdapter.ClickListener clickListener;
+    public final ClickListener clickListener;
+    private final View checkIndicator;
 
 
     public ViewHolder(final View itemView) {
       super(itemView);
-      this.clickListener = new PhotoCursorAdapter.ClickListener();
+      this.clickListener = new ClickListener();
 
       // TODO consider using fresco for perf reasons
       this.imageView = (ImageView) itemView.findViewById(R.id.content_iv);
       this.imageView.setOnClickListener(clickListener);
+
+      checkIndicator = itemView.findViewById(R.id.item_check_indicator);
     }
 
     public void bind(final Photo photo, final int position) {
@@ -106,7 +117,15 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
           null /* Options */);
       imageView.setImageBitmap(thumbnail);
     }
-  }
+
+    void setSelected(boolean isSelected) {
+      if (isSelected) {
+        itemView.setBackgroundResource(R.drawable.rect_rounded_highlight);
+        checkIndicator.setVisibility(View.VISIBLE);
+      }
+    }
+//  }
+
 
   protected class ClickListener implements View.OnClickListener {
     private Photo photo = null;
@@ -118,6 +137,7 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
       if (onItemClickListener != null) {
         onItemClickListener.onItemClicked(photo, position);
       }
+      setSelected(selectedItems.contains(position));
     }
 
     public void bind(final Photo photo, final int position) {
@@ -125,6 +145,7 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
       this.position = position;
     }
   }
+}
 
 
   public static class Photo {
