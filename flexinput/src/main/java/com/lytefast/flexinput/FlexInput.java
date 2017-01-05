@@ -158,7 +158,6 @@ public class FlexInput extends RelativeLayout {
 
   public FlexInput initContentPages(final FragmentPagerAdapter pagerAdapter) {
     addContentPager.setAdapter(pagerAdapter);
-    addContentPager.setOffscreenPageLimit(0);  // Don't preload anything as some are expensive
     synchronizeTabAndPagerEvents();
     return this;
   }
