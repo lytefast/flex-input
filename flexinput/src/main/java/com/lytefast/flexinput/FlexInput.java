@@ -20,6 +20,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.lytefast.flexinput.fragment.PhotosFragment;
 import com.lytefast.flexinput.fragment.RecyclerViewFragment;
 
 import butterknife.BindView;
@@ -32,6 +33,9 @@ import butterknife.OnTouch;
  * Text, emoji, and media input field.
  */
 public class FlexInput extends RelativeLayout {
+  public static final int TAB_PHOTOS = 1;
+  public static final int TAB_FILES = 0;
+  public static final int TAB_CAMERA = 2;
   @BindView(R2.id.main_input_container) View inputContainer;
   @BindView(R2.id.add_content_container) View addContentContainer;
   @BindView(R2.id.emoji_container) View emojiContainer;
@@ -137,9 +141,10 @@ public class FlexInput extends RelativeLayout {
         switch (position) {
           default:
             return null;
-          case 0:
-          case 1:
-          case 2:
+          case TAB_PHOTOS:
+            return new PhotosFragment();
+          case TAB_FILES:
+          case TAB_CAMERA:
             return new RecyclerViewFragment();
         }
       }
