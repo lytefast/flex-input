@@ -75,9 +75,9 @@ public class PhotosFragment extends Fragment {
 
       adapter.setOnItemClickListener(new OnItemClickListener<PhotoCursorAdapter.Photo>() {
         @Override
-        public void onItemClicked(final PhotoCursorAdapter.Photo item, final int position) {
+        public void onItemClicked(final PhotoCursorAdapter.Photo item) {
           Toast.makeText(getContext(),
-              "Toggle[" + position + "]: " + item.displayName, Toast.LENGTH_SHORT).show();
+              "Toggle[" + item.id + "]: " + item.displayName, Toast.LENGTH_SHORT).show();
         }
       });
     }
