@@ -9,6 +9,8 @@ import java.util.List;
 
 /**
  * Handles events that occur within the {@link FlexInput} widget.
+ *
+ * @author Sam Shih
  */
 public interface InputListener {
   /**

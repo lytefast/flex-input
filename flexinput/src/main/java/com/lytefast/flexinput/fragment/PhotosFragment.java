@@ -22,6 +22,8 @@ import java.util.Collection;
 
 /**
  * Fragment that displays the recent photos on the phone for selection.
+ *
+ * @author Sam Shih
  */
 public class PhotosFragment extends Fragment implements AttachmentSelector<Photo> {
 

@@ -21,7 +21,6 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.lytefast.flexinput.fragment.AttachmentSelector;
 import com.lytefast.flexinput.fragment.PhotosFragment;
 import com.lytefast.flexinput.fragment.RecyclerViewFragment;
 import com.lytefast.flexinput.model.Attachment;
@@ -36,6 +35,8 @@ import butterknife.OnTouch;
 
 /**
  * Text, emoji, and media input field.
+ *
+ * @author Sam Shih
  */
 public class FlexInput extends RelativeLayout {
   public static final int TAB_PHOTOS = 1;

@@ -8,6 +8,8 @@ import com.facebook.common.util.HashCodeUtil;
 
 /**
  * Represents an attachable resource in the form of {@link Uri}.
+ *
+ * @author Sam Shih
  */
 public class Attachment {
     public final long id;

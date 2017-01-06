@@ -27,6 +27,11 @@ import butterknife.Optional;
 import butterknife.Unbinder;
 
 
+/**
+ * Sample of how to use the {@link FlexInput} component.
+ *
+ * @author Sam Shih
+ */
 public class MainFragment extends Fragment {
 
   @BindView(R.id.fancy_input) FlexInput flexInput;

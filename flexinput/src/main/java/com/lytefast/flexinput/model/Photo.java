@@ -10,6 +10,8 @@ import android.support.annotation.Nullable;
 
 /**
  * Represents a photo obtained from the {@link MediaStore.Images.Media#EXTERNAL_CONTENT_URI} store.
+ *
+ * @author Sam Shih
  */
 public class Photo extends Attachment {
   public Photo(final long id, final Uri uri, final String displayName) {

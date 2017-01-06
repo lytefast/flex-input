@@ -16,6 +16,8 @@ import java.util.List;
 
 /**
  * A fragment representing a list of Items.
+ *
+ * @author Sam Shih
  */
 public class RecyclerViewFragment extends Fragment {
 

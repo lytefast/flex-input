@@ -1,7 +1,6 @@
 package com.lytefast.flexinput.adapters;
 
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -23,6 +22,8 @@ import java.util.Set;
 
 /**
  * {@link android.support.v7.widget.RecyclerView.Adapter} that knows how to load photos from the media store.
+ *
+ * @author Sam Shih
  */
 public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.ViewHolder> {
 
