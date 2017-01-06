@@ -19,9 +19,14 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
+import com.lytefast.flexinput.fragment.AttachmentSelector;
 import com.lytefast.flexinput.fragment.PhotosFragment;
 import com.lytefast.flexinput.fragment.RecyclerViewFragment;
+import com.lytefast.flexinput.model.Attachment;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,6 +52,8 @@ public class FlexInput extends RelativeLayout {
 
   private KeyboardManager keyboardManager;
   private InputListener inputListener;
+
+  private PhotosFragment photosFragment;
 
 
   public FlexInput(Context context) {
@@ -142,7 +149,8 @@ public class FlexInput extends RelativeLayout {
           default:
             return null;
           case TAB_PHOTOS:
-            return new PhotosFragment();
+            photosFragment = new PhotosFragment();
+            return photosFragment;
           case TAB_FILES:
           case TAB_CAMERA:
             return new RecyclerViewFragment();
@@ -200,7 +208,13 @@ public class FlexInput extends RelativeLayout {
     if (textEt.length() == 0) {
       return;  // Nothing to do here
     }
-    inputListener.onSend(textEt.getText());
+    ArrayList<Attachment> attachments =
+        new ArrayList<Attachment>(photosFragment.getSelectedAttachments());
+    inputListener.onSend(textEt.getText(), attachments);
+    Toast.makeText(getContext(),
+        photosFragment.getSelectedAttachments().size() +" photos selected", Toast.LENGTH_SHORT)
+            .show();
+    photosFragment.clearSelectedAttachments();
     textEt.setText("");
   }
 
@@ -235,7 +249,7 @@ public class FlexInput extends RelativeLayout {
       addContentContainer.setVisibility(GONE);
       addContentPager.setVisibility(GONE);  // set this to force destroy fragments
 
-      inputContainer.requestFocus();
+      textEt.requestFocus();
       inputContainer.setVisibility(VISIBLE);
       keyboardManager.requestDisplay();
     } else {

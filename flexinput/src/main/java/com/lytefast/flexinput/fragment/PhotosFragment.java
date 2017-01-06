@@ -15,21 +15,17 @@ import android.widget.Toast;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.adapters.OnItemClickListener;
 import com.lytefast.flexinput.adapters.PhotoCursorAdapter;
+import com.lytefast.flexinput.model.Photo;
+
+import java.util.Collection;
 
 
 /**
  * Fragment that displays the recent photos on the phone for selection.
  */
-public class PhotosFragment extends Fragment {
+public class PhotosFragment extends Fragment implements AttachmentSelector<Photo> {
 
   private RecyclerView recyclerView;
-
-  // TODO: Customize parameter initialization
-  @SuppressWarnings("unused")
-  public static PhotosFragment newInstance(int columnCount) {
-    PhotosFragment fragment = new PhotosFragment();
-    return fragment;
-  }
 
   /**
    * Mandatory empty constructor for the fragment manager to instantiate the
@@ -69,17 +65,27 @@ public class PhotosFragment extends Fragment {
             MediaStore.Images.Media.DISPLAY_NAME},
         null, null, MediaStore.Images.Media.DATE_ADDED + " DESC");
     if (cursor != null) {
-      PhotoCursorAdapter adapter = new PhotoCursorAdapter(getContext().getContentResolver(), cursor);
+      final PhotoCursorAdapter adapter = new PhotoCursorAdapter(getContext().getContentResolver(), cursor);
       recyclerView.setAdapter(adapter);
       recyclerView.invalidateItemDecorations();
 
-      adapter.setOnItemClickListener(new OnItemClickListener<PhotoCursorAdapter.Photo>() {
+      adapter.setOnItemClickListener(new OnItemClickListener<Photo>() {
         @Override
-        public void onItemClicked(final PhotoCursorAdapter.Photo item) {
+        public void onItemClicked(final Photo item) {
           Toast.makeText(getContext(),
               "Toggle[" + item.id + "]: " + item.displayName, Toast.LENGTH_SHORT).show();
         }
       });
     }
+  }
+
+  @Override
+  public Collection<Photo> getSelectedAttachments() {
+    return ((PhotoCursorAdapter) recyclerView.getAdapter()).getSelectedItems();
+  }
+
+  @Override
+  public void clearSelectedAttachments() {
+    ((PhotoCursorAdapter) recyclerView.getAdapter()).clearSelectedItems();
   }
 }
