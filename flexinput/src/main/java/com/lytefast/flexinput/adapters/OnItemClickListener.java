@@ -7,5 +7,5 @@ package com.lytefast.flexinput.adapters;
  *           
  */
 public interface OnItemClickListener<T> {
-  void onItemClicked(T item, int position);
+  void onItemClicked(T item);
 }

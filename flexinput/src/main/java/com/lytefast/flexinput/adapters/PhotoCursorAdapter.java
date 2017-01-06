@@ -22,6 +22,8 @@ import com.lytefast.flexinput.R;
 
 import java.util.Set;
 
+import butterknife.ButterKnife;
+
 
 /**
  * {@link android.support.v7.widget.RecyclerView.Adapter} that knows how to load photos from the media store.
@@ -35,7 +37,7 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
   private final int colData;
   private final int colName;
 
-  private Set<Integer> selectedItems;
+  private Set<Long> selectedItems;
 
   @Nullable
   private OnItemClickListener<Photo> onItemClickListener;
@@ -93,24 +95,24 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
     this.onItemClickListener = onItemClickListener;
   }
 
-  protected class ViewHolder extends RecyclerView.ViewHolder {
+  protected class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     public final SimpleDraweeView imageView;
-
-    public final ClickListener clickListener;
     private final View checkIndicator;
+
+    private Photo photo = null;
 
 
     public ViewHolder(final View itemView) {
       super(itemView);
-      this.clickListener = new ClickListener();
-      this.itemView.setOnClickListener(clickListener);
+      this.itemView.setOnClickListener(this);
 
       this.imageView = (SimpleDraweeView) itemView.findViewById(R.id.content_iv);
       this.checkIndicator = itemView.findViewById(R.id.item_check_indicator);
     }
 
     public void bind(final Photo photo, final int position) {
-      clickListener.bind(photo, position);
+      this.photo = photo;
+      setSelected(selectedItems.contains(photo.id));
 
       final Cursor cursor = contentResolver.query(
           MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
@@ -133,32 +135,28 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
     }
 
     void setSelected(boolean isSelected) {
+      imageView.setSelected(isSelected);
       if (isSelected) {
         itemView.setBackgroundResource(R.drawable.rect_rounded_highlight);
         checkIndicator.setVisibility(View.VISIBLE);
+      } else {
+        itemView.setBackgroundResource(0);
+        checkIndicator.setVisibility(View.GONE);
       }
     }
-//  }
-
-
-  protected class ClickListener implements View.OnClickListener {
-    private Photo photo = null;
-    private int position = -1;
-
 
     @Override
     public void onClick(final View v) {
       if (onItemClickListener != null) {
-        onItemClickListener.onItemClicked(photo, position);
+        onItemClickListener.onItemClicked(photo);
       }
-      setSelected(selectedItems.contains(position));
+      if (selectedItems.remove(photo.id)) {
+        setSelected(false);
+      } else {
+        selectedItems.add(photo.id);
+        setSelected(true);
+      }
     }
-
-    public void bind(final Photo photo, final int position) {
-      this.photo = photo;
-      this.position = position;
-    }
-  }
 }
 
 
