@@ -3,26 +3,22 @@ package com.lytefast.flexinput.adapters;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.util.ArraySet;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
-import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
-import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.lytefast.flexinput.R;
+import com.lytefast.flexinput.model.Photo;
 
+import java.util.ArrayList;
 import java.util.Set;
-
-import butterknife.ButterKnife;
 
 
 /**
@@ -37,10 +33,9 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
   private final int colData;
   private final int colName;
 
-  private Set<Long> selectedItems;
+  private final ArrayMap<Photo, Integer> selectedItemPositionMap;
 
-  @Nullable
-  private OnItemClickListener<Photo> onItemClickListener;
+  @Nullable private OnItemClickListener<Photo> onItemClickListener;
 
 
   public PhotoCursorAdapter(ContentResolver contentResolver, @NonNull Cursor cursor) {
@@ -53,7 +48,7 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
 
     setHasStableIds(true);
 
-    this.selectedItems = new ArraySet(4);
+    this.selectedItemPositionMap = new ArrayMap<>(4);
   }
 
   @Override
@@ -66,7 +61,7 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
   @Override
   public void onBindViewHolder(final PhotoCursorAdapter.ViewHolder holder, final int position) {
     Photo photo = getPhoto(position);
-    holder.bind(photo, position);
+    holder.bind(photo);
   }
 
   @Override
@@ -91,6 +86,18 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
         cursor.getLong(colId), Uri.parse(cursor.getString(colData)), cursor.getString(colName));
   }
 
+  public Set<Photo> getSelectedItems() {
+    return selectedItemPositionMap.keySet();
+  }
+
+  public void clearSelectedItems() {
+    ArrayList<Integer> oldSelection = new ArrayList<>(selectedItemPositionMap.values());
+    for (int position: oldSelection) {
+      notifyItemChanged(position);
+    }
+    selectedItemPositionMap.clear();
+  }
+
   public void setOnItemClickListener(final OnItemClickListener<Photo> onItemClickListener) {
     this.onItemClickListener = onItemClickListener;
   }
@@ -110,27 +117,15 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
       this.checkIndicator = itemView.findViewById(R.id.item_check_indicator);
     }
 
-    public void bind(final Photo photo, final int position) {
+    public void bind(final Photo photo) {
       this.photo = photo;
-      setSelected(selectedItems.contains(photo.id));
+      setSelected(selectedItemPositionMap.containsKey(photo));
 
-      final Cursor cursor = contentResolver.query(
-          MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
-          new String[]{MediaStore.Images.Thumbnails._ID},
-          MediaStore.Images.Thumbnails.IMAGE_ID + "= ? AND KIND = ?",
-          new String[]{String.valueOf(photo.id), Integer.toString(MediaStore.Images.Thumbnails.MINI_KIND)},
-          null);
-
-      if (cursor == null || !cursor.moveToFirst()) {
+      Uri thumbnailUri = photo.getThumbnailUri(contentResolver);
+      if (thumbnailUri == null) {
         imageView.setImageURI((String) null);
-        return;
-      }
-      try {
-        final long thumbId = cursor.getLong(0);
-        imageView.setImageURI(
-            ContentUris.withAppendedId(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, thumbId));
-      } finally {
-        cursor.close();
+      } else {
+        imageView.setImageURI(thumbnailUri);
       }
     }
 
@@ -150,26 +145,12 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
       if (onItemClickListener != null) {
         onItemClickListener.onItemClicked(photo);
       }
-      if (selectedItems.remove(photo.id)) {
-        setSelected(false);
-      } else {
-        selectedItems.add(photo.id);
+      if (selectedItemPositionMap.remove(photo) == null) {
+        selectedItemPositionMap.put(photo, getAdapterPosition());
         setSelected(true);
+      } else {
+        setSelected(false);
       }
-    }
-}
-
-
-  public static class Photo {
-    public final long id;
-    public final Uri uri;
-    public final String displayName;
-
-
-    public Photo(final long id, final Uri uri, final String displayName) {
-      this.id = id;
-      this.uri = uri;
-      this.displayName = displayName;
     }
   }
 }

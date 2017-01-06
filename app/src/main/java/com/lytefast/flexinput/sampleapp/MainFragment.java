@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.lytefast.flexinput.FlexInput;
 import com.lytefast.flexinput.InputListener;
 import com.lytefast.flexinput.KeyboardManager;
+import com.lytefast.flexinput.model.Attachment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,8 +87,11 @@ public class MainFragment extends Fragment {
 
   private final InputListener flexInputListener = new InputListener() {
     @Override
-    public void onSend(final Editable data) {
+    public void onSend(final Editable data, List<? extends Attachment> attachments) {
       msgAdapter.addMessage(data);
+      for (Attachment a : attachments) {
+        msgAdapter.addMessage(Editable.Factory.getInstance().newEditable("Attachment - " + a.displayName));
+      }
     }
   };
 
