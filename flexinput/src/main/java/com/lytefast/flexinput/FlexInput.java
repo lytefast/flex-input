@@ -26,6 +26,8 @@ import com.lytefast.flexinput.fragment.RecyclerViewFragment;
 import com.lytefast.flexinput.model.Attachment;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -209,13 +211,20 @@ public class FlexInput extends RelativeLayout {
     if (textEt.length() == 0) {
       return;  // Nothing to do here
     }
-    ArrayList<Attachment> attachments =
-        new ArrayList<Attachment>(photosFragment.getSelectedAttachments());
+
+    final List<Attachment> attachments;
+    if (photosFragment != null) {
+      attachments = new ArrayList<Attachment>(photosFragment.getSelectedAttachments());
+
+      Toast.makeText(getContext(),
+          photosFragment.getSelectedAttachments().size() + " photos selected", Toast.LENGTH_SHORT)
+          .show();
+      photosFragment.clearSelectedAttachments();
+    } else {
+      attachments = Collections.EMPTY_LIST;
+    }
+
     inputListener.onSend(textEt.getText(), attachments);
-    Toast.makeText(getContext(),
-        photosFragment.getSelectedAttachments().size() +" photos selected", Toast.LENGTH_SHORT)
-            .show();
-    photosFragment.clearSelectedAttachments();
     textEt.setText("");
   }
 
