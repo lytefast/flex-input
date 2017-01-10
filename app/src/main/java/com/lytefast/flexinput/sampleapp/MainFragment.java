@@ -13,9 +13,11 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
+import com.lytefast.flexinput.FileManager;
 import com.lytefast.flexinput.FlexInput;
 import com.lytefast.flexinput.InputListener;
 import com.lytefast.flexinput.KeyboardManager;
+import com.lytefast.flexinput.SimpleFileManager;
 import com.lytefast.flexinput.model.Attachment;
 
 import java.util.ArrayList;
@@ -68,6 +70,7 @@ public class MainFragment extends Fragment {
     flexInput
         .initContentPages(getFragmentManager())
         .setInputListener(flexInputListener)
+        .setFileManager(new SimpleFileManager("com.lytefast.flexinput.fileprovider", "FlexInput"))
         .setKeyboardManager(new KeyboardManager() {
           @Override
           public void requestDisplay() {

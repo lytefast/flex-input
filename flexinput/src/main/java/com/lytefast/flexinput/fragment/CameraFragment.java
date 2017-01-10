@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.cameraview.CameraView;
+import com.lytefast.flexinput.FileManager;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
 
@@ -39,10 +40,13 @@ public class CameraFragment extends Fragment {
 
   private static final String TAG = CameraFragment.class.getCanonicalName();
 
+  public static final int REQUEST_IMAGE_CAPTURE = 4567;
+
   @BindView(R2.id.camera_view) CameraView cameraView;
   private Unbinder unbinder;
 
   private PhotoTakenCallback photoTakenCallback;
+  private FileManager fileManager;
 
 
   @Nullable
@@ -86,20 +90,26 @@ public class CameraFragment extends Fragment {
   @OnClick(R2.id.launch_camera_btn)
   void onLaunchCameraClick() {
     cameraView.stop();
-    File photoFile = new File(
-        getImagesDirectory(), "discord_snap_" + System.currentTimeMillis() + ".jpg");
+
+    final File photoFile = fileManager.newImageFile();
     photoTakenCallback.onPhotoTaken(photoFile);
 
-    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        .putExtra(MediaStore.EXTRA_OUTPUT, fileManager.toFileProviderUri(getContext(), photoFile))
+        .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
     if (takePictureIntent.resolveActivity(getContext().getPackageManager()) != null) {
-        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+      startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+      // TODO need to handle the result: 1) save thumbnail, 2) call #addToMediaStore
     }
   }
 
-  static final int REQUEST_IMAGE_CAPTURE = 1;
-
   public void setPhotoTakenCallback(final PhotoTakenCallback photoTakenCallback) {
     this.photoTakenCallback = photoTakenCallback;
+  }
+
+
+  public void setFileManager(final FileManager fileManager) {
+    this.fileManager = fileManager;
   }
 
   private final CameraView.Callback cameraCallback
@@ -124,8 +134,7 @@ public class CameraFragment extends Fragment {
           AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
-              File file = new File(
-                  getImagesDirectory(), "discord_snap_" + System.currentTimeMillis() + ".jpg");
+              File file = fileManager.newImageFile();
               OutputStream os = null;
               try {
                 os = new FileOutputStream(file);
@@ -149,16 +158,6 @@ public class CameraFragment extends Fragment {
           });
         }
   };
-
-  private static File getImagesDirectory() {
-    File file = new File(
-        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-        "FlexInput");  // TODO let the user set this folder path
-    if (!file.mkdirs() && !file.isDirectory()) {
-      Log.e(TAG, "Directory not created");
-    }
-    return file;
-  }
 
   private void addToMediaStore(final File photo) {
     Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);

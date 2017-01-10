@@ -61,6 +61,7 @@ public class FlexInput extends RelativeLayout {
 
   private PhotosFragment photosFragment;
   private CameraFragment cameraFragment;
+  private FileManager fileManager;
 
 
   public FlexInput(Context context) {
@@ -124,6 +125,12 @@ public class FlexInput extends RelativeLayout {
     return this;
   }
 
+  public FlexInput setFileManager(@NonNull final FileManager fileManager) {
+    this.fileManager = fileManager;
+    return this;
+  }
+
+
   /**
    * Gets the example string attribute value.
    *
@@ -161,6 +168,7 @@ public class FlexInput extends RelativeLayout {
           case TAB_CAMERA:
             cameraFragment = new CameraFragment();
             cameraFragment.setPhotoTakenCallback(cameraPhotoTakenCallback);
+            cameraFragment.setFileManager(fileManager);
             return cameraFragment;
           case TAB_FILES:
             return new RecyclerViewFragment();
