@@ -3,6 +3,7 @@ package com.lytefast.flexinput;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
@@ -275,6 +276,18 @@ public class FlexInput extends RelativeLayout {
     addContentPager.setVisibility(GONE);
   }
 
+  @Override
+  public boolean requestFocus(final int direction, final Rect previouslyFocusedRect) {
+    boolean succeeded = super.requestFocus(direction, previouslyFocusedRect);
+    post(new Runnable() {
+      @Override
+      public void run() {
+        textEt.requestFocus();
+      }
+    });
+    return succeeded;
+  }
+
   @OnClick(R2.id.add_btn)
   void onAddToggle() {
     hideEmojiTray();
@@ -282,7 +295,6 @@ public class FlexInput extends RelativeLayout {
       addContentContainer.setVisibility(GONE);
       addContentPager.setVisibility(GONE);  // set this to force destroy fragments
 
-      textEt.requestFocus();
       inputContainer.setVisibility(VISIBLE);
       keyboardManager.requestDisplay();
     } else {
