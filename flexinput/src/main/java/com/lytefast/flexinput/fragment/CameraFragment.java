@@ -1,10 +1,12 @@
 package com.lytefast.flexinput.fragment;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -56,13 +58,18 @@ public class CameraFragment extends Fragment {
   @Override
   public void onResume() {
     super.onResume();
+
+    if (!getContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+      return;  // No camera detected. just chill
+      // TODO show empty state so buttons are disabled
+    }
     cameraView.start();
   }
 
   @Override
   public void onPause() {
-    super.onPause();
     cameraView.stop();
+    super.onPause();
   }
 
   @Override
@@ -75,6 +82,21 @@ public class CameraFragment extends Fragment {
   void onTakePhotoClick() {
     cameraView.takePicture();
   }
+
+  @OnClick(R2.id.launch_camera_btn)
+  void onLaunchCameraClick() {
+    cameraView.stop();
+    File photoFile = new File(
+        getImagesDirectory(), "discord_snap_" + System.currentTimeMillis() + ".jpg");
+    photoTakenCallback.onPhotoTaken(photoFile);
+
+    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+    if (takePictureIntent.resolveActivity(getContext().getPackageManager()) != null) {
+        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+    }
+  }
+
+  static final int REQUEST_IMAGE_CAPTURE = 1;
 
   public void setPhotoTakenCallback(final PhotoTakenCallback photoTakenCallback) {
     this.photoTakenCallback = photoTakenCallback;
@@ -126,26 +148,25 @@ public class CameraFragment extends Fragment {
             }
           });
         }
-
-    private File getImagesDirectory() {
-      File file = new File(
-          Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-          "FlexInput");  // TODO let the user set this folder path
-      if (!file.mkdirs() && !file.isDirectory()) {
-        Log.e(TAG, "Directory not created");
-      }
-      return file;
-    }
-
-    private void addToMediaStore(final File photo) {
-      Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-      Uri photoUri = Uri.fromFile(photo);
-      mediaScanIntent.setData(photoUri);
-      getContext().sendBroadcast(mediaScanIntent);
-      Log.d(TAG, "Photo added to MediaStore: " + photo.getName());
-    }
   };
 
+  private static File getImagesDirectory() {
+    File file = new File(
+        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+        "FlexInput");  // TODO let the user set this folder path
+    if (!file.mkdirs() && !file.isDirectory()) {
+      Log.e(TAG, "Directory not created");
+    }
+    return file;
+  }
+
+  private void addToMediaStore(final File photo) {
+    Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+    Uri photoUri = Uri.fromFile(photo);
+    mediaScanIntent.setData(photoUri);
+    getContext().sendBroadcast(mediaScanIntent);
+    Log.d(TAG, "Photo added to MediaStore: " + photo.getName());
+  }
 
   public interface PhotoTakenCallback {
     void onPhotoTaken(File photoFile);
