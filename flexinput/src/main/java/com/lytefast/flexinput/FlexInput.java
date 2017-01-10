@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.lytefast.flexinput.fragment.CameraFragment;
 import com.lytefast.flexinput.fragment.CameraFragment.PhotoTakenCallback;
+import com.lytefast.flexinput.fragment.FilesFragment;
 import com.lytefast.flexinput.fragment.PhotosFragment;
 import com.lytefast.flexinput.fragment.RecyclerViewFragment;
 import com.lytefast.flexinput.model.Attachment;
@@ -59,6 +60,7 @@ public class FlexInput extends RelativeLayout {
   private KeyboardManager keyboardManager;
   private InputListener inputListener;
 
+  private FilesFragment filesFragment;
   private PhotosFragment photosFragment;
   private CameraFragment cameraFragment;
   private FileManager fileManager;
@@ -162,6 +164,8 @@ public class FlexInput extends RelativeLayout {
         switch (position) {
           default:
             return null;
+          case TAB_FILES:
+            return filesFragment = new FilesFragment();
           case TAB_PHOTOS:
             photosFragment = new PhotosFragment();
             return photosFragment;
@@ -170,8 +174,6 @@ public class FlexInput extends RelativeLayout {
             cameraFragment.setPhotoTakenCallback(cameraPhotoTakenCallback);
             cameraFragment.setFileManager(fileManager);
             return cameraFragment;
-          case TAB_FILES:
-            return new RecyclerViewFragment();
         }
       }
 
