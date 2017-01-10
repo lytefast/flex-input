@@ -1,16 +1,25 @@
 package com.lytefast.flexinput.adapters;
 
 import android.content.ContentResolver;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.vision.text.Text;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
 
@@ -38,10 +47,12 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
   private final ArrayMap<File, Integer> selectedItemPositionMap;
 
   @Nullable private OnItemClickListener<File> onItemClickListener;
+  private ContentResolver contentResolver;
   private final List<File> files;
 
 
-  public FileListAdapter(@NonNull File root) {
+  public FileListAdapter(ContentResolver contentResolver, @NonNull File root) {
+    this.contentResolver = contentResolver;
     files = flattenFileList(root);
     Collections.sort(files, new Comparator<File>() {
       @Override
@@ -109,6 +120,52 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
 
       fileNameTv.setText(file.getName());
       filePathTV.setText(file.getPath());
+
+      thumbIv.setImageResource(R.drawable.ic_file_24dp);
+
+      String mimeType = getMimeType(file);
+      if (!TextUtils.isEmpty(mimeType)) {
+        if (mimeType.startsWith("image")) {
+          bindThumbIvWithImage(file);
+        } else if (mimeType.startsWith("video")) {
+          bindThumbIvWithVideo(file);
+        }
+      }
+    }
+
+    private void bindThumbIvWithImage(final File file) {
+      Cursor c = contentResolver.query(
+        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+        new String[]{MediaStore.Images.Media._ID},
+        MediaStore.Images.Media.DATA + "=?",
+        new String[]{file.getPath()},
+        null /* sortOrder */);
+
+      if (c == null || !c.moveToFirst()) {
+        return;
+      }
+      final long imageId = c.getLong(0);
+      Bitmap thumbnail = MediaStore.Images.Thumbnails.getThumbnail(
+          contentResolver, imageId, MediaStore.Images.Thumbnails.MINI_KIND, null);
+      thumbIv.setImageBitmap(thumbnail);
+    }
+
+    private void bindThumbIvWithVideo(final File file) {
+      thumbIv.setImageResource(R.drawable.ic_movie_24dp);
+      Cursor c = contentResolver.query(
+        MediaStore.Video.Thumbnails.EXTERNAL_CONTENT_URI,
+        new String[]{MediaStore.Video.Media._ID},
+        MediaStore.Video.Media.DATA + "=?",
+        new String[]{file.getPath()},
+        null /* sortOrder */);
+
+      if (c == null || !c.moveToFirst()) {
+        return;
+      }
+      final long videoId = c.getLong(0);
+      Bitmap thumbnail = MediaStore.Video.Thumbnails.getThumbnail(
+          contentResolver, videoId, MediaStore.Images.Thumbnails.MINI_KIND, null);
+      thumbIv.setImageBitmap(thumbnail);
     }
 
     void setSelected(boolean isSelected) {
@@ -140,6 +197,10 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
     files.addAll(Arrays.asList(parentDir.listFiles()));
     while (!files.isEmpty()) {
       File file = files.remove();
+      if (file.isHidden()) {
+        continue;
+      }
+
       if (file.isDirectory()) {
         files.addAll(Arrays.asList(file.listFiles()));
       } else {
@@ -147,5 +208,16 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
       }
     }
     return flattenedFileList;
+  }
+
+  @Nullable
+  private static String getMimeType(File file) {
+    String type = null;
+    String fileName = file.getName();
+    String extension = fileName.substring(fileName.lastIndexOf('.') + 1);
+    if (extension != null) {
+      type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+    }
+    return type;
   }
 }

@@ -55,6 +55,6 @@ public class FilesFragment extends Fragment {
   private void loadDownloadFolder() {
     File downloadFolder =
         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-    recyclerView.setAdapter(new FileListAdapter(downloadFolder));
+    recyclerView.setAdapter(new FileListAdapter(getContext().getContentResolver(), downloadFolder));
   }
 }

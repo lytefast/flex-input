@@ -4,4 +4,5 @@
     <dimen name="input_height">48dp</dimen>
     <dimen name="default_keyboard_height">280dp</dimen>
     <dimen name="grid_item_padding">2dp</dimen>
+    <dimen name="file_icon_dimen">64dp</dimen>
 </resources>
