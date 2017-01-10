@@ -25,7 +25,6 @@ import com.lytefast.flexinput.fragment.CameraFragment;
 import com.lytefast.flexinput.fragment.CameraFragment.PhotoTakenCallback;
 import com.lytefast.flexinput.fragment.FilesFragment;
 import com.lytefast.flexinput.fragment.PhotosFragment;
-import com.lytefast.flexinput.fragment.RecyclerViewFragment;
 import com.lytefast.flexinput.model.Attachment;
 
 import java.io.File;
