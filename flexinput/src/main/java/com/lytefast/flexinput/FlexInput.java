@@ -21,10 +21,13 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.lytefast.flexinput.fragment.CameraFragment;
+import com.lytefast.flexinput.fragment.CameraFragment.PhotoTakenCallback;
 import com.lytefast.flexinput.fragment.PhotosFragment;
 import com.lytefast.flexinput.fragment.RecyclerViewFragment;
 import com.lytefast.flexinput.model.Attachment;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -57,6 +60,8 @@ public class FlexInput extends RelativeLayout {
   private InputListener inputListener;
 
   private PhotosFragment photosFragment;
+  private CameraFragment cameraFragment;
+  private FileManager fileManager;
 
 
   public FlexInput(Context context) {
@@ -120,6 +125,12 @@ public class FlexInput extends RelativeLayout {
     return this;
   }
 
+  public FlexInput setFileManager(@NonNull final FileManager fileManager) {
+    this.fileManager = fileManager;
+    return this;
+  }
+
+
   /**
    * Gets the example string attribute value.
    *
@@ -154,8 +165,12 @@ public class FlexInput extends RelativeLayout {
           case TAB_PHOTOS:
             photosFragment = new PhotosFragment();
             return photosFragment;
-          case TAB_FILES:
           case TAB_CAMERA:
+            cameraFragment = new CameraFragment();
+            cameraFragment.setPhotoTakenCallback(cameraPhotoTakenCallback);
+            cameraFragment.setFileManager(fileManager);
+            return cameraFragment;
+          case TAB_FILES:
             return new RecyclerViewFragment();
         }
       }
@@ -272,10 +287,6 @@ public class FlexInput extends RelativeLayout {
     }
   }
 
-  void onAddFile() {
-    // TODO: open file browser
-  }
-
   private void hideEmojiTray() {
     emojiContainer.setVisibility(GONE);
     emojiBtn.setImageResource(R.drawable.ic_insert_emoticon_24dp);
@@ -286,4 +297,18 @@ public class FlexInput extends RelativeLayout {
     keyboardManager.requestHide();
     emojiBtn.setImageResource(R.drawable.ic_keyboard_24dp);
   }
+
+  private final PhotoTakenCallback cameraPhotoTakenCallback = new PhotoTakenCallback() {
+    @Override
+    public void onPhotoTaken(final File photoFile) {
+      post(new Runnable() {
+        @Override
+        public void run() {
+          onAddToggle();
+          // TODO save photo
+          // TODO invalidate photo picker
+        }
+      });
+    }
+  };
 }
