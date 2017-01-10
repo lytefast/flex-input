@@ -160,9 +160,7 @@ public class CameraFragment extends Fragment {
   };
 
   private void addToMediaStore(final File photo) {
-    Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-    Uri photoUri = Uri.fromFile(photo);
-    mediaScanIntent.setData(photoUri);
+    Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(photo));
     getContext().sendBroadcast(mediaScanIntent);
     Log.d(TAG, "Photo added to MediaStore: " + photo.getName());
   }

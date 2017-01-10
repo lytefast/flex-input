@@ -23,8 +23,8 @@ import android.widget.Toast;
 
 import com.lytefast.flexinput.fragment.CameraFragment;
 import com.lytefast.flexinput.fragment.CameraFragment.PhotoTakenCallback;
+import com.lytefast.flexinput.fragment.FilesFragment;
 import com.lytefast.flexinput.fragment.PhotosFragment;
-import com.lytefast.flexinput.fragment.RecyclerViewFragment;
 import com.lytefast.flexinput.model.Attachment;
 
 import java.io.File;
@@ -59,6 +59,7 @@ public class FlexInput extends RelativeLayout {
   private KeyboardManager keyboardManager;
   private InputListener inputListener;
 
+  private FilesFragment filesFragment;
   private PhotosFragment photosFragment;
   private CameraFragment cameraFragment;
   private FileManager fileManager;
@@ -162,6 +163,8 @@ public class FlexInput extends RelativeLayout {
         switch (position) {
           default:
             return null;
+          case TAB_FILES:
+            return filesFragment = new FilesFragment();
           case TAB_PHOTOS:
             photosFragment = new PhotosFragment();
             return photosFragment;
@@ -170,8 +173,6 @@ public class FlexInput extends RelativeLayout {
             cameraFragment.setPhotoTakenCallback(cameraPhotoTakenCallback);
             cameraFragment.setFileManager(fileManager);
             return cameraFragment;
-          case TAB_FILES:
-            return new RecyclerViewFragment();
         }
       }
 
@@ -227,16 +228,23 @@ public class FlexInput extends RelativeLayout {
       return;  // Nothing to do here
     }
 
-    final List<Attachment> attachments;
+    // TODO move selection into it's own managed class so we can keep order
+    final List<Attachment> attachments = new ArrayList<>(4);
     if (photosFragment != null) {
-      attachments = new ArrayList<Attachment>(photosFragment.getSelectedAttachments());
+      attachments.addAll(photosFragment.getSelectedAttachments());
 
       Toast.makeText(getContext(),
           photosFragment.getSelectedAttachments().size() + " photos selected", Toast.LENGTH_SHORT)
           .show();
       photosFragment.clearSelectedAttachments();
-    } else {
-      attachments = Collections.EMPTY_LIST;
+    }
+
+    if (filesFragment != null ){
+      attachments.addAll(filesFragment.getSelectedAttachments());
+      Toast.makeText(getContext(),
+          filesFragment.getSelectedAttachments().size() + " files selected", Toast.LENGTH_SHORT)
+          .show();
+      filesFragment.clearSelectedAttachments();
     }
 
     inputListener.onSend(textEt.getText(), attachments);

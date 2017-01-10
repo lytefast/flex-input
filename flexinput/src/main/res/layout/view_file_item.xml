@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/thumb_iv"
+        android:layout_width="@dimen/file_icon_dimen"
+        android:layout_height="@dimen/file_icon_dimen"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_file_24dp"/>
+
+    <TextView
+        android:id="@+id/file_name_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/thumb_iv"
+        android:layout_toRightOf="@id/thumb_iv"
+        android:text="filename"
+        android:maxLines="1"/>
+
+    <TextView
+        android:id="@+id/file_path_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/thumb_iv"
+        android:layout_toRightOf="@id/thumb_iv"
+        android:text="file path"
+        android:textSize="10sp"
+        android:layout_below="@id/file_name_tv"/>
+
+</RelativeLayout>
