@@ -1,5 +1,6 @@
 package com.lytefast.flexinput.fragment;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -12,8 +13,12 @@ import android.view.ViewGroup;
 
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.adapters.FileListAdapter;
+import com.lytefast.flexinput.model.Attachment;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Set;
 
 
 /**
@@ -21,7 +26,7 @@ import java.io.File;
  *
  * @author Sam Shih
  */
-public class FilesFragment extends Fragment {
+public class FilesFragment extends Fragment implements AttachmentSelector<Attachment> {
   private RecyclerView recyclerView;
 
   /**
@@ -56,5 +61,22 @@ public class FilesFragment extends Fragment {
     File downloadFolder =
         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
     recyclerView.setAdapter(new FileListAdapter(getContext().getContentResolver(), downloadFolder));
+  }
+
+
+  @Override
+  public Collection<Attachment> getSelectedAttachments() {
+    Set<File> files = ((FileListAdapter) recyclerView.getAdapter()).getSelectedItems();
+
+    ArrayList<Attachment> attachments = new ArrayList<>(files.size());
+    for (File f : files) {
+      attachments.add(new Attachment(f.hashCode(), Uri.fromFile(f), f.getName()));
+    }
+    return attachments;
+  }
+
+  @Override
+  public void clearSelectedAttachments() {
+    ((FileListAdapter) recyclerView.getAdapter()).clearSelectedItems();
   }
 }

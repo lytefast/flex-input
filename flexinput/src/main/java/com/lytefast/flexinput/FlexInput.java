@@ -228,16 +228,23 @@ public class FlexInput extends RelativeLayout {
       return;  // Nothing to do here
     }
 
-    final List<Attachment> attachments;
+    // TODO move selection into it's own managed class so we can keep order
+    final List<Attachment> attachments = new ArrayList<>(4);
     if (photosFragment != null) {
-      attachments = new ArrayList<Attachment>(photosFragment.getSelectedAttachments());
+      attachments.addAll(photosFragment.getSelectedAttachments());
 
       Toast.makeText(getContext(),
           photosFragment.getSelectedAttachments().size() + " photos selected", Toast.LENGTH_SHORT)
           .show();
       photosFragment.clearSelectedAttachments();
-    } else {
-      attachments = Collections.EMPTY_LIST;
+    }
+
+    if (filesFragment != null ){
+      attachments.addAll(filesFragment.getSelectedAttachments());
+      Toast.makeText(getContext(),
+          filesFragment.getSelectedAttachments().size() + " files selected", Toast.LENGTH_SHORT)
+          .show();
+      filesFragment.clearSelectedAttachments();
     }
 
     inputListener.onSend(textEt.getText(), attachments);
