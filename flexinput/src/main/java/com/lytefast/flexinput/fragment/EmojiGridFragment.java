@@ -28,6 +28,8 @@ import butterknife.Unbinder;
  */
 public class EmojiGridFragment extends Fragment {
 
+  public static final String EMOJI_CATEGORY = "emoji_category";
+
   @BindView(R2.id.list) RecyclerView emojiGrid;
   private Unbinder unbinder;
 
@@ -46,6 +48,10 @@ public class EmojiGridFragment extends Fragment {
     emojiGrid.setLayoutManager(new GridLayoutManager(getContext(), numFittedColumns));
     emojiGrid.setAdapter(new Adapter());
 
+    if (savedInstanceState != null) {
+      emojiCategory = savedInstanceState.getParcelable(EMOJI_CATEGORY);
+    }
+
     return rootView;
   }
 
@@ -53,6 +59,12 @@ public class EmojiGridFragment extends Fragment {
   public void onDestroyView() {
     unbinder.unbind();
     super.onDestroyView();
+  }
+
+  @Override
+  public void onSaveInstanceState(final Bundle outState) {
+    super.onSaveInstanceState(outState);
+    outState.putParcelable(EMOJI_CATEGORY, emojiCategory);
   }
 
   public EmojiGridFragment with(final Emoji.EmojiCategory emojiCategory) {
