@@ -18,6 +18,7 @@ import com.lytefast.flexinput.FlexInput;
 import com.lytefast.flexinput.InputListener;
 import com.lytefast.flexinput.KeyboardManager;
 import com.lytefast.flexinput.SimpleFileManager;
+import com.lytefast.flexinput.fragment.EmojiCategoryPagerFragment;
 import com.lytefast.flexinput.model.Attachment;
 
 import java.util.ArrayList;
@@ -66,6 +67,11 @@ public class MainFragment extends Fragment {
 
     final InputMethodManager imm =
         (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+    if (savedInstanceState == null) {
+      // Only create fragment on first load
+      flexInput.setEmojiFragment(getChildFragmentManager(), new EmojiCategoryPagerFragment());
+    }
 
     flexInput
         .initContentPages(getFragmentManager())

@@ -30,7 +30,6 @@ import com.lytefast.flexinput.model.Attachment;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -85,10 +84,10 @@ public class FlexInput extends RelativeLayout {
     inflate(getContext(), R.layout.fancy_input_wrapper, this);
     ButterKnife.bind(this);
 
-    initAttributes(attrs, defStyle);
-
     setFocusable(true);
     setFocusableInTouchMode(true);
+
+    initAttributes(attrs, defStyle);
   }
 
   private void initAttributes(final AttributeSet attrs, final int defStyle) {
@@ -122,6 +121,27 @@ public class FlexInput extends RelativeLayout {
     }
   }
 
+  /**
+   * Set the custom emoji {@link Fragment} for the input.
+   *
+   * Note that this should only be set once for the life of the containing fragment. Make sure to
+   * check the <code>savedInstanceState</code> before creating and saving another fragment.
+   *
+   * @param childFragmentManager
+   * @param emojiFragment
+   *
+   * @return
+   */
+  //region Functional Setters
+  public FlexInput setEmojiFragment(
+      final FragmentManager childFragmentManager, final Fragment emojiFragment) {
+    childFragmentManager
+        .beginTransaction()
+        .replace(R.id.emoji_container, emojiFragment)
+        .commit();
+    return this;
+  }
+
   public FlexInput setInputListener(@NonNull final InputListener inputListener) {
     this.inputListener = inputListener;
     return this;
@@ -131,6 +151,7 @@ public class FlexInput extends RelativeLayout {
     this.fileManager = fileManager;
     return this;
   }
+  //endregion
 
 
   /**
