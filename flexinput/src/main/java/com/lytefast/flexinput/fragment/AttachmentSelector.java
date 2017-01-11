@@ -1,7 +1,5 @@
 package com.lytefast.flexinput.fragment;
 
-import com.lytefast.flexinput.model.Photo;
-
 import java.util.Collection;
 
 
