@@ -28,6 +28,8 @@
             android:layout_weight="1"
             android:focusableInTouchMode="true"
             android:focusable="true"
+            android:maxLines="2"
+            android:inputType="textShortMessage|textAutoComplete|textMultiLine"
             android:contentDescription="Message text entry"
             android:hint="Send a message"/>
 
@@ -100,7 +102,7 @@
         </android.support.design.widget.TabLayout>
     </RelativeLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/emoji_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/default_keyboard_height"
@@ -108,31 +110,6 @@
         android:orientation="vertical"
         android:visibility="gone"
         tools:background="#6b7ba1"
-        tools:visibility="gone">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Recent"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_image_24dp"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_image_24dp"/>
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_image_24dp"/>
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_image_24dp"/>
-
-    </LinearLayout>
+        tools:visibility="gone" />
 
 </RelativeLayout>
