@@ -1,6 +1,7 @@
 package com.lytefast.flexinput.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -28,7 +29,7 @@ import butterknife.Unbinder;
  * @author Sam Shih
  */
 
-public class EmojiCategoryPagerFragment extends Fragment {
+public abstract class EmojiCategoryPagerFragment extends Fragment {
 
   @BindView(R2.id.page_tabs) TabLayout pageTabs;
   @BindView(R2.id.view_pager) ViewPager viewPager;
@@ -49,18 +50,11 @@ public class EmojiCategoryPagerFragment extends Fragment {
       emojis[i] = sampleEmoji;
     }
 
-    initFrom(
-        Arrays.asList(
-            new Emoji.EmojiCategory("test", R.drawable.ic_audiotrack_light,
-                Arrays.asList(emojis)
-            ),
-            new Emoji.EmojiCategory("test2", R.drawable.ic_tv_light,
-                Arrays.asList(new Emoji("✊", new String[] {"fist"}))
-            )
-        )
-    );
+    initFrom(buildEmojiCategoryData(emojis));
     return rootView;
   }
+
+  public abstract List<Emoji.EmojiCategory> buildEmojiCategoryData(final Emoji[] emojis);
 
   @Override
   public void onDestroyView() {
