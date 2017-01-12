@@ -31,6 +31,9 @@ import butterknife.Unbinder;
 /**
  * Default fragment to display various categories of unicode emojis.
  *
+ * Any overriding classes should trigger {@link com.lytefast.flexinput.events.ItemClickedEvent}
+ * with an {@link Emoji} to ensure proper appending of emojis to the edit text.
+ *
  * @author Sam Shih
  */
 

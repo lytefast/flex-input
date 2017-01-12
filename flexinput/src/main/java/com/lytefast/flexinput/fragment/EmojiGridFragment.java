@@ -16,6 +16,9 @@ import android.widget.Toast;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.emoji.Emoji;
+import com.lytefast.flexinput.events.ItemClickedEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -112,6 +115,13 @@ public class EmojiGridFragment extends Fragment {
             return true;
           }
         });
+
+        itemView.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(final View v) {
+            EventBus.getDefault().post(new ItemClickedEvent<Emoji>(emoji));
+          }
+        });
       }
     }
   }
@@ -122,4 +132,5 @@ public class EmojiGridFragment extends Fragment {
         (int) (displayMetrics.widthPixels / resources.getDimension(R.dimen.emoji_grid_item_size));
     return numCols;
   }
+
 }

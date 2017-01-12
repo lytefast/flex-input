@@ -22,11 +22,17 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.lytefast.flexinput.emoji.Emoji;
+import com.lytefast.flexinput.events.ItemClickedEvent;
 import com.lytefast.flexinput.fragment.CameraFragment;
 import com.lytefast.flexinput.fragment.CameraFragment.PhotoTakenCallback;
 import com.lytefast.flexinput.fragment.FilesFragment;
 import com.lytefast.flexinput.fragment.PhotosFragment;
 import com.lytefast.flexinput.model.Attachment;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -119,6 +125,18 @@ public class FlexInput extends RelativeLayout {
     } finally {
       a.recycle();
     }
+  }
+
+  @Override
+  protected void onAttachedToWindow() {
+    super.onAttachedToWindow();
+    EventBus.getDefault().register(this);
+  }
+
+  @Override
+  protected void onDetachedFromWindow() {
+    EventBus.getDefault().unregister(this);
+    super.onDetachedFromWindow();
   }
 
   /**
@@ -352,4 +370,15 @@ public class FlexInput extends RelativeLayout {
       });
     }
   };
+
+
+  //region Events
+
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void handleEmojiClick(ItemClickedEvent<Emoji> event) {
+    // TODO figure out some way to allow custom spannables (e.g. fresco's DraweeSpan)
+    textEt.getText().append(event.item.strValue);
+  }
+
+  //endregion
 }
