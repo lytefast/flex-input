@@ -7,22 +7,22 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.lytefast.flexinput.R;
-import com.lytefast.flexinput.adapters.OnItemClickListener;
 import com.lytefast.flexinput.adapters.PhotoCursorAdapter;
 import com.lytefast.flexinput.events.ClearAttachmentsEvent;
 import com.lytefast.flexinput.events.ItemClickedEvent;
 import com.lytefast.flexinput.model.Photo;
+import com.lytefast.flexinput.utils.SelectionCoordinator;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.util.Collection;
+import java.util.ArrayList;
 
 
 /**
@@ -79,23 +79,32 @@ public class PhotosFragment extends Fragment {
             MediaStore.Images.Media.DISPLAY_NAME},
         null, null, MediaStore.Images.Media.DATE_ADDED + " DESC");
     if (cursor != null) {
-      final PhotoCursorAdapter adapter = new PhotoCursorAdapter(getContext().getContentResolver(), cursor);
+      final PhotoCursorAdapter adapter = new PhotoCursorAdapter(
+          getContext().getContentResolver(), cursor, selectionCoordinator);
       recyclerView.setAdapter(adapter);
       recyclerView.invalidateItemDecorations();
-
-      adapter.setOnItemClickListener(new OnItemClickListener<Photo>() {
-        @Override
-        public void onItemClicked(final Photo item) {
-          Toast.makeText(getContext(),
-              "Toggle[" + item.id + "]: " + item.displayName, Toast.LENGTH_SHORT).show();
-          EventBus.getDefault().post(new ItemClickedEvent<>(item));
-        }
-      });
     }
   }
 
   @Subscribe
   void handleClearAttachmentEvent(ClearAttachmentsEvent evt) {
-    ((PhotoCursorAdapter) recyclerView.getAdapter()).clearSelectedItems();
+    ArrayList<Integer> oldSelection = selectionCoordinator.clearSelectedItems();
+    for (int position: oldSelection) {
+      recyclerView.getAdapter().notifyItemChanged(position);
+    }
   }
+
+  private final SelectionCoordinator<Photo> selectionCoordinator = new SelectionCoordinator<Photo>() {
+    @Override
+    public void onItemSelected(final Photo item) {
+      EventBus.getDefault().post(new ItemClickedEvent<>(item));
+      Log.d(getClass().getCanonicalName(), "Select[" + item.id + "]: " + item.displayName);
+    }
+
+    @Override
+    public void onItemUnselected(final Photo item) {
+      EventBus.getDefault().post(new ItemClickedEvent<>(item));
+      Log.d(getClass().getCanonicalName(), "Remove[" + item.id + "]: " + item.displayName);
+    }
+  };
 }

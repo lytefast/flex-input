@@ -8,24 +8,23 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.adapters.FileListAdapter;
-import com.lytefast.flexinput.adapters.OnItemClickListener;
 import com.lytefast.flexinput.events.ClearAttachmentsEvent;
 import com.lytefast.flexinput.events.ItemClickedEvent;
 import com.lytefast.flexinput.model.Attachment;
+import com.lytefast.flexinput.utils.SelectionCoordinator;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Set;
 
 
 /**
@@ -74,14 +73,8 @@ public class FilesFragment extends Fragment {
   private void loadDownloadFolder() {
     File downloadFolder =
         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-    FileListAdapter adapter = new FileListAdapter(getContext().getContentResolver(), downloadFolder);
-    adapter.setOnItemClickListener(new OnItemClickListener<File>() {
-      @Override
-      public void onItemClicked(final File item) {
-          EventBus.getDefault().post(new ItemClickedEvent<>(transformFileToAttachment(item)));
-      }
-    });
-    recyclerView.setAdapter(adapter);
+    recyclerView.setAdapter(new FileListAdapter(
+        getContext().getContentResolver(), downloadFolder, selectionCoordinator));
   }
 
   @NonNull
@@ -91,6 +84,23 @@ public class FilesFragment extends Fragment {
 
   @Subscribe
   void handleClearAttachmentEvent(ClearAttachmentsEvent evt) {
-    ((FileListAdapter) recyclerView.getAdapter()).clearSelectedItems();
+    ArrayList<Integer> oldSelection = selectionCoordinator.clearSelectedItems();
+    for (int position: oldSelection) {
+      recyclerView.getAdapter().notifyItemChanged(position);
+    }
   }
+
+  private final SelectionCoordinator<File> selectionCoordinator = new SelectionCoordinator<File>() {
+    @Override
+    public void onItemSelected(final File item) {
+      EventBus.getDefault().post(new ItemClickedEvent<>(transformFileToAttachment(item)));
+      Log.d(getClass().getCanonicalName(), "Select: " + item.getPath());
+    }
+
+    @Override
+    public void onItemUnselected(final File item) {
+      EventBus.getDefault().post(new ItemClickedEvent<>(transformFileToAttachment(item)));
+      Log.d(getClass().getCanonicalName(), "Remove: " + item.getPath());
+    }
+  };
 }

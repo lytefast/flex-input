@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -18,6 +17,7 @@ import android.widget.TextView;
 
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
+import com.lytefast.flexinput.utils.SelectionCoordinator;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -27,7 +27,6 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,16 +39,17 @@ import butterknife.ButterKnife;
  */
 public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHolder> {
 
-  private final ArrayMap<File, Integer> selectedItemPositionMap;
+  private final SelectionCoordinator<File> selectionCoordinator;
 
-  @Nullable private OnItemClickListener<File> onItemClickListener;
   private ContentResolver contentResolver;
   private final List<File> files;
 
 
-  public FileListAdapter(ContentResolver contentResolver, @NonNull File root) {
+  public FileListAdapter(ContentResolver contentResolver, @NonNull File root,
+                         final SelectionCoordinator<File> selectionCoordinator) {
     this.contentResolver = contentResolver;
     files = flattenFileList(root);
+    this.selectionCoordinator = selectionCoordinator;
     Collections.sort(files, new Comparator<File>() {
       @Override
       public int compare(final File o1, final File o2) {
@@ -57,8 +57,6 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
         return Long.valueOf(o2.lastModified()).compareTo(o1.lastModified());
       }
     });
-
-    this.selectedItemPositionMap = new ArrayMap<>(4);
   }
 
   @Override
@@ -78,18 +76,6 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
     return files.size();
   }
 
-  public void clearSelectedItems() {
-    ArrayList<Integer> oldSelection = new ArrayList<>(selectedItemPositionMap.values());
-    selectedItemPositionMap.clear();
-    for (int position: oldSelection) {
-      notifyItemChanged(position);
-    }
-  }
-
-  public void setOnItemClickListener(final OnItemClickListener<File> onItemClickListener) {
-    this.onItemClickListener = onItemClickListener;
-  }
-
   protected class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     @BindView(R2.id.thumb_iv) ImageView thumbIv;
@@ -107,7 +93,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
 
     public void bind(final File file) {
       this.file = file;
-      setSelected(selectedItemPositionMap.containsKey(file));
+      setSelected(selectionCoordinator.isSelected(file));
 
       fileNameTv.setText(file.getName());
       filePathTV.setText(file.getPath());
@@ -170,15 +156,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
 
     @Override
     public void onClick(final View v) {
-      if (onItemClickListener != null) {
-        onItemClickListener.onItemClicked(file);
-      }
-      if (selectedItemPositionMap.remove(file) == null) {
-        selectedItemPositionMap.put(file, getAdapterPosition());
-        setSelected(true);
-      } else {
-        setSelected(false);
-      }
+      setSelected(selectionCoordinator.toggleItem(file, getAdapterPosition()));
     }
   }
 
