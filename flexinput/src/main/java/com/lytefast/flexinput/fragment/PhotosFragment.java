@@ -23,6 +23,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 
 /**
@@ -88,10 +89,7 @@ public class PhotosFragment extends Fragment {
 
   @Subscribe
   void handleClearAttachmentEvent(ClearAttachmentsEvent evt) {
-    ArrayList<Integer> oldSelection = selectionCoordinator.clearSelectedItems();
-    for (int position: oldSelection) {
-      recyclerView.getAdapter().notifyItemChanged(position);
-    }
+    selectionCoordinator.clearSelectedItems();
   }
 
   private final SelectionCoordinator<Photo> selectionCoordinator = new SelectionCoordinator<Photo>() {

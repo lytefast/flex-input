@@ -84,10 +84,7 @@ public class FilesFragment extends Fragment {
 
   @Subscribe
   void handleClearAttachmentEvent(ClearAttachmentsEvent evt) {
-    ArrayList<Integer> oldSelection = selectionCoordinator.clearSelectedItems();
-    for (int position: oldSelection) {
-      recyclerView.getAdapter().notifyItemChanged(position);
-    }
+    selectionCoordinator.clearSelectedItems();
   }
 
   private final SelectionCoordinator<File> selectionCoordinator = new SelectionCoordinator<File>() {

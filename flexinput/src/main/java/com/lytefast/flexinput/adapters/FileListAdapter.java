@@ -49,7 +49,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
                          final SelectionCoordinator<File> selectionCoordinator) {
     this.contentResolver = contentResolver;
     files = flattenFileList(root);
-    this.selectionCoordinator = selectionCoordinator;
+    this.selectionCoordinator = selectionCoordinator.bind(this);
     Collections.sort(files, new Comparator<File>() {
       @Override
       public int compare(final File o1, final File o2) {

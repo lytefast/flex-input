@@ -36,7 +36,7 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
                             final SelectionCoordinator<Photo> selectionCoordinator) {
     this.contentResolver = contentResolver;
     this.cursor = cursor;
-    this.selectionCoordinator = selectionCoordinator;
+    this.selectionCoordinator = selectionCoordinator.bind(this);
 
     this.colId = cursor.getColumnIndex(MediaStore.Images.Media._ID);
     this.colData = cursor.getColumnIndex(MediaStore.Images.Media.DATA);

@@ -1,6 +1,7 @@
 package com.lytefast.flexinput.utils;
 
 import android.support.v4.util.ArrayMap;
+import android.support.v7.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -17,9 +18,15 @@ public class SelectionCoordinator<T> {
    * Maintains a mapping from the selected item to the position in the adapter.
    */
   private final ArrayMap<T, Integer> selectedItemPositionMap;
+  private RecyclerView.Adapter<?> adapter;
 
   public SelectionCoordinator() {
     this.selectedItemPositionMap = new ArrayMap<>(4);
+  }
+
+  public SelectionCoordinator bind(RecyclerView.Adapter<?> adapter) {
+    this.adapter = adapter;
+    return this;
   }
 
   public Set<T> getSelectedItems() {
@@ -33,6 +40,9 @@ public class SelectionCoordinator<T> {
   public ArrayList<Integer> clearSelectedItems() {
     ArrayList<Integer> oldSelection = new ArrayList<>(selectedItemPositionMap.values());
     selectedItemPositionMap.clear();
+    for (int position: oldSelection) {
+      adapter.notifyItemChanged(position);
+    }
     return oldSelection;
   }
 
