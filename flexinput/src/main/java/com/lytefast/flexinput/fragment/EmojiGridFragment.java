@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
@@ -100,9 +101,17 @@ public class EmojiGridFragment extends Fragment {
         textView = (TextView) itemView;
       }
 
-      public void bind(Emoji emoji) {
+      public void bind(final Emoji emoji) {
         textView.setText(emoji.strValue);
         textView.setContentDescription(emoji.aliases[0]);
+
+        itemView.setOnLongClickListener(new View.OnLongClickListener() {
+          @Override
+          public boolean onLongClick(final View v) {
+            Toast.makeText(getContext(), emoji.aliases[0], Toast.LENGTH_SHORT).show();
+            return true;
+          }
+        });
       }
     }
   }
