@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.emoji.Emoji;
+import com.lytefast.flexinput.utils.WidgetUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -83,21 +84,18 @@ public abstract class EmojiCategoryPagerFragment extends Fragment {
   }
 
   private void setIcons(final List<Emoji.EmojiCategory> emojiCategories) {
-    ColorStateList colors;
-    if (Build.VERSION.SDK_INT >= 23) {
-      colors = getResources().getColorStateList(R.color.tab_icon_color_selector, getContext().getTheme());
-    } else {
-      colors = getResources().getColorStateList(R.color.tab_icon_color_selector);
-    }
+
+    ColorStateList iconColors = WidgetUtils.getColorStateList(getContext(),
+                                                              R.color.tab_icon_color_selector);
 
     for (int i = 0; i < emojiCategories.size(); i++) {
       TabLayout.Tab tab = pageTabs.getTabAt(i)
           .setIcon(emojiCategories.get(i).icon);
-      Drawable icon = tab.getIcon();
 
+      Drawable icon = tab.getIcon();
       if (icon != null) {
         icon = DrawableCompat.wrap(icon);
-        DrawableCompat.setTintList(icon, colors);
+        DrawableCompat.setTintList(icon, iconColors);
       }
     }
   }
