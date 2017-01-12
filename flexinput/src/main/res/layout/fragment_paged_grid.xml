@@ -3,7 +3,9 @@
               xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:paddingLeft="4dp"
+              android:paddingRight="4dp">
 
     <android.support.design.widget.TabLayout
             android:id="@+id/page_tabs"
