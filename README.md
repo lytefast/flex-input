@@ -7,7 +7,9 @@ Android text/emoji/media input field
 
 # Work in Progress
 - [x] Implement Photos Tab
-- [ ] Implement Camera Tab
-- [ ] Implement Files Tab
+- [x] Implement Camera Tab
+- [x] Implement Files Tab
 - [ ] Design attachment callback interface
 - [ ] Implement emoji
+  - [x] Display unicode
+  - [ ] allow selection and entry
