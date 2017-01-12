@@ -1,11 +1,15 @@
 package com.lytefast.flexinput.fragment;
 
+import android.content.res.ColorStateList;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,8 +79,26 @@ public abstract class EmojiCategoryPagerFragment extends Fragment {
       }
     });
 
+    setIcons(emojiCategories);
+  }
+
+  private void setIcons(final List<Emoji.EmojiCategory> emojiCategories) {
+    ColorStateList colors;
+    if (Build.VERSION.SDK_INT >= 23) {
+      colors = getResources().getColorStateList(R.color.tab_icon_color_selector, getContext().getTheme());
+    } else {
+      colors = getResources().getColorStateList(R.color.tab_icon_color_selector);
+    }
+
     for (int i = 0; i < emojiCategories.size(); i++) {
-      pageTabs.getTabAt(i).setIcon(emojiCategories.get(i).icon);
+      TabLayout.Tab tab = pageTabs.getTabAt(i)
+          .setIcon(emojiCategories.get(i).icon);
+      Drawable icon = tab.getIcon();
+
+      if (icon != null) {
+        icon = DrawableCompat.wrap(icon);
+        DrawableCompat.setTintList(icon, colors);
+      }
     }
   }
 }
