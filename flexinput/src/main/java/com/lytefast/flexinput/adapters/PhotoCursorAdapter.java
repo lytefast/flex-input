@@ -93,10 +93,10 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
 
   public void clearSelectedItems() {
     ArrayList<Integer> oldSelection = new ArrayList<>(selectedItemPositionMap.values());
+    selectedItemPositionMap.clear();
     for (int position: oldSelection) {
       notifyItemChanged(position);
     }
-    selectedItemPositionMap.clear();
   }
 
   public void setOnItemClickListener(final OnItemClickListener<Photo> onItemClickListener) {

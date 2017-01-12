@@ -85,10 +85,10 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
 
   public void clearSelectedItems() {
     ArrayList<Integer> oldSelection = new ArrayList<>(selectedItemPositionMap.values());
+    selectedItemPositionMap.clear();
     for (int position: oldSelection) {
       notifyItemChanged(position);
     }
-    selectedItemPositionMap.clear();
   }
 
   public void setOnItemClickListener(final OnItemClickListener<File> onItemClickListener) {
