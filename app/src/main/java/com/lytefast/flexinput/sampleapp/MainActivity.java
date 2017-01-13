@@ -18,6 +18,8 @@ public class MainActivity extends AppCompatActivity {
     // This should be in the Application class so it only gets invoked once
     Fresco.initialize(this);
 
+    // Play around with the below to see how it looks like in each theme
+    // AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
   }
 }

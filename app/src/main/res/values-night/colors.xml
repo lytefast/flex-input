@@ -3,5 +3,7 @@
     <color name="colorPrimaryDark">#b2d7ff</color>
 
     <color name="colorHint">#37474f</color>
+
+    <color name="content_tab_background_alpha_80">#cc222222</color>
     <color name="highlight_alpha_50">#80222222</color>
 </resources>

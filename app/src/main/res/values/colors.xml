@@ -10,6 +10,6 @@
 
     <color name="black_alpha_25">#20000000</color>
 
-    <color name="white_alpha_50">#80ffffff</color>
+    <color name="content_tab_background_alpha_80">#ccDDDDDD</color>
     <color name="highlight_alpha_20">#80888888</color>
 </resources>

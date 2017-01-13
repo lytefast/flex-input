@@ -1,6 +1,7 @@
 package com.lytefast.flexinput;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -11,10 +12,10 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageButton;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -29,6 +30,7 @@ import com.lytefast.flexinput.fragment.CameraFragment.PhotoTakenCallback;
 import com.lytefast.flexinput.fragment.FilesFragment;
 import com.lytefast.flexinput.fragment.PhotosFragment;
 import com.lytefast.flexinput.model.Attachment;
+import com.lytefast.flexinput.utils.WidgetUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -206,6 +208,7 @@ public class FlexInput extends RelativeLayout {
   public FlexInput initContentPages(final FragmentPagerAdapter pagerAdapter) {
     addContentPager.setAdapter(pagerAdapter);
     synchronizeTabAndPagerEvents();
+    initIconColors();
     return this;
   }
 
@@ -240,6 +243,21 @@ public class FlexInput extends RelativeLayout {
       @Override
       public void onPageScrollStateChanged(final int state) { }
     });
+  }
+
+   private void initIconColors() {
+    ColorStateList iconColors = WidgetUtils.getColorStateList(getContext(),
+                                                              R.color.tab_icon_color_selector);
+
+    for (int i = 0; i < addContentTabs.getTabCount(); i++) {
+      TabLayout.Tab tab = addContentTabs.getTabAt(i);
+
+      Drawable icon = tab.getIcon();
+      if (icon != null) {
+        icon = DrawableCompat.wrap(icon);
+        DrawableCompat.setTintList(icon, iconColors);
+      }
+    }
   }
 
   @OnClick(R2.id.send_btn)
