@@ -95,7 +95,7 @@ public class FlexInput extends RelativeLayout {
 
   //region Initialization Methods
   private void init(AttributeSet attrs, int defStyle) {
-    inflate(getContext(), R.layout.fancy_input_wrapper, this);
+    inflate(getContext(), R.layout.flex_input_widget, this);
     ButterKnife.bind(this);
 
     setFocusable(true);
