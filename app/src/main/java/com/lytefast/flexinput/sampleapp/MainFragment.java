@@ -109,11 +109,10 @@ public class MainFragment extends Fragment {
     @Override
     public void onSend(final Editable data, List<? extends Attachment> attachments) {
       msgAdapter.addMessage(data);
-      msgAdapter.addMessage(Editable.Factory.getInstance().newEditable(
-          String.format("%d Attachments found", attachments.size())));
-      for (Attachment a : attachments) {
+
+      for (int i = 0; i < attachments.size(); i++) {
         msgAdapter.addMessage(Editable.Factory.getInstance().newEditable(
-            "> Attachment - " + a.displayName));
+            String.format("[%d] Attachment - %s", i, attachments.get(i).displayName)));
       }
     }
   };
