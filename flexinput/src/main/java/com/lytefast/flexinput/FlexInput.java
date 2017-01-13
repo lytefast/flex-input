@@ -1,5 +1,6 @@
 package com.lytefast.flexinput;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
@@ -93,6 +94,7 @@ public class FlexInput extends RelativeLayout {
     init(attrs, defStyle);
   }
 
+  //region Initialization Methods
   private void init(AttributeSet attrs, int defStyle) {
     inflate(getContext(), R.layout.fancy_input_wrapper, this);
     ButterKnife.bind(this);
@@ -101,13 +103,6 @@ public class FlexInput extends RelativeLayout {
     setFocusableInTouchMode(true);
 
     initAttributes(attrs, defStyle);
-
-    initAttachmentPreview();
-  }
-
-  private void initAttachmentPreview() {
-    attachmentPreviewAdapter = new AttachmentPreviewAdapter(getContext().getContentResolver());
-    attachmentPreviewList.setAdapter(attachmentPreviewAdapter);
   }
 
   private void initAttributes(final AttributeSet attrs, final int defStyle) {
@@ -146,6 +141,7 @@ public class FlexInput extends RelativeLayout {
       a.recycle();
     }
   }
+  //endregion
 
   @Override
   protected void onAttachedToWindow() {
@@ -182,6 +178,22 @@ public class FlexInput extends RelativeLayout {
 
   public FlexInput setInputListener(@NonNull final InputListener inputListener) {
     this.inputListener = inputListener;
+    return this;
+  }
+
+  /**
+   * Set an {@link android.support.v7.widget.RecyclerView.Adapter} implementation that knows how render {@link Attachment}s.
+   * If this is not set, no attachment preview will be shown.
+   *
+   * @param previewAdapter An adapter that knows how to display {@link Attachment}s
+   *
+   * @return the current instance of {@link FlexInput} for chaining commands
+   *
+   * @see AttachmentPreviewAdapter#AttachmentPreviewAdapter(ContentResolver) for a default implementation of attachment previews
+   */
+  public FlexInput setAttachmentPreviewAdapter(@NonNull final AttachmentPreviewAdapter previewAdapter) {
+    this.attachmentPreviewAdapter = previewAdapter;
+    this.attachmentPreviewList.setAdapter(attachmentPreviewAdapter);
     return this;
   }
 
@@ -284,8 +296,6 @@ public class FlexInput extends RelativeLayout {
       return;  // Nothing to do here
     }
 
-    // TODO move selection into it's own managed class so we can keep order
-    final List<Attachment> attachments = new ArrayList<>(4);
     if (photosFragment != null) {
       photosFragment.clearSelectedAttachments();
     }
