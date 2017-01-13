@@ -1,25 +1,47 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/attachment_preview_list"
+    <LinearLayout
+        android:id="@+id/attachment_preview_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/input_container_margin"
-        android:layout_marginRight="@dimen/input_container_margin"
+        android:layout_margin="@dimen/input_container_margin"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:layout_alignParentTop="true"
-        app:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/view_attachment_preview_item"/>
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/attachment_preview_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/input_container_margin"
+            android:layout_marginRight="@dimen/input_container_margin"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            app:layoutManager="LinearLayoutManager"
+            tools:context="com.lytefast.flexinput.fragment.AttachmentPreviewAdapter"
+            tools:listitem="@layout/view_attachment_preview_item"/>
+
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/attachment_clear_btn"
+            style="@style/Input.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/attachment_preview_list"
+            android:layout_alignParentRight="true"
+            android:contentDescription="Clear attachments"
+            android:src="@drawable/ic_clear_24dp"/>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/main_input_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/input_height"
-        android:layout_below="@id/attachment_preview_list"
         android:orientation="horizontal"
         android:layout_margin="@dimen/input_container_margin"
         android:gravity="center_vertical">
@@ -67,7 +89,6 @@
         android:id="@+id/add_content_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/default_keyboard_height"
-        android:layout_below="@id/main_input_container"
         android:visibility="gone"
         tools:visibility="visible">
 
@@ -118,10 +139,9 @@
         android:id="@+id/emoji_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/default_keyboard_height"
-        android:layout_below="@id/main_input_container"
         android:orientation="vertical"
         android:visibility="gone"
         tools:background="#6b7ba1"
         tools:visibility="gone" />
 
-</RelativeLayout>
+</LinearLayout>

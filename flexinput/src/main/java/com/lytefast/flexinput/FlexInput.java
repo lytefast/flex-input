@@ -23,7 +23,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
 import com.lytefast.flexinput.emoji.Emoji;
@@ -40,8 +39,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,9 +56,11 @@ public class FlexInput extends RelativeLayout {
   public static final int TAB_FILES = 0;
   public static final int TAB_CAMERA = 2;
 
+  @BindView(R2.id.attachment_preview_container) View attachmentPreviewContainer;
   @BindView(R2.id.main_input_container) View inputContainer;
   @BindView(R2.id.add_content_container) View addContentContainer;
   @BindView(R2.id.emoji_container) View emojiContainer;
+
   @BindView(R2.id.attachment_preview_list) RecyclerView attachmentPreviewList;
 
   @BindView(R2.id.text_input) AppCompatEditText textEt;
@@ -129,7 +128,7 @@ public class FlexInput extends RelativeLayout {
       if (a.hasValue(R.styleable.FlexInput_previewBackground)) {
         Drawable backgroundDrawable = a.getDrawable(R.styleable.FlexInput_previewBackground);
         backgroundDrawable.setCallback(this);
-        attachmentPreviewList.setBackground(backgroundDrawable);
+        attachmentPreviewContainer.setBackground(backgroundDrawable);
       }
 
       if (a.hasValue(R.styleable.FlexInput_tabsBackground)) {
@@ -160,9 +159,6 @@ public class FlexInput extends RelativeLayout {
    *
    * Note that this should only be set once for the life of the containing fragment. Make sure to
    * check the <code>savedInstanceState</code> before creating and saving another fragment.
-   *
-   * @param childFragmentManager
-   * @param emojiFragment
    *
    * @return
    */
@@ -296,17 +292,22 @@ public class FlexInput extends RelativeLayout {
       return;  // Nothing to do here
     }
 
+    inputListener.onSend(textEt.getText(), attachmentPreviewAdapter.getAttachments());
+    textEt.setText("");
+    clearAttachments();
+  }
+
+  @OnClick(R2.id.attachment_clear_btn)
+  void clearAttachments() {
     if (photosFragment != null) {
       photosFragment.clearSelectedAttachments();
     }
 
-    if (filesFragment != null ){
+    if (filesFragment != null) {
       filesFragment.clearSelectedAttachments();
     }
-
-    inputListener.onSend(textEt.getText(), attachmentPreviewAdapter.getAttachments());
-    textEt.setText("");
     attachmentPreviewAdapter.clear();
+    attachmentPreviewContainer.setVisibility(GONE);
   }
 
   @OnTouch(R2.id.text_input)
@@ -409,6 +410,8 @@ public class FlexInput extends RelativeLayout {
 
   public void handleAttachmentClick(ItemClickedEvent<Attachment> event) {
     attachmentPreviewAdapter.toggleItem(event.item);
+    attachmentPreviewContainer.setVisibility(
+        attachmentPreviewAdapter.getItemCount() == 0 ? GONE : VISIBLE);
   }
 
   //endregion
