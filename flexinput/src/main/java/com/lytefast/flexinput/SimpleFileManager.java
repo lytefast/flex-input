@@ -13,6 +13,7 @@ import java.util.Date;
 
 /**
  * A basic implementation of the {@link FileManager} that uses a specified {@link FileProvider}.
+ *
  * @author Sam Shih
  */
 public class SimpleFileManager implements FileManager {

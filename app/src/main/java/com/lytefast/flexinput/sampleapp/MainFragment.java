@@ -105,6 +105,9 @@ public class MainFragment extends Fragment {
     super.onDestroyView();
   }
 
+  /**
+   * Main point of interaction between the {@link FlexInput} widget and the client.
+   */
   private final InputListener flexInputListener = new InputListener() {
     @Override
     public void onSend(final Editable data, List<? extends Attachment> attachments) {
