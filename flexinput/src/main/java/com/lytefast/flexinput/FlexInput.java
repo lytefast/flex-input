@@ -26,6 +26,7 @@ import android.widget.RelativeLayout;
 
 import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
 import com.lytefast.flexinput.emoji.Emoji;
+import com.lytefast.flexinput.events.ClearAttachmentsEvent;
 import com.lytefast.flexinput.events.ItemClickedEvent;
 import com.lytefast.flexinput.fragment.CameraFragment;
 import com.lytefast.flexinput.fragment.CameraFragment.PhotoTakenCallback;
@@ -299,13 +300,7 @@ public class FlexInput extends RelativeLayout {
 
   @OnClick(R2.id.attachment_clear_btn)
   void clearAttachments() {
-    if (photosFragment != null) {
-      photosFragment.clearSelectedAttachments();
-    }
-
-    if (filesFragment != null) {
-      filesFragment.clearSelectedAttachments();
-    }
+    EventBus.getDefault().post(new ClearAttachmentsEvent());
     attachmentPreviewAdapter.clear();
     attachmentPreviewContainer.setVisibility(GONE);
   }

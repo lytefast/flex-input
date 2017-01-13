@@ -15,10 +15,12 @@ import android.view.ViewGroup;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.adapters.FileListAdapter;
 import com.lytefast.flexinput.adapters.OnItemClickListener;
+import com.lytefast.flexinput.events.ClearAttachmentsEvent;
 import com.lytefast.flexinput.events.ItemClickedEvent;
 import com.lytefast.flexinput.model.Attachment;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,7 +33,7 @@ import java.util.Set;
  *
  * @author Sam Shih
  */
-public class FilesFragment extends Fragment implements AttachmentSelector<Attachment> {
+public class FilesFragment extends Fragment {
   private RecyclerView recyclerView;
 
   /**
@@ -60,6 +62,13 @@ public class FilesFragment extends Fragment implements AttachmentSelector<Attach
   public void onStart() {
     super.onStart();
     loadDownloadFolder();
+    EventBus.getDefault().register(this);
+  }
+
+  @Override
+  public void onStop() {
+    EventBus.getDefault().unregister(this);
+    super.onStop();
   }
 
   private void loadDownloadFolder() {
@@ -75,25 +84,13 @@ public class FilesFragment extends Fragment implements AttachmentSelector<Attach
     recyclerView.setAdapter(adapter);
   }
 
-
-  @Override
-  public Collection<Attachment> getSelectedAttachments() {
-    Set<File> files = ((FileListAdapter) recyclerView.getAdapter()).getSelectedItems();
-
-    ArrayList<Attachment> attachments = new ArrayList<>(files.size());
-    for (File f : files) {
-      attachments.add(transformFileToAttachment(f));
-    }
-    return attachments;
-  }
-
   @NonNull
   private Attachment transformFileToAttachment(final File f) {
     return new Attachment(f.hashCode(), Uri.fromFile(f), f.getName());
   }
 
-  @Override
-  public void clearSelectedAttachments() {
+  @Subscribe
+  void handleClearAttachmentEvent(ClearAttachmentsEvent evt) {
     ((FileListAdapter) recyclerView.getAdapter()).clearSelectedItems();
   }
 }

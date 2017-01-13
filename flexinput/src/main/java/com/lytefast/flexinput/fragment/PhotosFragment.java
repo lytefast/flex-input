@@ -15,10 +15,12 @@ import android.widget.Toast;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.adapters.OnItemClickListener;
 import com.lytefast.flexinput.adapters.PhotoCursorAdapter;
+import com.lytefast.flexinput.events.ClearAttachmentsEvent;
 import com.lytefast.flexinput.events.ItemClickedEvent;
 import com.lytefast.flexinput.model.Photo;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Collection;
 
@@ -28,7 +30,7 @@ import java.util.Collection;
  *
  * @author Sam Shih
  */
-public class PhotosFragment extends Fragment implements AttachmentSelector<Photo> {
+public class PhotosFragment extends Fragment {
 
   private RecyclerView recyclerView;
 
@@ -57,6 +59,13 @@ public class PhotosFragment extends Fragment implements AttachmentSelector<Photo
   public void onStart() {
     super.onStart();
     loadPhotos();
+    EventBus.getDefault().register(this);
+  }
+
+  @Override
+  public void onStop() {
+    EventBus.getDefault().unregister(this);
+    super.onStop();
   }
 
   // TODO consider moving this to a background thread
@@ -85,13 +94,8 @@ public class PhotosFragment extends Fragment implements AttachmentSelector<Photo
     }
   }
 
-  @Override
-  public Collection<Photo> getSelectedAttachments() {
-    return ((PhotoCursorAdapter) recyclerView.getAdapter()).getSelectedItems();
-  }
-
-  @Override
-  public void clearSelectedAttachments() {
+  @Subscribe
+  void handleClearAttachmentEvent(ClearAttachmentsEvent evt) {
     ((PhotoCursorAdapter) recyclerView.getAdapter()).clearSelectedItems();
   }
 }

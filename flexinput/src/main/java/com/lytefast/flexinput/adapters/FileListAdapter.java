@@ -78,11 +78,6 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
     return files.size();
   }
 
-
-  public Set<File> getSelectedItems() {
-    return selectedItemPositionMap.keySet();
-  }
-
   public void clearSelectedItems() {
     ArrayList<Integer> oldSelection = new ArrayList<>(selectedItemPositionMap.values());
     selectedItemPositionMap.clear();

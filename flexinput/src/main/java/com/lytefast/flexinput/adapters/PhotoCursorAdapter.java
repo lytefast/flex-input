@@ -87,10 +87,6 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
         cursor.getLong(colId), Uri.parse(cursor.getString(colData)), cursor.getString(colName));
   }
 
-  public Set<Photo> getSelectedItems() {
-    return selectedItemPositionMap.keySet();
-  }
-
   public void clearSelectedItems() {
     ArrayList<Integer> oldSelection = new ArrayList<>(selectedItemPositionMap.values());
     selectedItemPositionMap.clear();
