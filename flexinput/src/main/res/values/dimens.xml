@@ -5,6 +5,7 @@
     <dimen name="default_keyboard_height">280dp</dimen>
     <dimen name="grid_item_padding">2dp</dimen>
     <dimen name="file_icon_dimen">64dp</dimen>
+    <dimen name="attachment_preview_dimen">32dp</dimen>
 
     <dimen name="emoji_text_size">32dp</dimen>
     <dimen name="emoji_grid_item_size">48dp</dimen>
