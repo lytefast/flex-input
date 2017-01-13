@@ -36,6 +36,7 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         app:inputBackground="@drawable/rect_rounded_highlight_alpha_20"
+        app:previewBackground="@drawable/rect_rounded_highlight_alpha_20"
         app:tabsBackground="@drawable/content_tab_background"
         app:hint="@string/msg_hint"
         app:hintColor="@color/colorHint"

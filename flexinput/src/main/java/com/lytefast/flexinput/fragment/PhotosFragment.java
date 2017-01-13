@@ -15,7 +15,10 @@ import android.widget.Toast;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.adapters.OnItemClickListener;
 import com.lytefast.flexinput.adapters.PhotoCursorAdapter;
+import com.lytefast.flexinput.events.ItemClickedEvent;
 import com.lytefast.flexinput.model.Photo;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Collection;
 
@@ -76,6 +79,7 @@ public class PhotosFragment extends Fragment implements AttachmentSelector<Photo
         public void onItemClicked(final Photo item) {
           Toast.makeText(getContext(),
               "Toggle[" + item.id + "]: " + item.displayName, Toast.LENGTH_SHORT).show();
+          EventBus.getDefault().post(new ItemClickedEvent<>(item));
         }
       });
     }

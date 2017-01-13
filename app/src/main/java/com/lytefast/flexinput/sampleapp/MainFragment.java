@@ -19,6 +19,7 @@ import com.lytefast.flexinput.FlexInput;
 import com.lytefast.flexinput.InputListener;
 import com.lytefast.flexinput.KeyboardManager;
 import com.lytefast.flexinput.SimpleFileManager;
+import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
 import com.lytefast.flexinput.emoji.Emoji;
 import com.lytefast.flexinput.fragment.EmojiCategoryPagerFragment;
 import com.lytefast.flexinput.model.Attachment;
@@ -71,6 +72,8 @@ public class MainFragment extends Fragment {
     final InputMethodManager imm =
         (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
+    recyclerView.setAdapter(msgAdapter);
+
     if (savedInstanceState == null) {
       // Only create fragment on first load
       flexInput.setEmojiFragment(getChildFragmentManager(), new UnicodeEmojiCategoryPagerFragment());
@@ -78,6 +81,8 @@ public class MainFragment extends Fragment {
 
     flexInput
         .initContentPages(getFragmentManager())
+        // Can be extended to provide custom previews (e.g. larger preview images, onclick) etc.
+        .setAttachmentPreviewAdapter(new AttachmentPreviewAdapter(getContext().getContentResolver()))
         .setInputListener(flexInputListener)
         .setFileManager(new SimpleFileManager("com.lytefast.flexinput.fileprovider", "FlexInput"))
         .setKeyboardManager(new KeyboardManager() {
@@ -92,8 +97,6 @@ public class MainFragment extends Fragment {
             imm.hideSoftInputFromWindow(flexInput.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
           }
         });
-
-    recyclerView.setAdapter(msgAdapter);
   }
 
   @Override
@@ -106,8 +109,10 @@ public class MainFragment extends Fragment {
     @Override
     public void onSend(final Editable data, List<? extends Attachment> attachments) {
       msgAdapter.addMessage(data);
-      for (Attachment a : attachments) {
-        msgAdapter.addMessage(Editable.Factory.getInstance().newEditable("Attachment - " + a.displayName));
+
+      for (int i = 0; i < attachments.size(); i++) {
+        msgAdapter.addMessage(Editable.Factory.getInstance().newEditable(
+            String.format("[%d] Attachment - %s", i, attachments.get(i).displayName)));
       }
     }
   };
