@@ -171,26 +171,6 @@ public class FlexInput extends RelativeLayout {
   }
   //endregion
 
-
-  /**
-   * Gets the example string attribute value.
-   *
-   * @return The example string attribute value.
-   */
-  public Editable getExampleString() {
-    return textEt.getText();
-  }
-
-  /**
-   * Sets the view's example string attribute value. In the example view, this string
-   * is the text to draw.
-   *
-   * @param exampleString The example string attribute value to use.
-   */
-  public void setExampleString(final String exampleString) {
-    textEt.setText(exampleString);
-  }
-
   public FlexInput setKeyboardManager(KeyboardManager keyboardManager) {
     this.keyboardManager = keyboardManager;
     return this;
