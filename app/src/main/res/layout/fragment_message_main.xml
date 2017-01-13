@@ -2,8 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@android:color/white">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:id="@+id/activity_main"
@@ -36,9 +35,10 @@
         android:layout_height="wrap_content"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        app:inputBackground="@drawable/rect_rounded_black_alpha_25"
-        app:tabsBackground="@drawable/rect_rounded_highlight"
+        app:inputBackground="@drawable/rect_rounded_highlight_alpha_20"
+        app:tabsBackground="@drawable/rect_rounded_black_alpha_25"
         app:hint="@string/msg_hint"
+        app:hintColor="@color/colorHint"
         android:layout_gravity="bottom"/>
 
 </android.support.design.widget.CoordinatorLayout>
