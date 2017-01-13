@@ -3,6 +3,7 @@ package com.lytefast.flexinput.fragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,7 +14,11 @@ import android.view.ViewGroup;
 
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.adapters.FileListAdapter;
+import com.lytefast.flexinput.adapters.OnItemClickListener;
+import com.lytefast.flexinput.events.ItemClickedEvent;
 import com.lytefast.flexinput.model.Attachment;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -60,7 +65,14 @@ public class FilesFragment extends Fragment implements AttachmentSelector<Attach
   private void loadDownloadFolder() {
     File downloadFolder =
         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-    recyclerView.setAdapter(new FileListAdapter(getContext().getContentResolver(), downloadFolder));
+    FileListAdapter adapter = new FileListAdapter(getContext().getContentResolver(), downloadFolder);
+    adapter.setOnItemClickListener(new OnItemClickListener<File>() {
+      @Override
+      public void onItemClicked(final File item) {
+          EventBus.getDefault().post(new ItemClickedEvent<>(transformFileToAttachment(item)));
+      }
+    });
+    recyclerView.setAdapter(adapter);
   }
 
 
@@ -70,9 +82,14 @@ public class FilesFragment extends Fragment implements AttachmentSelector<Attach
 
     ArrayList<Attachment> attachments = new ArrayList<>(files.size());
     for (File f : files) {
-      attachments.add(new Attachment(f.hashCode(), Uri.fromFile(f), f.getName()));
+      attachments.add(transformFileToAttachment(f));
     }
     return attachments;
+  }
+
+  @NonNull
+  private Attachment transformFileToAttachment(final File f) {
+    return new Attachment(f.hashCode(), Uri.fromFile(f), f.getName());
   }
 
   @Override

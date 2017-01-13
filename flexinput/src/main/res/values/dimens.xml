@@ -1,5 +1,6 @@
 <resources>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="input_container_margin">4dp</dimen>
 
     <dimen name="input_height">48dp</dimen>
     <dimen name="default_keyboard_height">280dp</dimen>

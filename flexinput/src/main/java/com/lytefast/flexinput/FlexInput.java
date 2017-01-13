@@ -16,6 +16,7 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageButton;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -23,6 +24,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
 import com.lytefast.flexinput.emoji.Emoji;
 import com.lytefast.flexinput.events.ItemClickedEvent;
 import com.lytefast.flexinput.fragment.CameraFragment;
@@ -55,9 +57,11 @@ public class FlexInput extends RelativeLayout {
   public static final int TAB_PHOTOS = 1;
   public static final int TAB_FILES = 0;
   public static final int TAB_CAMERA = 2;
+
   @BindView(R2.id.main_input_container) View inputContainer;
   @BindView(R2.id.add_content_container) View addContentContainer;
   @BindView(R2.id.emoji_container) View emojiContainer;
+  @BindView(R2.id.attachment_preview_list) RecyclerView attachmentPreviewList;
 
   @BindView(R2.id.text_input) AppCompatEditText textEt;
   @BindView(R2.id.emoji_btn) AppCompatImageButton emojiBtn;
@@ -71,6 +75,7 @@ public class FlexInput extends RelativeLayout {
   private PhotosFragment photosFragment;
   private CameraFragment cameraFragment;
   private FileManager fileManager;
+  private AttachmentPreviewAdapter attachmentPreviewAdapter;
 
 
   public FlexInput(Context context) {
@@ -96,6 +101,13 @@ public class FlexInput extends RelativeLayout {
     setFocusableInTouchMode(true);
 
     initAttributes(attrs, defStyle);
+
+    initAttachmentPreview();
+  }
+
+  private void initAttachmentPreview() {
+    attachmentPreviewAdapter = new AttachmentPreviewAdapter(getContext().getContentResolver());
+    attachmentPreviewList.setAdapter(attachmentPreviewAdapter);
   }
 
   private void initAttributes(final AttributeSet attrs, final int defStyle) {
@@ -117,6 +129,12 @@ public class FlexInput extends RelativeLayout {
         Drawable backgroundDrawable = a.getDrawable(R.styleable.FlexInput_inputBackground);
         backgroundDrawable.setCallback(this);
         inputContainer.setBackground(backgroundDrawable);
+      }
+
+      if (a.hasValue(R.styleable.FlexInput_previewBackground)) {
+        Drawable backgroundDrawable = a.getDrawable(R.styleable.FlexInput_previewBackground);
+        backgroundDrawable.setCallback(this);
+        attachmentPreviewList.setBackground(backgroundDrawable);
       }
 
       if (a.hasValue(R.styleable.FlexInput_tabsBackground)) {
@@ -269,24 +287,16 @@ public class FlexInput extends RelativeLayout {
     // TODO move selection into it's own managed class so we can keep order
     final List<Attachment> attachments = new ArrayList<>(4);
     if (photosFragment != null) {
-      attachments.addAll(photosFragment.getSelectedAttachments());
-
-      Toast.makeText(getContext(),
-          photosFragment.getSelectedAttachments().size() + " photos selected", Toast.LENGTH_SHORT)
-          .show();
       photosFragment.clearSelectedAttachments();
     }
 
     if (filesFragment != null ){
-      attachments.addAll(filesFragment.getSelectedAttachments());
-      Toast.makeText(getContext(),
-          filesFragment.getSelectedAttachments().size() + " files selected", Toast.LENGTH_SHORT)
-          .show();
       filesFragment.clearSelectedAttachments();
     }
 
-    inputListener.onSend(textEt.getText(), attachments);
+    inputListener.onSend(textEt.getText(), attachmentPreviewAdapter.getAttachments());
     textEt.setText("");
+    attachmentPreviewAdapter.clear();
   }
 
   @OnTouch(R2.id.text_input)
@@ -373,9 +383,22 @@ public class FlexInput extends RelativeLayout {
   //region Events
 
   @Subscribe(threadMode = ThreadMode.MAIN)
+  public void handleItemClick(ItemClickedEvent<?> event) {
+    Object item = event.item;
+    if (item instanceof Emoji) {
+      handleEmojiClick((ItemClickedEvent<Emoji>) event);
+    } else {
+      handleAttachmentClick((ItemClickedEvent<Attachment>) event);
+    }
+  }
+
   public void handleEmojiClick(ItemClickedEvent<Emoji> event) {
     // TODO figure out some way to allow custom spannables (e.g. fresco's DraweeSpan)
     textEt.getText().append(event.item.strValue);
+  }
+
+  public void handleAttachmentClick(ItemClickedEvent<Attachment> event) {
+    attachmentPreviewAdapter.toggleItem(event.item);
   }
 
   //endregion
