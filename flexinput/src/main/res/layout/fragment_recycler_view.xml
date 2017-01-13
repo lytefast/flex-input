@@ -12,5 +12,5 @@
         android:orientation="vertical"
         app:layoutManager="GridLayoutManager"
         app:spanCount="3"
-        tools:context="com.lytefast.flexinput.RecyclerViewFragment"
+        tools:context="com.lytefast.flexinput.fragment.PhotosFragment"
         tools:listitem="@layout/view_grid_image"/>
