@@ -1,13 +1,11 @@
 package com.lytefast.flexinput.utils;
 
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 import com.lytefast.flexinput.model.Attachment;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 
 /**
@@ -15,11 +13,8 @@ import java.util.List;
  */
 public class AttachmentUtils {
 
-  public static List<Attachment> transform(Collection<File> files) {
-    ArrayList<Attachment> attachments = new ArrayList<>(files.size());
-    for (File f : files) {
-      attachments.add(new Attachment(f.hashCode(), Uri.fromFile(f), f.getName()));
-    }
-    return attachments;
+  @NonNull
+  public static Attachment fromFile(final File f) {
+    return new Attachment(f.hashCode(), Uri.fromFile(f), f.getName());
   }
 }

@@ -18,6 +18,7 @@ import com.lytefast.flexinput.adapters.FileListAdapter;
 import com.lytefast.flexinput.events.ClearAttachmentsEvent;
 import com.lytefast.flexinput.events.ItemClickedEvent;
 import com.lytefast.flexinput.model.Attachment;
+import com.lytefast.flexinput.utils.AttachmentUtils;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 
 import org.greenrobot.eventbus.EventBus;
@@ -77,11 +78,6 @@ public class FilesFragment extends Fragment {
         getContext().getContentResolver(), downloadFolder, selectionCoordinator));
   }
 
-  @NonNull
-  private Attachment transformFileToAttachment(final File f) {
-    return new Attachment(f.hashCode(), Uri.fromFile(f), f.getName());
-  }
-
   @Subscribe
   void handleClearAttachmentEvent(ClearAttachmentsEvent evt) {
     selectionCoordinator.clearSelectedItems();
@@ -90,13 +86,13 @@ public class FilesFragment extends Fragment {
   private final SelectionCoordinator<File> selectionCoordinator = new SelectionCoordinator<File>() {
     @Override
     public void onItemSelected(final File item) {
-      EventBus.getDefault().post(new ItemClickedEvent<>(transformFileToAttachment(item)));
+      EventBus.getDefault().post(new ItemClickedEvent<>(AttachmentUtils.fromFile(item)));
       Log.d(getClass().getCanonicalName(), "Select: " + item.getPath());
     }
 
     @Override
     public void onItemUnselected(final File item) {
-      EventBus.getDefault().post(new ItemClickedEvent<>(transformFileToAttachment(item)));
+      EventBus.getDefault().post(new ItemClickedEvent<>(AttachmentUtils.fromFile(item)));
       Log.d(getClass().getCanonicalName(), "Remove: " + item.getPath());
     }
   };
