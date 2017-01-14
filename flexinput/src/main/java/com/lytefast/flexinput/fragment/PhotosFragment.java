@@ -22,9 +22,6 @@ import com.lytefast.flexinput.utils.SelectionCoordinator;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 
 /**
  * Fragment that displays the recent photos on the phone for selection.

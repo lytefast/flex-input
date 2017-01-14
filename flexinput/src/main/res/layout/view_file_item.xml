@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/thumb_iv"
         android:layout_width="@dimen/file_icon_dimen"
         android:layout_height="@dimen/file_icon_dimen"
@@ -13,6 +14,16 @@
         android:layout_centerVertical="true"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_file_24dp"/>
+
+    <ImageView
+        android:id="@+id/type_iv"
+        android:layout_width="@dimen/file_type_icon_dimen"
+        android:layout_height="@dimen/file_type_icon_dimen"
+        android:layout_alignBottom="@id/thumb_iv"
+        android:layout_alignEnd="@id/thumb_iv"
+        android:layout_alignRight="@id/thumb_iv"
+        android:tint="?android:textColorPrimary"
+        tools:src="@drawable/ic_file_24dp"/>
 
     <TextView
         android:id="@+id/file_name_tv"

@@ -3,9 +3,11 @@ package com.lytefast.flexinput.adapters;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
@@ -50,6 +53,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
     this.contentResolver = contentResolver;
     files = flattenFileList(root);
     this.selectionCoordinator = selectionCoordinator.bind(this);
+
     Collections.sort(files, new Comparator<File>() {
       @Override
       public int compare(final File o1, final File o2) {
@@ -78,7 +82,8 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
 
   protected class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    @BindView(R2.id.thumb_iv) ImageView thumbIv;
+    @BindView(R2.id.thumb_iv) SimpleDraweeView thumbIv;
+    @BindView(R2.id.type_iv) ImageView typeIv;
     @BindView(R2.id.file_name_tv) TextView fileNameTv;
     @BindView(R2.id.file_path_tv) TextView filePathTV;
 
@@ -98,13 +103,16 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
       fileNameTv.setText(file.getName());
       filePathTV.setText(file.getPath());
 
-      thumbIv.setImageResource(R.drawable.ic_file_24dp);
+      thumbIv.setImageResource(0);
+      typeIv.setImageResource(R.drawable.ic_file_24dp);
 
       String mimeType = getMimeType(file);
       if (!TextUtils.isEmpty(mimeType)) {
         if (mimeType.startsWith("image")) {
+          typeIv.setImageResource(R.drawable.ic_image_24dp);
           bindThumbIvWithImage(file);
         } else if (mimeType.startsWith("video")) {
+          typeIv.setImageResource(R.drawable.ic_movie_24dp);
           bindThumbIvWithVideo(file);
         }
       }
@@ -128,7 +136,6 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
     }
 
     private void bindThumbIvWithVideo(final File file) {
-      thumbIv.setImageResource(R.drawable.ic_movie_24dp);
       Cursor c = contentResolver.query(
         MediaStore.Video.Thumbnails.EXTERNAL_CONTENT_URI,
         new String[]{MediaStore.Video.Media._ID},
@@ -137,6 +144,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
         null /* sortOrder */);
 
       if (c == null || !c.moveToFirst()) {
+        thumbIv.setImageURI(Uri.fromFile(file));
         return;
       }
       final long videoId = c.getLong(0);

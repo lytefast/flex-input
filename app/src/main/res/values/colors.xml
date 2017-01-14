@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#32b363</color>
 
-    <color name="colorHint">#808080</color>
+    <color name="colorHint">#d0808080</color>
 
     <color name="colorAccent_alpha_50">#8032b363</color>
 
