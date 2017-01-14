@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
+import com.lytefast.flexinput.utils.FileUtils;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 
 import java.io.File;
@@ -113,7 +114,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
           bindThumbIvWithImage(file);
         } else if (mimeType.startsWith("video")) {
           typeIv.setImageResource(R.drawable.ic_movie_24dp);
-          bindThumbIvWithVideo(file);
+          thumbIv.setImageURI(FileUtils.toUri(file));
         }
       }
     }
@@ -132,24 +133,6 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
       final long imageId = c.getLong(0);
       Bitmap thumbnail = MediaStore.Images.Thumbnails.getThumbnail(
           contentResolver, imageId, MediaStore.Images.Thumbnails.MINI_KIND, null);
-      thumbIv.setImageBitmap(thumbnail);
-    }
-
-    private void bindThumbIvWithVideo(final File file) {
-      Cursor c = contentResolver.query(
-        MediaStore.Video.Thumbnails.EXTERNAL_CONTENT_URI,
-        new String[]{MediaStore.Video.Media._ID},
-        MediaStore.Video.Media.DATA + "=?",
-        new String[]{file.getPath()},
-        null /* sortOrder */);
-
-      if (c == null || !c.moveToFirst()) {
-        thumbIv.setImageURI(Uri.fromFile(file));
-        return;
-      }
-      final long videoId = c.getLong(0);
-      Bitmap thumbnail = MediaStore.Video.Thumbnails.getThumbnail(
-          contentResolver, videoId, MediaStore.Images.Thumbnails.MINI_KIND, null);
       thumbIv.setImageBitmap(thumbnail);
     }
 

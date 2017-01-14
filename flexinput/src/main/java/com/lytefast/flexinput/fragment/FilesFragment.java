@@ -1,9 +1,7 @@
 package com.lytefast.flexinput.fragment;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,15 +15,13 @@ import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.adapters.FileListAdapter;
 import com.lytefast.flexinput.events.ClearAttachmentsEvent;
 import com.lytefast.flexinput.events.ItemClickedEvent;
-import com.lytefast.flexinput.model.Attachment;
-import com.lytefast.flexinput.utils.AttachmentUtils;
+import com.lytefast.flexinput.utils.FileUtils;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
-import java.util.ArrayList;
 
 
 /**
@@ -86,13 +82,13 @@ public class FilesFragment extends Fragment {
   private final SelectionCoordinator<File> selectionCoordinator = new SelectionCoordinator<File>() {
     @Override
     public void onItemSelected(final File item) {
-      EventBus.getDefault().post(new ItemClickedEvent<>(AttachmentUtils.fromFile(item)));
+      EventBus.getDefault().post(new ItemClickedEvent<>(FileUtils.toAttachment(item)));
       Log.d(getClass().getCanonicalName(), "Select: " + item.getPath());
     }
 
     @Override
     public void onItemUnselected(final File item) {
-      EventBus.getDefault().post(new ItemClickedEvent<>(AttachmentUtils.fromFile(item)));
+      EventBus.getDefault().post(new ItemClickedEvent<>(FileUtils.toAttachment(item)));
       Log.d(getClass().getCanonicalName(), "Remove: " + item.getPath());
     }
   };
