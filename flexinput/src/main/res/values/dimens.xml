@@ -5,6 +5,8 @@
 
     <dimen name="input_height">48dp</dimen>
     <dimen name="default_keyboard_height">280dp</dimen>
+
+    <dimen name="add_content_viewpager_bottom_margin">64dp</dimen>
     <dimen name="grid_item_padding">2dp</dimen>
     <dimen name="file_icon_dimen">64dp</dimen>
     <dimen name="attachment_preview_dimen">32dp</dimen>

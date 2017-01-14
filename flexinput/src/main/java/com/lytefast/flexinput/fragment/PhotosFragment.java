@@ -46,9 +46,6 @@ public class PhotosFragment extends Fragment {
 
     if (view instanceof RecyclerView) {
       recyclerView = (RecyclerView) view;
-      DividerItemDecoration bottomPadding =
-          new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
-      recyclerView.addItemDecoration(bottomPadding);
     }
     return view;
   }

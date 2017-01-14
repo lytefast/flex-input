@@ -18,7 +18,7 @@
         app:layout_anchorGravity="bottom|center_horizontal"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="@dimen/input_height">
+        android:layout_marginBottom="@dimen/add_content_viewpager_bottom_margin">
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/launch_camera_btn"
             android:layout_width="wrap_content"
