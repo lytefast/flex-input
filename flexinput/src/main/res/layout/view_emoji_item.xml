@@ -8,5 +8,5 @@
           android:textSize="@dimen/emoji_text_size"
           android:textColor="@android:color/black"
           android:clickable="true"
-          android:background="?selectableItemBackground"
+          android:background="?selectableItemBackgroundBorderless"
           tools:text="☺"/>

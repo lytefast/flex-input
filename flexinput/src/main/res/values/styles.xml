@@ -1,15 +1,12 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">?colorPrimary</item>
-        <item name="colorPrimaryDark">?colorPrimaryDark</item>
-        <item name="colorAccent">?colorAccent</item>
     </style>
 
     <style name="Input" parent="AppTheme">
-        <item name="android:background">?selectableItemBackground</item>
+        <item name="android:background">?selectableItemBackgroundBorderless</item>
     </style>
 
     <style name="Input.Button" parent="Input">
