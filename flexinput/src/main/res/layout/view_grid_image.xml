@@ -21,9 +21,9 @@
         app:viewAspectRatio="1.0"
         app:fadeDuration="@android:integer/config_shortAnimTime"
         app:pressedStateOverlayImage="?selectableItemBackground"
-        app:actualImageScaleType="focusCrop"
+        app:actualImageScaleType="centerCrop"
         app:placeholderImage="@drawable/ic_file_24dp"
-        app:placeholderImageScaleType="focusCrop"
+        app:placeholderImageScaleType="centerInside"
         tools:src="@drawable/ic_file_24dp"/>
 
     <ImageView

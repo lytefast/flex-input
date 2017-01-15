@@ -31,6 +31,9 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/thumb_iv"
         android:layout_toRightOf="@id/thumb_iv"
+        android:layout_marginLeft="@dimen/text_margin"
+        android:layout_marginStart="@dimen/text_margin"
+        android:layout_marginTop="@dimen/margin"
         android:text="filename"
         android:maxLines="1"/>
 
@@ -38,10 +41,11 @@
         android:id="@+id/file_path_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/thumb_iv"
-        android:layout_toRightOf="@id/thumb_iv"
+        android:layout_alignLeft="@id/file_name_tv"
+        android:layout_alignStart="@id/file_name_tv"
+        android:layout_below="@id/file_name_tv"
         android:text="file path"
-        android:textSize="10sp"
-        android:layout_below="@id/file_name_tv"/>
+        android:textColor="?colorControlHighlight"
+        android:textSize="10sp"/>
 
 </RelativeLayout>
