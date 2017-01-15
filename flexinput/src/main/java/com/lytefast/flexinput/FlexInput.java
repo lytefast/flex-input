@@ -23,6 +23,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
 import com.lytefast.flexinput.emoji.Emoji;
@@ -44,6 +45,7 @@ import java.io.File;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnLongClick;
 import butterknife.OnTouch;
 
 
@@ -303,6 +305,30 @@ public class FlexInput extends RelativeLayout {
     EventBus.getDefault().post(new ClearAttachmentsEvent());
     attachmentPreviewAdapter.clear();
     attachmentPreviewContainer.setVisibility(GONE);
+  }
+
+  @OnLongClick(R2.id.add_btn)
+  boolean tooltipHandlerAddContent() {
+    Toast.makeText(getContext(), R.string.add_content, Toast.LENGTH_SHORT).show();
+    return true;
+  }
+
+  @OnLongClick(R2.id.attachment_clear_btn)
+  boolean tooltipHandlerAttachmentClear() {
+    Toast.makeText(getContext(), R.string.clear_attachments, Toast.LENGTH_SHORT).show();
+    return true;
+  }
+
+  @OnLongClick(R2.id.emoji_btn)
+  boolean tooltipHandlerEmoji() {
+    Toast.makeText(getContext(), R.string.emoji_keyboard_toggle, Toast.LENGTH_SHORT).show();
+    return true;
+  }
+
+  @OnLongClick(R2.id.send_btn)
+  boolean tooltipHandlerSend() {
+    Toast.makeText(getContext(), R.string.send_contents, Toast.LENGTH_SHORT).show();
+    return true;
   }
 
   @OnTouch(R2.id.text_input)

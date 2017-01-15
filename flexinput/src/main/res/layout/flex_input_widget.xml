@@ -51,7 +51,7 @@
             style="@style/Input.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="Add content"
+            android:contentDescription="@string/add_content"
             android:src="@drawable/ic_add_24dp"/>
 
         <android.support.v7.widget.AppCompatEditText
@@ -72,7 +72,7 @@
             style="@style/Input.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="Open Emoji picker"
+            android:contentDescription="@string/emoji_keyboard_toggle"
             android:src="@drawable/ic_insert_emoticon_24dp"/>
 
         <android.support.v7.widget.AppCompatImageButton
@@ -80,7 +80,7 @@
             style="@style/Input.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="Send Message"
+            android:contentDescription="@string/send_contents"
             android:src="@drawable/ic_send_24dp"/>
 
     </LinearLayout>

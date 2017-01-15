@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">flexinput</string>
+
+    <string name="add_content">Add Content</string>
+    <string name="clear_attachments">Clear attachments</string>
+    <string name="emoji_keyboard_toggle">Toggle keyboard/emojis</string>
+    <string name="send_contents">Send</string>
 </resources>
