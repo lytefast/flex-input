@@ -1,6 +1,13 @@
 # flex-input
 Android text/emoji/media input field
 
+![Alt text](/images/keyboard.png?raw=true "Keybard Entry with attachment preview")
+![Alt text](/images/emojiPicker.png?raw=true "Emoji Entry")
+
+![Alt text](/images/tabFiles.png?raw=true "Files tab")
+![Alt text](/images/tabPhotos.png?raw=true "Photos tab")
+![Alt text](/images/tabCamera.png?raw=true "Camera tab")
+
 # Dependencies
 - This is currently using the still in development [cameraview](https://github.com/google/cameraview/)
   - at the current moment the cameraview project is just a symlink to the [camereaview/library project](https://github.com/google/cameraview/tree/master/library)
