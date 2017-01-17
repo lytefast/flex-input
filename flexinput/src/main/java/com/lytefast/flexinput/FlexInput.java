@@ -34,6 +34,7 @@ import com.lytefast.flexinput.fragment.CameraFragment.PhotoTakenCallback;
 import com.lytefast.flexinput.fragment.FilesFragment;
 import com.lytefast.flexinput.fragment.PhotosFragment;
 import com.lytefast.flexinput.model.Attachment;
+import com.lytefast.flexinput.utils.FileUtils;
 import com.lytefast.flexinput.utils.WidgetUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -74,9 +75,6 @@ public class FlexInput extends RelativeLayout {
   private KeyboardManager keyboardManager;
   private InputListener inputListener;
 
-  private FilesFragment filesFragment;
-  private PhotosFragment photosFragment;
-  private CameraFragment cameraFragment;
   private FileManager fileManager;
   private AttachmentPreviewAdapter attachmentPreviewAdapter;
 
@@ -215,15 +213,13 @@ public class FlexInput extends RelativeLayout {
           default:
             return null;
           case TAB_FILES:
-            return filesFragment = new FilesFragment();
+            return new FilesFragment();
           case TAB_PHOTOS:
-            photosFragment = new PhotosFragment();
-            return photosFragment;
+            return new PhotosFragment();
           case TAB_CAMERA:
-            cameraFragment = new CameraFragment();
-            cameraFragment.setPhotoTakenCallback(cameraPhotoTakenCallback);
-            cameraFragment.setFileManager(fileManager);
-            return cameraFragment;
+            return new CameraFragment()
+                .setFileManager(fileManager)
+                .setPhotoTakenCallback(cameraPhotoTakenCallback);
         }
       }
 
@@ -404,7 +400,7 @@ public class FlexInput extends RelativeLayout {
         @Override
         public void run() {
           onAddToggle();
-          // TODO save photo
+          handleAttachmentClick(new ItemClickedEvent<>(FileUtils.toAttachment(photoFile)));
           // TODO invalidate photo picker
         }
       });

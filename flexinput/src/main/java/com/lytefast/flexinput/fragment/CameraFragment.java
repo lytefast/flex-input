@@ -102,16 +102,18 @@ public class CameraFragment extends Fragment {
     }
   }
 
-  public void setPhotoTakenCallback(final PhotoTakenCallback photoTakenCallback) {
-    this.photoTakenCallback = photoTakenCallback;
-  }
-
-  public void setFileManager(final FileManager fileManager) {
+  // FIXME on screen rotation, this reference is lost since fragment is recreated.
+  public CameraFragment setFileManager(final FileManager fileManager) {
     this.fileManager = fileManager;
+    return this;
   }
 
-  private final CameraView.Callback cameraCallback
-            = new CameraView.Callback() {
+  public CameraFragment setPhotoTakenCallback(final PhotoTakenCallback photoTakenCallback) {
+    this.photoTakenCallback = photoTakenCallback;
+    return this;
+  }
+
+  private final CameraView.Callback cameraCallback = new CameraView.Callback() {
 
         @Override
         public void onCameraOpened(CameraView cameraView) {
