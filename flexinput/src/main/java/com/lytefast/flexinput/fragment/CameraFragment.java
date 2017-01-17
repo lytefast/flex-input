@@ -106,7 +106,6 @@ public class CameraFragment extends Fragment {
     this.photoTakenCallback = photoTakenCallback;
   }
 
-
   public void setFileManager(final FileManager fileManager) {
     this.fileManager = fileManager;
   }

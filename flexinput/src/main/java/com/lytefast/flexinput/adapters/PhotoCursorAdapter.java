@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,22 +28,23 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
   private final SelectionCoordinator<Photo> selectionCoordinator;
   private Cursor cursor;
 
-  private final int colId;
-  private final int colData;
-  private final int colName;
+  private int colId;
+  private int colData;
+  private int colName;
 
 
-  public PhotoCursorAdapter(ContentResolver contentResolver, @NonNull Cursor cursor,
+  public PhotoCursorAdapter(ContentResolver contentResolver,
                             final SelectionCoordinator<Photo> selectionCoordinator) {
     this.contentResolver = contentResolver;
-    this.cursor = cursor;
     this.selectionCoordinator = selectionCoordinator.bind(this);
 
-    this.colId = cursor.getColumnIndex(MediaStore.Images.Media._ID);
-    this.colData = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-    this.colName = cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME);
-
     setHasStableIds(true);
+  }
+
+  @Override
+  public void onAttachedToRecyclerView(final RecyclerView recyclerView) {
+    super.onAttachedToRecyclerView(recyclerView);
+    loadPhotos();
   }
 
   @Override
@@ -72,6 +74,25 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
   public void onDetachedFromRecyclerView(final RecyclerView recyclerView) {
     cursor.close();
     super.onDetachedFromRecyclerView(recyclerView);
+  }
+
+   // TODO consider moving this to a background thread
+  @Nullable
+  public Cursor loadPhotos() {
+    this.cursor = contentResolver.query(
+        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+        new String[]{
+            MediaStore.Images.Media._ID,
+            MediaStore.Images.Media.DATA,
+            MediaStore.Images.Media.DISPLAY_NAME},
+        null, null, MediaStore.Images.Media.DATE_ADDED + " DESC");
+
+    this.colId = cursor.getColumnIndex(MediaStore.Images.Media._ID);
+    this.colData = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
+    this.colName = cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME);
+
+    notifyDataSetChanged();
+    return cursor;
   }
 
   private Photo getPhoto(int position) {
