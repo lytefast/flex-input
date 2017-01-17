@@ -23,13 +23,13 @@ import java.util.List;
  */
 public class AttachmentPreviewAdapter extends RecyclerView.Adapter<AttachmentPreviewAdapter.ViewHolder> {
 
-  private final ContentResolver contentesolver;
+  private final ContentResolver contentResolver;
 
   protected final List<Attachment> attachments;
 
 
-  public AttachmentPreviewAdapter(final ContentResolver contentesolver) {
-    this.contentesolver = contentesolver;
+  public AttachmentPreviewAdapter(final ContentResolver contentResolver) {
+    this.contentResolver = contentResolver;
     this.attachments = new ArrayList<>();
   }
 
@@ -84,7 +84,7 @@ public class AttachmentPreviewAdapter extends RecyclerView.Adapter<AttachmentPre
 
     public void bind(Attachment item) {
       if (item instanceof Photo) {
-        draweeView.setImageURI(((Photo) item).getThumbnailUri(contentesolver));
+        draweeView.setImageURI(((Photo) item).getThumbnailUri(contentResolver));
       } else if (item.uri != null) {
         draweeView.setImageURI(item.uri);
       } else {
