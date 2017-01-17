@@ -80,7 +80,7 @@ public class MainFragment extends Fragment {
     }
 
     flexInput
-        .initContentPages(getFragmentManager())
+        .initContentPages(getChildFragmentManager())
         // Can be extended to provide custom previews (e.g. larger preview images, onclick) etc.
         .setAttachmentPreviewAdapter(new AttachmentPreviewAdapter(getContext().getContentResolver()))
         .setInputListener(flexInputListener)

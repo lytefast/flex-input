@@ -41,6 +41,7 @@ public class FilesFragment extends Fragment {
   @BindView(R2.id.swipeRefreshLayout) SwipeRefreshLayout swipeRefreshLayout;
   @BindView(R2.id.list) RecyclerView recyclerView;
   private Unbinder unbinder;
+  private FileListAdapter adapter;
 
   /**
    * Mandatory empty constructor for the fragment manager to instantiate the
@@ -59,6 +60,16 @@ public class FilesFragment extends Fragment {
         new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
     recyclerView.addItemDecoration(bottomPadding);
     recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+    adapter = new FileListAdapter(getContext().getContentResolver(), selectionCoordinator);
+    recyclerView.setAdapter(adapter);
+
+    swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+      @Override
+      public void onRefresh() {
+        loadDownloadFolder();
+      }
+    });
     return view;
   }
 
@@ -78,8 +89,8 @@ public class FilesFragment extends Fragment {
   private void loadDownloadFolder() {
     File downloadFolder =
         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-    recyclerView.setAdapter(new FileListAdapter(
-        getContext().getContentResolver(), downloadFolder, selectionCoordinator));
+    adapter.load(downloadFolder);
+    swipeRefreshLayout.setRefreshing(false);
   }
 
   @Subscribe

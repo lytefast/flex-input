@@ -46,13 +46,13 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
   private final SelectionCoordinator<File> selectionCoordinator;
 
   private ContentResolver contentResolver;
-  private final List<File> files;
+  private List<File> files;
 
 
-  public FileListAdapter(ContentResolver contentResolver, @NonNull File root,
+  public FileListAdapter(ContentResolver contentResolver,
                          final SelectionCoordinator<File> selectionCoordinator) {
     this.contentResolver = contentResolver;
-    files = flattenFileList(root);
+    this.files = Collections.EMPTY_LIST;
     this.selectionCoordinator = selectionCoordinator.bind(this);
 
     Collections.sort(files, new Comparator<File>() {
@@ -79,6 +79,11 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
   @Override
   public int getItemCount() {
     return files.size();
+  }
+
+  public void load(File root) {
+    this.files = flattenFileList(root);
+    notifyDataSetChanged();
   }
 
   protected class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
