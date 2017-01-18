@@ -26,7 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
-import com.lytefast.flexinput.emoji.Emoji;
+import com.lytefast.flexinput.model.Emoji;
 import com.lytefast.flexinput.events.ClearAttachmentsEvent;
 import com.lytefast.flexinput.events.ItemClickedEvent;
 import com.lytefast.flexinput.fragment.CameraFragment;

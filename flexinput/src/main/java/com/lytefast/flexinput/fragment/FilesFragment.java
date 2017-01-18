@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.adapters.FileListAdapter;
-import com.lytefast.flexinput.adapters.PhotoCursorAdapter;
 import com.lytefast.flexinput.events.ClearAttachmentsEvent;
 import com.lytefast.flexinput.events.ItemClickedEvent;
 import com.lytefast.flexinput.utils.FileUtils;

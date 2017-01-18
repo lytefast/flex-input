@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
-import com.lytefast.flexinput.emoji.Emoji;
+import com.lytefast.flexinput.model.Emoji;
 import com.lytefast.flexinput.events.ItemClickedEvent;
 
 import org.greenrobot.eventbus.EventBus;

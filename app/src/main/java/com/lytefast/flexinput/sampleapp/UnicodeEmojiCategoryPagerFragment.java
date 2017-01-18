@@ -4,7 +4,7 @@ import android.support.annotation.DrawableRes;
 import android.util.JsonReader;
 import android.util.Log;
 
-import com.lytefast.flexinput.emoji.Emoji;
+import com.lytefast.flexinput.model.Emoji;
 import com.lytefast.flexinput.fragment.EmojiCategoryPagerFragment;
 
 import java.io.IOException;
@@ -16,7 +16,7 @@ import java.util.List;
 
 
 /**
- * Loads and ordered {@link com.lytefast.flexinput.emoji.Emoji.EmojiCategory} list from the asset folder.
+ * Loads and ordered {@link Emoji.EmojiCategory} list from the asset folder.
  * The {@link Emoji}s loaded are unicode emoji representations.
  *
  * @author Sam Shih

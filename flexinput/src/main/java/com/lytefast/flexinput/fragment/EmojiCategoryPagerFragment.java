@@ -2,9 +2,7 @@ package com.lytefast.flexinput.fragment;
 
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -17,10 +15,9 @@ import android.view.ViewGroup;
 
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
-import com.lytefast.flexinput.emoji.Emoji;
+import com.lytefast.flexinput.model.Emoji;
 import com.lytefast.flexinput.utils.WidgetUtils;
 
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
