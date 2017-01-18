@@ -1,7 +1,8 @@
-package com.lytefast.flexinput.managers;
+package com.lytefast.flexinput.eventbus;
 
 import com.lytefast.flexinput.events.ClearAttachmentsEvent;
 import com.lytefast.flexinput.events.ItemClickedEvent;
+import com.lytefast.flexinput.managers.EventManager;
 import com.lytefast.flexinput.model.Attachment;
 
 import org.greenrobot.eventbus.EventBus;

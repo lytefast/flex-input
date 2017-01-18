@@ -48,7 +48,6 @@ dependencies {
     compile "com.jakewharton:butterknife:8.4.0"
     annotationProcessor "com.jakewharton:butterknife-compiler:8.4.0"
 
-    compile 'org.greenrobot:eventbus:3.0.0'
     // Rx Java (reactive programming)
     compile 'io.reactivex:rxjava:1.2.0'
     compile 'io.reactivex:rxandroid:1.2.1'
