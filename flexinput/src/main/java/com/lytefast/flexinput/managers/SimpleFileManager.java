@@ -1,4 +1,4 @@
-package com.lytefast.flexinput;
+package com.lytefast.flexinput.managers;
 
 import android.content.Context;
 import android.net.Uri;

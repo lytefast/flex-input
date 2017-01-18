@@ -1,4 +1,4 @@
-package com.lytefast.flexinput.emoji;
+package com.lytefast.flexinput.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

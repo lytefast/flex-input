@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.cameraview.CameraView;
-import com.lytefast.flexinput.FileManager;
+import com.lytefast.flexinput.managers.FileManager;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
 

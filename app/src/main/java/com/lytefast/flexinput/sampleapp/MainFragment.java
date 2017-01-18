@@ -3,7 +3,6 @@ package com.lytefast.flexinput.sampleapp;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
@@ -14,23 +13,18 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
-import com.lytefast.flexinput.FileManager;
 import com.lytefast.flexinput.FlexInput;
 import com.lytefast.flexinput.InputListener;
-import com.lytefast.flexinput.KeyboardManager;
-import com.lytefast.flexinput.SimpleFileManager;
+import com.lytefast.flexinput.managers.KeyboardManager;
+import com.lytefast.flexinput.managers.SimpleFileManager;
 import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
-import com.lytefast.flexinput.emoji.Emoji;
-import com.lytefast.flexinput.fragment.EmojiCategoryPagerFragment;
 import com.lytefast.flexinput.model.Attachment;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.Optional;
 import butterknife.Unbinder;
 
 
