@@ -15,13 +15,23 @@ import android.widget.TextView;
 
 import com.lytefast.flexinput.FlexInput;
 import com.lytefast.flexinput.InputListener;
+import com.lytefast.flexinput.events.ItemClickedEvent;
+import com.lytefast.flexinput.managers.EventBusManager;
+import com.lytefast.flexinput.managers.EventManager;
+import com.lytefast.flexinput.managers.EventRxJavaManager;
 import com.lytefast.flexinput.managers.KeyboardManager;
 import com.lytefast.flexinput.managers.SimpleFileManager;
 import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
 import com.lytefast.flexinput.model.Attachment;
+import com.lytefast.flexinput.model.Emoji;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -73,6 +83,8 @@ public class MainFragment extends Fragment {
       flexInput.setEmojiFragment(getChildFragmentManager(), new UnicodeEmojiCategoryPagerFragment());
     }
 
+//    FlexInput.eventManager = new EventRxJavaManager();
+    FlexInput.eventManager = new EventBusManager();
     flexInput
         .initContentPages(getChildFragmentManager())
         // Can be extended to provide custom previews (e.g. larger preview images, onclick) etc.

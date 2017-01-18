@@ -9,11 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.lytefast.flexinput.FlexInput;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.adapters.PhotoCursorAdapter;
 import com.lytefast.flexinput.events.ClearAttachmentsEvent;
 import com.lytefast.flexinput.events.ItemClickedEvent;
+import com.lytefast.flexinput.managers.EventManager;
+import com.lytefast.flexinput.managers.EventRxJavaManager;
 import com.lytefast.flexinput.model.Photo;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 
@@ -35,6 +38,7 @@ public class PhotosFragment extends Fragment {
   @BindView(R2.id.swipeRefreshLayout) SwipeRefreshLayout swipeRefreshLayout;
   @BindView(R2.id.list) RecyclerView recyclerView;
   private Unbinder unbinder;
+  private EventManager.Bus<ClearAttachmentsEvent> bus;
 
   /**
    * Mandatory empty constructor for the fragment manager to instantiate the
@@ -67,12 +71,18 @@ public class PhotosFragment extends Fragment {
   @Override
   public void onStart() {
     super.onStart();
-    EventBus.getDefault().register(this);
+    bus = FlexInput.eventManager.register(this, ClearAttachmentsEvent.class)
+        .using(new EventManager.EventCallback<ClearAttachmentsEvent>() {
+          @Override
+          public void onEvent(ClearAttachmentsEvent event) {
+            selectionCoordinator.clearSelectedItems();
+          }
+        });
   }
 
   @Override
   public void onStop() {
-    EventBus.getDefault().unregister(this);
+    bus.unregister();
     super.onStop();
   }
 
@@ -81,13 +91,6 @@ public class PhotosFragment extends Fragment {
     unbinder.unbind();
     super.onDestroyView();
   }
-
-  //region Events
-  @Subscribe
-  void handleClearAttachmentEvent(ClearAttachmentsEvent evt) {
-    selectionCoordinator.clearSelectedItems();
-  }
-  //endregion
 
   private final SelectionCoordinator<Photo> selectionCoordinator = new SelectionCoordinator<Photo>() {
     @Override

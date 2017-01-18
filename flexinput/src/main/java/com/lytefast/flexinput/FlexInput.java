@@ -26,6 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
+import com.lytefast.flexinput.managers.EventManager;
 import com.lytefast.flexinput.model.Emoji;
 import com.lytefast.flexinput.events.ClearAttachmentsEvent;
 import com.lytefast.flexinput.events.ItemClickedEvent;
@@ -300,7 +301,8 @@ public class FlexInput extends RelativeLayout {
 
   @OnClick(R2.id.attachment_clear_btn)
   void clearAttachments() {
-    EventBus.getDefault().post(new ClearAttachmentsEvent());
+//    EventBus.getDefault().post(new ClearAttachmentsEvent());
+    FlexInput.eventManager.postOnClearAttachments();
     attachmentPreviewAdapter.clear();
     attachmentPreviewContainer.setVisibility(GONE);
   }
@@ -411,6 +413,8 @@ public class FlexInput extends RelativeLayout {
 
 
   //region Events
+
+  public static EventManager eventManager;
 
   @Subscribe(threadMode = ThreadMode.MAIN)
   public void handleItemClick(ItemClickedEvent<?> event) {

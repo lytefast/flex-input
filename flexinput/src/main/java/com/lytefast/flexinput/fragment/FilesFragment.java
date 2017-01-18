@@ -12,11 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.lytefast.flexinput.FlexInput;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.adapters.FileListAdapter;
 import com.lytefast.flexinput.events.ClearAttachmentsEvent;
 import com.lytefast.flexinput.events.ItemClickedEvent;
+import com.lytefast.flexinput.managers.EventManager;
 import com.lytefast.flexinput.utils.FileUtils;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 
@@ -41,6 +43,7 @@ public class FilesFragment extends Fragment {
   @BindView(R2.id.list) RecyclerView recyclerView;
   private Unbinder unbinder;
   private FileListAdapter adapter;
+  private EventManager.Bus<ClearAttachmentsEvent> bus;
 
   /**
    * Mandatory empty constructor for the fragment manager to instantiate the
@@ -76,12 +79,18 @@ public class FilesFragment extends Fragment {
   public void onStart() {
     super.onStart();
     loadDownloadFolder();
-    EventBus.getDefault().register(this);
+    bus = FlexInput.eventManager.register(this, ClearAttachmentsEvent.class)
+        .using(new EventManager.EventCallback<ClearAttachmentsEvent>() {
+          @Override
+          public void onEvent(ClearAttachmentsEvent event) {
+            selectionCoordinator.clearSelectedItems();
+          }
+        });
   }
 
   @Override
   public void onStop() {
-    EventBus.getDefault().unregister(this);
+    bus.unregister();
     super.onStop();
   }
 
@@ -90,11 +99,6 @@ public class FilesFragment extends Fragment {
         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
     adapter.load(downloadFolder);
     swipeRefreshLayout.setRefreshing(false);
-  }
-
-  @Subscribe
-  void handleClearAttachmentEvent(ClearAttachmentsEvent evt) {
-    selectionCoordinator.clearSelectedItems();
   }
 
   private final SelectionCoordinator<File> selectionCoordinator = new SelectionCoordinator<File>() {
