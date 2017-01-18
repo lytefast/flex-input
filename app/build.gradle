@@ -23,6 +23,7 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(path: ':flexinput')
     compile project(path: ':flexinput-eventbus')
+    compile project(path: ':flexinput-rxjava')
 
     compile "com.android.support:appcompat-v7:$supportLibraryVersion"
     compile "com.android.support:design:$supportLibraryVersion"

@@ -1,1 +1,1 @@
-include ':app', ':flexinput', ':flexinput-eventbus', 'cameraview'
+include ':app', ':flexinput', ':flexinput-eventbus', ':flexinput-rxjava', 'cameraview'

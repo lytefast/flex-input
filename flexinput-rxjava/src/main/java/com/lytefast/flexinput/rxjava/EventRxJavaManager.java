@@ -1,30 +1,23 @@
-package com.lytefast.flexinput.managers;
+package com.lytefast.flexinput.rxjava;
 
 import android.support.annotation.NonNull;
 
 import com.lytefast.flexinput.events.ClearAttachmentsEvent;
 import com.lytefast.flexinput.events.ItemClickedEvent;
+import com.lytefast.flexinput.managers.EventManager;
 import com.lytefast.flexinput.model.Attachment;
-import com.lytefast.flexinput.model.Emoji;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Observable;
-import java.util.concurrent.Callable;
 
 import rx.Subscription;
 import rx.functions.Action1;
 import rx.subjects.PublishSubject;
 import rx.subjects.SerializedSubject;
-import rx.subjects.Subject;
 
 
 /**
- * @author ${USER_NAME} on 1/18/17.
+ * @author Sam Shih
  */
 public class EventRxJavaManager implements EventManager {
 
