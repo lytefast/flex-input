@@ -30,14 +30,13 @@ import com.lytefast.flexinput.InputListener;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
+import com.lytefast.flexinput.FlexInputCoordinator;
 import com.lytefast.flexinput.managers.FileManager;
 import com.lytefast.flexinput.managers.KeyboardManager;
 import com.lytefast.flexinput.model.Attachment;
-import com.lytefast.flexinput.utils.FileUtils;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 import com.lytefast.flexinput.utils.WidgetUtils;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -51,7 +50,7 @@ import butterknife.Unbinder;
 /**
  * @author Sam Shih
  */
-public class FlexInputFragment extends Fragment {
+public class FlexInputFragment extends Fragment implements FlexInputCoordinator {
 
   public static final int TAB_PHOTOS = 1;
   public static final int TAB_FILES = 0;
@@ -218,9 +217,7 @@ public class FlexInputFragment extends Fragment {
           case TAB_PHOTOS:
             return new PhotosFragment();
           case TAB_CAMERA:
-            return new CameraFragment()
-                .setFileManager(fileManager)
-                .setPhotoTakenCallback(cameraPhotoTakenCallback);
+            return new CameraFragment();
         }
       }
 
@@ -397,35 +394,6 @@ public class FlexInputFragment extends Fragment {
     emojiBtn.setImageResource(R.drawable.ic_keyboard_24dp);
   }
 
-  private final CameraFragment.PhotoTakenCallback cameraPhotoTakenCallback = new CameraFragment.PhotoTakenCallback() {
-    @Override
-    public void onPhotoTaken(final File photoFile) {
-      getView().post(new Runnable() {
-        @Override
-        public void run() {
-          onAddToggle();
-          handleAttachmentClick(FileUtils.toAttachment(photoFile));
-          // TODO invalidate photo picker
-        }
-      });
-    }
-  };
-
-  public <T extends Attachment> void addSelectionCoordinator(SelectionCoordinator<T> coordinator) {
-    this.selectionCoordinators.add(coordinator);
-    coordinator.setItemSelectionListener(new SelectionCoordinator.ItemSelectionListener<T>() {
-      @Override
-      public void onItemSelected(T item) {
-        handleAttachmentClick(item);
-      }
-
-      @Override
-      public void onItemUnselected(T item) {
-        handleAttachmentClick(item);
-      }
-    });
-  }
-
   @Override
   public void onAttachFragment(final Fragment childFragment) {
     super.onAttachFragment(childFragment);
@@ -442,4 +410,41 @@ public class FlexInputFragment extends Fragment {
     attachmentPreviewContainer.setVisibility(
         attachmentPreviewAdapter.getItemCount() == 0 ? View.GONE : View.VISIBLE);
   }
+
+  // region FlexInputController methods
+
+  @Override
+  public <T extends Attachment> void onPhotoTaken(final T photo) {
+    getView().post(new Runnable() {
+      @Override
+      public void run() {
+        onAddToggle();
+        handleAttachmentClick(photo);
+        // TODO invalidate photo picker
+      }
+    });
+  }
+
+  @Override
+  public FileManager getFileManager() {
+    return fileManager;
+  }
+
+  @Override
+  public <T extends Attachment> void addSelectionCoordinator(SelectionCoordinator<T> coordinator) {
+    this.selectionCoordinators.add(coordinator);
+    coordinator.setItemSelectionListener(new SelectionCoordinator.ItemSelectionListener<T>() {
+      @Override
+      public void onItemSelected(T item) {
+        handleAttachmentClick(item);
+      }
+
+      @Override
+      public void onItemUnselected(T item) {
+        handleAttachmentClick(item);
+      }
+    });
+  }
+
+  // endregion
 }

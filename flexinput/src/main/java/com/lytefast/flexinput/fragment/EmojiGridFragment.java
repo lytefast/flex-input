@@ -40,7 +40,7 @@ public class EmojiGridFragment extends Fragment {
   @Override
   public void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    Fragment parentFrag = getParentFragment();
+    final Fragment parentFrag = getParentFragment();
     if (parentFrag instanceof FlexInputFragment) {
       flexInputFrag = (FlexInputFragment) parentFrag;
     }

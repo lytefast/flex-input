@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.lytefast.flexinput.FlexInputCoordinator;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.adapters.PhotoCursorAdapter;
@@ -44,10 +45,10 @@ public class PhotosFragment extends Fragment {
   @Override
   public void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    Fragment parentFrag = getParentFragment();
-    if (parentFrag instanceof FlexInputFragment) {
-      FlexInputFragment flexInputFrag = (FlexInputFragment) parentFrag;
-      flexInputFrag.addSelectionCoordinator(selectionCoordinator);
+    final Fragment parentFrag = getParentFragment();
+    if (parentFrag instanceof FlexInputCoordinator) {
+      FlexInputCoordinator flexInputCoordinator = (FlexInputCoordinator) parentFrag;
+      flexInputCoordinator.addSelectionCoordinator(selectionCoordinator);
     }
   }
 
