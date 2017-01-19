@@ -25,7 +25,7 @@ public class EventBusManager implements EventManager {
   }
 
   @Override
-  public void postOnItemClicked(final Attachment item) {
+  public <T> void postOnItemClicked(final T item) {
     EventBus.getDefault().post(new ItemClickedEvent<>(item));
   }
 

@@ -26,23 +26,18 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
-import com.lytefast.flexinput.managers.EventManager;
-import com.lytefast.flexinput.model.Emoji;
-import com.lytefast.flexinput.events.ClearAttachmentsEvent;
 import com.lytefast.flexinput.events.ItemClickedEvent;
 import com.lytefast.flexinput.fragment.CameraFragment;
 import com.lytefast.flexinput.fragment.CameraFragment.PhotoTakenCallback;
 import com.lytefast.flexinput.fragment.FilesFragment;
 import com.lytefast.flexinput.fragment.PhotosFragment;
+import com.lytefast.flexinput.managers.EventManager;
 import com.lytefast.flexinput.managers.FileManager;
 import com.lytefast.flexinput.managers.KeyboardManager;
 import com.lytefast.flexinput.model.Attachment;
+import com.lytefast.flexinput.model.Emoji;
 import com.lytefast.flexinput.utils.FileUtils;
 import com.lytefast.flexinput.utils.WidgetUtils;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 
@@ -80,6 +75,7 @@ public class FlexInput extends RelativeLayout {
 
   private FileManager fileManager;
   private AttachmentPreviewAdapter attachmentPreviewAdapter;
+  private EventManager.Bus<ItemClickedEvent> itemEventBus;
 
 
   public FlexInput(Context context) {
@@ -149,12 +145,24 @@ public class FlexInput extends RelativeLayout {
   @Override
   protected void onAttachedToWindow() {
     super.onAttachedToWindow();
-    EventBus.getDefault().register(this);
+    itemEventBus = FlexInput.eventManager
+        .register(this, ItemClickedEvent.class)
+        .using(new EventManager.EventCallback<ItemClickedEvent>() {
+          @Override
+          public void onEvent(final ItemClickedEvent value) {
+            post(new Runnable() {
+              @Override
+              public void run() {
+                handleItemClick(value);
+              }
+            });
+          }
+        });
   }
 
   @Override
   protected void onDetachedFromWindow() {
-    EventBus.getDefault().unregister(this);
+    itemEventBus.unregister();
     super.onDetachedFromWindow();
   }
 
@@ -301,7 +309,6 @@ public class FlexInput extends RelativeLayout {
 
   @OnClick(R2.id.attachment_clear_btn)
   void clearAttachments() {
-//    EventBus.getDefault().post(new ClearAttachmentsEvent());
     FlexInput.eventManager.postOnClearAttachments();
     attachmentPreviewAdapter.clear();
     attachmentPreviewContainer.setVisibility(GONE);
@@ -416,7 +423,6 @@ public class FlexInput extends RelativeLayout {
 
   public static EventManager eventManager;
 
-  @Subscribe(threadMode = ThreadMode.MAIN)
   public void handleItemClick(ItemClickedEvent<?> event) {
     Object item = event.item;
     if (item instanceof Emoji) {

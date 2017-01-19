@@ -44,7 +44,7 @@ public class EventRxJavaManager implements EventManager {
   }
 
   @Override
-  public void postOnItemClicked(final Attachment item) {
+  public <T> void postOnItemClicked(final T item) {
     getOrCreate(ItemClickedEvent.class)
         .onNext(new ItemClickedEvent(item));
   }

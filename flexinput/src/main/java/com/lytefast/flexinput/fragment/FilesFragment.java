@@ -17,13 +17,9 @@ import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.adapters.FileListAdapter;
 import com.lytefast.flexinput.events.ClearAttachmentsEvent;
-import com.lytefast.flexinput.events.ItemClickedEvent;
 import com.lytefast.flexinput.managers.EventManager;
 import com.lytefast.flexinput.utils.FileUtils;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 
@@ -104,13 +100,13 @@ public class FilesFragment extends Fragment {
   private final SelectionCoordinator<File> selectionCoordinator = new SelectionCoordinator<File>() {
     @Override
     public void onItemSelected(final File item) {
-      EventBus.getDefault().post(new ItemClickedEvent<>(FileUtils.toAttachment(item)));
+      FlexInput.eventManager.postOnItemClicked(FileUtils.toAttachment(item));
       Log.d(getClass().getCanonicalName(), "Select: " + item.getPath());
     }
 
     @Override
     public void onItemUnselected(final File item) {
-      EventBus.getDefault().post(new ItemClickedEvent<>(FileUtils.toAttachment(item)));
+      FlexInput.eventManager.postOnItemClicked(FileUtils.toAttachment(item));
       Log.d(getClass().getCanonicalName(), "Remove: " + item.getPath());
     }
   };

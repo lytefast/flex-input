@@ -15,7 +15,7 @@ public interface EventManager {
 
   <T> Bus<T> register(Object target, Class<T> clazz);
 
-  void postOnItemClicked(Attachment item);
+  <T> void postOnItemClicked(T item);
   void postOnClearAttachments();
 
   interface Bus<T> {
