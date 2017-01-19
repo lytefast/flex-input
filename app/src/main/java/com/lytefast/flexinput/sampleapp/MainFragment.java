@@ -11,16 +11,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.TextView;
 
 import com.lytefast.flexinput.InputListener;
+import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
 import com.lytefast.flexinput.fragment.FlexInputFragment;
 import com.lytefast.flexinput.managers.KeyboardManager;
 import com.lytefast.flexinput.managers.SimpleFileManager;
-import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
 import com.lytefast.flexinput.model.Attachment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -114,43 +112,4 @@ public class MainFragment extends Fragment {
       }
     }
   };
-
-  private class MessageAdapter extends RecyclerView.Adapter<ViewHolder> {
-    List<Editable> msgList = new ArrayList<>();
-
-    @Override
-    public ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
-    View view = LayoutInflater.from(parent.getContext())
-        .inflate(R.layout.message_row, parent, false);
-    return new ViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
-      holder.bind(msgList.get(position));
-    }
-
-    @Override
-    public int getItemCount() {
-      return msgList.size();
-    }
-
-    public void addMessage(Editable msg) {
-      msgList.add(msg);
-      notifyItemInserted(msgList.size() - 1);
-    }
-  }
-
-  class ViewHolder extends RecyclerView.ViewHolder {
-    @BindView(R.id.message_tv) TextView messageTv;
-
-    public ViewHolder(final View itemView) {
-      super(itemView);
-      ButterKnife.bind(this, itemView);
-    }
-
-    public void bind(Editable data) {
-      messageTv.setText(data);
-    }
-  }
 }
