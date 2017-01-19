@@ -71,6 +71,7 @@ public class MainFragment extends Fragment {
     flexInput = (FlexInputFragment) getChildFragmentManager().findFragmentById(R.id.flex_input);
     if (savedInstanceState == null) {
       // Only create fragment on first load
+      // UnicodeEmojiCategoryPagerFragment is a default implementation (see sample app)
       flexInput.setEmojiFragment(new UnicodeEmojiCategoryPagerFragment());
     }
 
