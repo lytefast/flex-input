@@ -16,9 +16,6 @@ import android.widget.Toast;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.model.Emoji;
-import com.lytefast.flexinput.events.ItemClickedEvent;
-
-import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,7 +35,16 @@ public class EmojiGridFragment extends Fragment {
   private Unbinder unbinder;
 
   private Emoji.EmojiCategory emojiCategory;
+  private FlexInputFragment flexInputFrag;
 
+  @Override
+  public void onCreate(@Nullable final Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    Fragment parentFrag = getParentFragment();
+    if (parentFrag instanceof FlexInputFragment) {
+      flexInputFrag = (FlexInputFragment) parentFrag;
+    }
+  }
 
   @Nullable
   @Override
@@ -119,7 +125,7 @@ public class EmojiGridFragment extends Fragment {
         itemView.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(final View v) {
-            EventBus.getDefault().post(new ItemClickedEvent<Emoji>(emoji));
+            flexInputFrag.append(emoji.strValue);
           }
         });
       }

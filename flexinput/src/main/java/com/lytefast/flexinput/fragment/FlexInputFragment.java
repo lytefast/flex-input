@@ -1,17 +1,17 @@
-package com.lytefast.flexinput;
+package com.lytefast.flexinput.fragment;
 
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
@@ -20,44 +20,39 @@ import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.RelativeLayout;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.lytefast.flexinput.InputListener;
+import com.lytefast.flexinput.R;
+import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
-import com.lytefast.flexinput.model.Emoji;
-import com.lytefast.flexinput.events.ClearAttachmentsEvent;
-import com.lytefast.flexinput.events.ItemClickedEvent;
-import com.lytefast.flexinput.fragment.CameraFragment;
-import com.lytefast.flexinput.fragment.CameraFragment.PhotoTakenCallback;
-import com.lytefast.flexinput.fragment.FilesFragment;
-import com.lytefast.flexinput.fragment.PhotosFragment;
 import com.lytefast.flexinput.managers.FileManager;
 import com.lytefast.flexinput.managers.KeyboardManager;
 import com.lytefast.flexinput.model.Attachment;
 import com.lytefast.flexinput.utils.FileUtils;
+import com.lytefast.flexinput.utils.SelectionCoordinator;
 import com.lytefast.flexinput.utils.WidgetUtils;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
 import java.io.File;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
 import butterknife.OnTouch;
+import butterknife.Unbinder;
 
 
 /**
- * Text, emoji, and media input field.
- *
  * @author Sam Shih
  */
-public class FlexInput extends RelativeLayout {
+public class FlexInputFragment extends Fragment {
+
   public static final int TAB_PHOTOS = 1;
   public static final int TAB_FILES = 0;
   public static final int TAB_CAMERA = 2;
@@ -67,49 +62,66 @@ public class FlexInput extends RelativeLayout {
   @BindView(R2.id.add_content_container) View addContentContainer;
   @BindView(R2.id.emoji_container) View emojiContainer;
 
-  @BindView(R2.id.attachment_preview_list) RecyclerView attachmentPreviewList;
+  @BindView(R2.id.attachment_preview_list)
+  RecyclerView attachmentPreviewList;
 
   @BindView(R2.id.text_input) AppCompatEditText textEt;
   @BindView(R2.id.emoji_btn) AppCompatImageButton emojiBtn;
   @BindView(R2.id.add_content_pager) ViewPager addContentPager;
   @BindView(R2.id.add_content_tabs) TabLayout addContentTabs;
 
+    /**
+   * Temporarily stores the UI attributes until we can apply them after inflation.
+   */
+  private Runnable initializeUiAttributes;
+
+
   private KeyboardManager keyboardManager;
   private InputListener inputListener;
 
   private FileManager fileManager;
   private AttachmentPreviewAdapter attachmentPreviewAdapter;
+  private final ArrayList<SelectionCoordinator<?>> selectionCoordinators = new ArrayList<>(4);
+  private Unbinder unbinder;
 
 
-  public FlexInput(Context context) {
-    super(context);
-    init(null, 0);
-  }
-
-  public FlexInput(Context context, AttributeSet attrs) {
-    super(context, attrs);
-    init(attrs, 0);
-  }
-
-  public FlexInput(Context context, AttributeSet attrs, int defStyle) {
-    super(context, attrs, defStyle);
-    init(attrs, defStyle);
-  }
+  public FlexInputFragment() {}
 
   //region Initialization Methods
-  private void init(AttributeSet attrs, int defStyle) {
-    inflate(getContext(), R.layout.flex_input_widget, this);
-    ButterKnife.bind(this);
+  @Override
+  public void onInflate(final Context context, final AttributeSet attrs, final Bundle savedInstanceState) {
+    super.onInflate(context, attrs, savedInstanceState);
 
-    setFocusable(true);
-    setFocusableInTouchMode(true);
+    initializeUiAttributes = new Runnable() {
+      @Override
+      public void run() {
+        initAttributes(attrs);
+      }
+    };
 
-    initAttributes(attrs, defStyle);
   }
 
-  private void initAttributes(final AttributeSet attrs, final int defStyle) {
-    final TypedArray a = getContext().obtainStyledAttributes(
-        attrs, R.styleable.FlexInput, defStyle, 0);
+  @Nullable
+  @Override
+  public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable final Bundle savedInstanceState) {
+    View root = inflater.inflate(R.layout.flex_input_widget, container, false);
+    this.unbinder = ButterKnife.bind(this, root);
+
+    this.initializeUiAttributes.run();
+    this.initializeUiAttributes = null;
+
+    initContentPages();
+    return root;
+  }
+
+  @Override
+  public void onDestroyView() {
+    this.unbinder.unbind();
+    super.onDestroyView();
+  }
+
+  private void initAttributes(final AttributeSet attrs) {
+    final TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.FlexInput);
 
     try {
       final CharSequence hintText = a.getText(R.styleable.FlexInput_hint);
@@ -124,19 +136,19 @@ public class FlexInput extends RelativeLayout {
 
       if (a.hasValue(R.styleable.FlexInput_inputBackground)) {
         Drawable backgroundDrawable = a.getDrawable(R.styleable.FlexInput_inputBackground);
-        backgroundDrawable.setCallback(this);
+        backgroundDrawable.setCallback(getView());
         inputContainer.setBackground(backgroundDrawable);
       }
 
       if (a.hasValue(R.styleable.FlexInput_previewBackground)) {
         Drawable backgroundDrawable = a.getDrawable(R.styleable.FlexInput_previewBackground);
-        backgroundDrawable.setCallback(this);
+        backgroundDrawable.setCallback(getView());
         attachmentPreviewContainer.setBackground(backgroundDrawable);
       }
 
       if (a.hasValue(R.styleable.FlexInput_tabsBackground)) {
         Drawable backgroundDrawable = a.getDrawable(R.styleable.FlexInput_tabsBackground);
-        backgroundDrawable.setCallback(this);
+        backgroundDrawable.setCallback(getView());
         addContentTabs.setBackground(backgroundDrawable);
       }
     } finally {
@@ -144,18 +156,6 @@ public class FlexInput extends RelativeLayout {
     }
   }
   //endregion
-
-  @Override
-  protected void onAttachedToWindow() {
-    super.onAttachedToWindow();
-    EventBus.getDefault().register(this);
-  }
-
-  @Override
-  protected void onDetachedFromWindow() {
-    EventBus.getDefault().unregister(this);
-    super.onDetachedFromWindow();
-  }
 
   /**
    * Set the custom emoji {@link Fragment} for the input.
@@ -166,16 +166,15 @@ public class FlexInput extends RelativeLayout {
    * @return
    */
   //region Functional Setters
-  public FlexInput setEmojiFragment(
-      final FragmentManager childFragmentManager, final Fragment emojiFragment) {
-    childFragmentManager
+  public FlexInputFragment setEmojiFragment(final Fragment emojiFragment) {
+    getChildFragmentManager()
         .beginTransaction()
         .replace(R.id.emoji_container, emojiFragment)
         .commit();
     return this;
   }
 
-  public FlexInput setInputListener(@NonNull final InputListener inputListener) {
+  public FlexInputFragment setInputListener(@NonNull final InputListener inputListener) {
     this.inputListener = inputListener;
     return this;
   }
@@ -186,29 +185,29 @@ public class FlexInput extends RelativeLayout {
    *
    * @param previewAdapter An adapter that knows how to display {@link Attachment}s
    *
-   * @return the current instance of {@link FlexInput} for chaining commands
+   * @return the current instance of {@link FlexInputFragment} for chaining commands
    *
    * @see AttachmentPreviewAdapter#AttachmentPreviewAdapter(ContentResolver) for a default implementation of attachment previews
    */
-  public FlexInput setAttachmentPreviewAdapter(@NonNull final AttachmentPreviewAdapter previewAdapter) {
+  public FlexInputFragment setAttachmentPreviewAdapter(@NonNull final AttachmentPreviewAdapter previewAdapter) {
     this.attachmentPreviewAdapter = previewAdapter;
     this.attachmentPreviewList.setAdapter(attachmentPreviewAdapter);
     return this;
   }
 
-  public FlexInput setFileManager(@NonNull final FileManager fileManager) {
+  public FlexInputFragment setFileManager(@NonNull final FileManager fileManager) {
     this.fileManager = fileManager;
     return this;
   }
   //endregion
 
-  public FlexInput setKeyboardManager(KeyboardManager keyboardManager) {
+  public FlexInputFragment setKeyboardManager(KeyboardManager keyboardManager) {
     this.keyboardManager = keyboardManager;
     return this;
   }
 
-  public FlexInput initContentPages(final FragmentManager fragmentManager) {
-    return initContentPages(new FragmentPagerAdapter(fragmentManager) {
+  public FlexInputFragment initContentPages() {
+    return initContentPages(new FragmentPagerAdapter(getChildFragmentManager()) {
       @Override
       public Fragment getItem(final int position) {
         switch (position) {
@@ -232,7 +231,7 @@ public class FlexInput extends RelativeLayout {
     });
   }
 
-  public FlexInput initContentPages(final FragmentPagerAdapter pagerAdapter) {
+  public FlexInputFragment initContentPages(final FragmentPagerAdapter pagerAdapter) {
     addContentPager.setAdapter(pagerAdapter);
     synchronizeTabAndPagerEvents();
     initIconColors();
@@ -286,6 +285,16 @@ public class FlexInput extends RelativeLayout {
       }
     }
   }
+  public void requestFocus() {
+    getView().post(new Runnable() {
+      @Override
+      public void run() {
+        textEt.requestFocus();
+      }
+    });
+  }
+
+  // region UI Event Handlers
 
   @OnClick(R2.id.send_btn)
   void onSend() {
@@ -300,9 +309,12 @@ public class FlexInput extends RelativeLayout {
 
   @OnClick(R2.id.attachment_clear_btn)
   void clearAttachments() {
-    EventBus.getDefault().post(new ClearAttachmentsEvent());
     attachmentPreviewAdapter.clear();
-    attachmentPreviewContainer.setVisibility(GONE);
+    attachmentPreviewContainer.setVisibility(View.GONE);
+
+    for (SelectionCoordinator<?> coordinators : selectionCoordinators) {
+      coordinators.clearSelectedItems();
+    }
   }
 
   @OnLongClick(R2.id.add_btn)
@@ -343,95 +355,91 @@ public class FlexInput extends RelativeLayout {
 
   @OnClick(R2.id.emoji_btn)
   void onEmojiToggle() {
-    if (emojiContainer.getVisibility() == VISIBLE) {
+    if (emojiContainer.getVisibility() == View.VISIBLE) {
       hideEmojiTray();
       keyboardManager.requestDisplay();
     } else {
       showEmojiTray();
     }
 
-    addContentPager.setVisibility(GONE);
-  }
-
-  @Override
-  public boolean requestFocus(final int direction, final Rect previouslyFocusedRect) {
-    boolean succeeded = super.requestFocus(direction, previouslyFocusedRect);
-    post(new Runnable() {
-      @Override
-      public void run() {
-        textEt.requestFocus();
-      }
-    });
-    return succeeded;
+    addContentPager.setVisibility(View.GONE);
   }
 
   @OnClick(R2.id.add_btn)
   void onAddToggle() {
     hideEmojiTray();
-    if (addContentContainer.getVisibility() == VISIBLE) {
-      addContentContainer.setVisibility(GONE);
-      addContentPager.setVisibility(GONE);  // set this to force destroy fragments
+    if (addContentContainer.getVisibility() == View.VISIBLE) {
+      addContentContainer.setVisibility(View.GONE);
+      addContentPager.setVisibility(View.GONE);  // set this to force destroy fragments
 
-      inputContainer.setVisibility(VISIBLE);
+      inputContainer.setVisibility(View.VISIBLE);
       keyboardManager.requestDisplay();
     } else {
-      addContentContainer.setVisibility(VISIBLE);
-      addContentPager.setVisibility(VISIBLE);
+      addContentContainer.setVisibility(View.VISIBLE);
+      addContentPager.setVisibility(View.VISIBLE);
       addContentTabs.getTabAt(1).select(); // TODO: remember last saved tab selection
 
-      inputContainer.setVisibility(GONE);
+      inputContainer.setVisibility(View.GONE);
       keyboardManager.requestHide();  // Make sure the keyboard is hidden
     }
   }
 
+  // endregion
+
   private void hideEmojiTray() {
-    emojiContainer.setVisibility(GONE);
+    emojiContainer.setVisibility(View.GONE);
     emojiBtn.setImageResource(R.drawable.ic_insert_emoticon_24dp);
   }
 
   private void showEmojiTray() {
-    emojiContainer.setVisibility(VISIBLE);
+    emojiContainer.setVisibility(View.VISIBLE);
     keyboardManager.requestHide();
     emojiBtn.setImageResource(R.drawable.ic_keyboard_24dp);
   }
 
-  private final PhotoTakenCallback cameraPhotoTakenCallback = new PhotoTakenCallback() {
+  private final CameraFragment.PhotoTakenCallback cameraPhotoTakenCallback = new CameraFragment.PhotoTakenCallback() {
     @Override
     public void onPhotoTaken(final File photoFile) {
-      post(new Runnable() {
+      getView().post(new Runnable() {
         @Override
         public void run() {
           onAddToggle();
-          handleAttachmentClick(new ItemClickedEvent<>(FileUtils.toAttachment(photoFile)));
+          handleAttachmentClick(FileUtils.toAttachment(photoFile));
           // TODO invalidate photo picker
         }
       });
     }
   };
 
+  public <T extends Attachment> void addSelectionCoordinator(SelectionCoordinator<T> coordinator) {
+    this.selectionCoordinators.add(coordinator);
+    coordinator.setItemSelectionListener(new SelectionCoordinator.ItemSelectionListener<T>() {
+      @Override
+      public void onItemSelected(T item) {
+        handleAttachmentClick(item);
+      }
 
-  //region Events
-
-  @Subscribe(threadMode = ThreadMode.MAIN)
-  public void handleItemClick(ItemClickedEvent<?> event) {
-    Object item = event.item;
-    if (item instanceof Emoji) {
-      handleEmojiClick((ItemClickedEvent<Emoji>) event);
-    } else {
-      handleAttachmentClick((ItemClickedEvent<Attachment>) event);
-    }
+      @Override
+      public void onItemUnselected(T item) {
+        handleAttachmentClick(item);
+      }
+    });
   }
 
-  public void handleEmojiClick(ItemClickedEvent<Emoji> event) {
+  @Override
+  public void onAttachFragment(final Fragment childFragment) {
+    super.onAttachFragment(childFragment);
+  }
+
+
+  public void append(CharSequence data) {
     // TODO figure out some way to allow custom spannables (e.g. fresco's DraweeSpan)
-    textEt.getText().append(event.item.strValue);
+    textEt.getText().append(data);
   }
 
-  public void handleAttachmentClick(ItemClickedEvent<Attachment> event) {
-    attachmentPreviewAdapter.toggleItem(event.item);
+  public void handleAttachmentClick(Attachment item) {
+    attachmentPreviewAdapter.toggleItem(item);
     attachmentPreviewContainer.setVisibility(
-        attachmentPreviewAdapter.getItemCount() == 0 ? GONE : VISIBLE);
+        attachmentPreviewAdapter.getItemCount() == 0 ? View.GONE : View.VISIBLE);
   }
-
-  //endregion
 }

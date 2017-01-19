@@ -29,8 +29,9 @@
         </android.support.v7.widget.RecyclerView>
     </LinearLayout>
 
-    <com.lytefast.flexinput.FlexInput
-        android:id="@+id/fancy_input"
+    <fragment
+        android:id="@+id/flex_input"
+        android:name="com.lytefast.flexinput.fragment.FlexInputFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:focusable="true"
