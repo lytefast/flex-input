@@ -110,6 +110,7 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
     this.initializeUiAttributes = null;
 
     initContentPages();
+    setAttachmentPreviewAdapter(new AttachmentPreviewAdapter(getContext().getContentResolver()));
     return root;
   }
 
