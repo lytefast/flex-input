@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <color name="colorPrimary">#333333</color>
+    <color name="colorPrimaryDark">#1d1d1d</color>
+
     <color name="selected">#FF458BBE</color>
     <color name="selected_alpha_50">#88458BBE</color>
 </resources>

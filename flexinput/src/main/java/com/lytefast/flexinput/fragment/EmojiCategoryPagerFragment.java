@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -16,7 +17,6 @@ import android.view.ViewGroup;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.model.Emoji;
-import com.lytefast.flexinput.utils.WidgetUtils;
 
 import java.util.List;
 
@@ -85,9 +85,8 @@ public abstract class EmojiCategoryPagerFragment extends Fragment {
   }
 
   private void setIcons(final List<Emoji.EmojiCategory> emojiCategories) {
-
-    ColorStateList iconColors = WidgetUtils.getColorStateList(getContext(),
-                                                              R.color.tab_icon_color_selector);
+    ColorStateList iconColors =
+        ContextCompat.getColorStateList(getContext(), R.color.tab_icon_color_selector);
 
     for (int i = 0; i < emojiCategories.size(); i++) {
       TabLayout.Tab tab = pageTabs.getTabAt(i)

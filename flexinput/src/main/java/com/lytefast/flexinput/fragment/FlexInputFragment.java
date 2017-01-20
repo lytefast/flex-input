@@ -3,6 +3,7 @@ package com.lytefast.flexinput.fragment;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -13,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.AppCompatEditText;
@@ -20,6 +22,7 @@ import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -35,9 +38,9 @@ import com.lytefast.flexinput.managers.FileManager;
 import com.lytefast.flexinput.managers.KeyboardManager;
 import com.lytefast.flexinput.model.Attachment;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
-import com.lytefast.flexinput.utils.WidgetUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -269,9 +272,9 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
     });
   }
 
-   private void initIconColors() {
-    ColorStateList iconColors = WidgetUtils.getColorStateList(getContext(),
-                                                              R.color.tab_icon_color_selector);
+  private void initIconColors() {
+    ColorStateList iconColors =
+        ContextCompat.getColorStateList(getContext(), R.color.tab_icon_color_selector);
 
     for (int i = 0; i < addContentTabs.getTabCount(); i++) {
       TabLayout.Tab tab = addContentTabs.getTabAt(i);
@@ -283,6 +286,7 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
       }
     }
   }
+
   public void requestFocus() {
     getView().post(new Runnable() {
       @Override

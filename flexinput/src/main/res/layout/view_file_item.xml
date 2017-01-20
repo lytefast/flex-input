@@ -22,7 +22,7 @@
         android:layout_alignBottom="@id/thumb_iv"
         android:layout_alignEnd="@id/thumb_iv"
         android:layout_alignRight="@id/thumb_iv"
-        android:tint="?android:textColorPrimary"
+        android:tint="?colorPrimary"
         tools:src="@drawable/ic_file_24dp"/>
 
     <TextView
