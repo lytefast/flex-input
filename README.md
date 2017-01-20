@@ -67,6 +67,7 @@ public void onViewCreated(final View view, @Nullable final Bundle savedInstanceS
   }
 
   flexInput
+      .initContentPages(/* You can add custom PageSuppliers here */)
       // Can be extended to provide custom previews (e.g. larger preview images, onclick) etc.
       .setAttachmentPreviewAdapter(new AttachmentPreviewAdapter(getContext().getContentResolver()))
       .setInputListener(flexInputListener)
