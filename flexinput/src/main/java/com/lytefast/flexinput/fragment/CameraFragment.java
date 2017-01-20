@@ -18,9 +18,10 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.cameraview.CameraView;
-import com.lytefast.flexinput.managers.FileManager;
+import com.lytefast.flexinput.FlexInputCoordinator;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
+import com.lytefast.flexinput.utils.FileUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -48,9 +49,17 @@ public class CameraFragment extends Fragment {
   @BindView(R2.id.camera_view) CameraView cameraView;
   private Unbinder unbinder;
 
-  private PhotoTakenCallback photoTakenCallback;
-  private FileManager fileManager;
+  private FlexInputCoordinator flexInputCoordinator;
 
+
+  @Override
+  public void onCreate(@Nullable final Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    final Fragment parentFrag = getParentFragment();
+    if (parentFrag instanceof FlexInputCoordinator) {
+      this.flexInputCoordinator = (FlexInputCoordinator) parentFrag;
+    }
+  }
 
   @Nullable
   @Override
@@ -94,29 +103,19 @@ public class CameraFragment extends Fragment {
   void onLaunchCameraClick() {
     cameraView.stop();
 
-    final File photoFile = fileManager.newImageFile();
-    photoTakenCallback.onPhotoTaken(photoFile);
+    final File photoFile = flexInputCoordinator.getFileManager().newImageFile();
+    flexInputCoordinator.onPhotoTaken(FileUtils.toAttachment(photoFile));
 
-    Uri photoUri = fileManager.toFileProviderUri(getContext(), photoFile);
+    Uri photoUri = flexInputCoordinator.getFileManager().toFileProviderUri(getContext(), photoFile);
     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         .putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
         .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
     if (takePictureIntent.resolveActivity(getContext().getPackageManager()) != null) {
       grantWriteAccessToURI(getContext(), takePictureIntent, photoUri);
       startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
       // TODO need to handle the result: 1) save thumbnail, 2) call #addToMediaStore
     }
-  }
-
-  // FIXME on screen rotation, this reference is lost since fragment is recreated.
-  public CameraFragment setFileManager(final FileManager fileManager) {
-    this.fileManager = fileManager;
-    return this;
-  }
-
-  public CameraFragment setPhotoTakenCallback(final PhotoTakenCallback photoTakenCallback) {
-    this.photoTakenCallback = photoTakenCallback;
-    return this;
   }
 
   private final CameraView.Callback cameraCallback = new CameraView.Callback() {
@@ -140,7 +139,7 @@ public class CameraFragment extends Fragment {
           AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
-              File file = fileManager.newImageFile();
+              File file = flexInputCoordinator.getFileManager().newImageFile();
               OutputStream os = null;
               try {
                 os = new FileOutputStream(file);
@@ -148,7 +147,7 @@ public class CameraFragment extends Fragment {
                 os.close();
 
                 addToMediaStore(file);
-                photoTakenCallback.onPhotoTaken(file);
+                flexInputCoordinator.onPhotoTaken(FileUtils.toAttachment(file));
               } catch (IOException e) {
                 Log.w(TAG, "Cannot write to " + file, e);
               } finally {
@@ -169,10 +168,6 @@ public class CameraFragment extends Fragment {
     Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(photo));
     getContext().sendBroadcast(mediaScanIntent);
     Log.d(TAG, "Photo added to MediaStore: " + photo.getName());
-  }
-
-  public interface PhotoTakenCallback {
-    void onPhotoTaken(File photoFile);
   }
 
   /**

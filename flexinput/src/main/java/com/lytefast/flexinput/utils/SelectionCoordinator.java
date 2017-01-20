@@ -4,7 +4,6 @@ import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Set;
 
 
 /**
@@ -19,9 +18,11 @@ public class SelectionCoordinator<T> {
    */
   private final ArrayMap<T, Integer> selectedItemPositionMap;
   private RecyclerView.Adapter<?> adapter;
+  private ItemSelectionListener itemSelectionListener;
 
   public SelectionCoordinator() {
     this.selectedItemPositionMap = new ArrayMap<>(4);
+    this.itemSelectionListener = new ItemSelectionListener();
   }
 
   public SelectionCoordinator bind(RecyclerView.Adapter<?> adapter) {
@@ -29,8 +30,8 @@ public class SelectionCoordinator<T> {
     return this;
   }
 
-  public Set<T> getSelectedItems() {
-    return selectedItemPositionMap.keySet();
+  public void setItemSelectionListener(ItemSelectionListener listener) {
+    this.itemSelectionListener = listener;
   }
 
   /**
@@ -58,13 +59,15 @@ public class SelectionCoordinator<T> {
   public boolean toggleItem(T item, int position) {
     if (selectedItemPositionMap.remove(item) == null) {
       selectedItemPositionMap.put(item, position);
-      onItemSelected(item);
+      itemSelectionListener.onItemSelected(item);
       return true;
     }
-    onItemUnselected(item);
+    itemSelectionListener.onItemUnselected(item);
     return false;
   }
 
-  public void onItemSelected(T item) {}
-  public void onItemUnselected(T item) {}
+  public static class ItemSelectionListener<T> {
+    public void onItemSelected(T item) {}
+    public void onItemUnselected(T item) {}
+  }
 }

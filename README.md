@@ -25,24 +25,27 @@ For more details refer to the sample app included in this project.
 ## XML
 To use the widget, you can just include it in your layout `my_layout.xml`:
 ```xml
-    <com.lytefast.flexinput.FlexInput
-        android:id="@+id/fancy_input"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        app:inputBackground="@drawable/rect_rounded_highlight_alpha_20"
-        app:previewBackground="@drawable/rect_rounded_highlight_alpha_20"
-        app:tabsBackground="@drawable/content_tab_background"
-        app:hint="@string/msg_hint"
-        app:hintColor="@color/colorHint"/>
+<fragment
+    android:id="@+id/flex_input"
+    android:name="com.lytefast.flexinput.fragment.FlexInputFragment"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+
+    app:inputBackground="@drawable/rect_rounded_highlight_alpha_20"
+    app:previewBackground="@drawable/rect_rounded_highlight_alpha_20"
+    app:tabsBackground="@drawable/content_tab_background"
+    app:hint="@string/msg_hint"
+    app:hintColor="@color/colorHint"/>
 ```
-Notice how there are special `app` attributes that you may set to customize the appearance of the widget.
+### Appearance styles
+The widget tries to reuse as much of the app style as possible: icon colors are set via the `colorPrimary`, `colorPrimaryDark`, and `colorAccent` style attributes.
+
+Addtionally there are special `app` attributes that you may set to customize the appearance of the widget.
 - `inputBackground` defines the background for the text input row
 - `previewBackground` defines the background for the attachment preview row
 - `tabsBackground` defines the background for the media content tabs
-
-Icon colors are set via the `colorPrimary`, `colorPrimaryDark`, and `colorAccent` style attributes.
 
 ## Setup
 Now you need to add some hooks and adapters to make sure everything works. Don't worry there are some default implementations that can just be dropped in.
@@ -56,14 +59,14 @@ public void onViewCreated(final View view, @Nullable final Bundle savedInstanceS
   final InputMethodManager imm =
       (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
+  flexInput = (FlexInputFragment) getChildFragmentManager().findFragmentById(R.id.flex_input);
   if (savedInstanceState == null) {
     // Only create fragment on first load
     // UnicodeEmojiCategoryPagerFragment is a default implementation (see sample app)
-    flexInput.setEmojiFragment(getChildFragmentManager(), new UnicodeEmojiCategoryPagerFragment());
+    flexInput.setEmojiFragment(new UnicodeEmojiCategoryPagerFragment());
   }
 
   flexInput
-      .initContentPages(getFragmentManager())
       // Can be extended to provide custom previews (e.g. larger preview images, onclick) etc.
       .setAttachmentPreviewAdapter(new AttachmentPreviewAdapter(getContext().getContentResolver()))
       .setInputListener(flexInputListener)
@@ -72,12 +75,12 @@ public void onViewCreated(final View view, @Nullable final Bundle savedInstanceS
         @Override
         public void requestDisplay() {
           flexInput.requestFocus();
-          imm.showSoftInput(flexInput, InputMethodManager.SHOW_IMPLICIT);
+          imm.showSoftInput(flexInput.getView(), InputMethodManager.SHOW_IMPLICIT);
         }
 
         @Override
         public void requestHide() {
-          imm.hideSoftInputFromWindow(flexInput.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+          imm.hideSoftInputFromWindow(flexInput.getView().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
       });
 }

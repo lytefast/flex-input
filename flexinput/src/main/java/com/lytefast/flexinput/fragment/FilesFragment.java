@@ -2,26 +2,22 @@ package com.lytefast.flexinput.fragment;
 
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.lytefast.flexinput.FlexInputCoordinator;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.adapters.FileListAdapter;
-import com.lytefast.flexinput.events.ClearAttachmentsEvent;
-import com.lytefast.flexinput.events.ItemClickedEvent;
-import com.lytefast.flexinput.utils.FileUtils;
+import com.lytefast.flexinput.model.Generic;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 
@@ -37,6 +33,8 @@ import butterknife.Unbinder;
  */
 public class FilesFragment extends Fragment {
 
+  private final SelectionCoordinator<Generic<File>> selectionCoordinator = new SelectionCoordinator<>();
+
   @BindView(R2.id.swipeRefreshLayout) SwipeRefreshLayout swipeRefreshLayout;
   @BindView(R2.id.list) RecyclerView recyclerView;
   private Unbinder unbinder;
@@ -47,6 +45,16 @@ public class FilesFragment extends Fragment {
    * fragment (e.g. upon screen orientation changes).
    */
   public FilesFragment() {
+  }
+
+  @Override
+  public void onCreate(@Nullable final Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    final Fragment parentFrag = getParentFragment();
+    if (parentFrag instanceof FlexInputCoordinator) {
+      FlexInputCoordinator flexInputCoordinator = (FlexInputCoordinator) parentFrag;
+      flexInputCoordinator.addSelectionCoordinator(selectionCoordinator);
+    }
   }
 
   @Override
@@ -76,13 +84,12 @@ public class FilesFragment extends Fragment {
   public void onStart() {
     super.onStart();
     loadDownloadFolder();
-    EventBus.getDefault().register(this);
   }
 
   @Override
-  public void onStop() {
-    EventBus.getDefault().unregister(this);
-    super.onStop();
+  public void onDestroyView() {
+    unbinder.unbind();
+    super.onDestroyView();
   }
 
   private void loadDownloadFolder() {
@@ -91,23 +98,4 @@ public class FilesFragment extends Fragment {
     adapter.load(downloadFolder);
     swipeRefreshLayout.setRefreshing(false);
   }
-
-  @Subscribe
-  void handleClearAttachmentEvent(ClearAttachmentsEvent evt) {
-    selectionCoordinator.clearSelectedItems();
-  }
-
-  private final SelectionCoordinator<File> selectionCoordinator = new SelectionCoordinator<File>() {
-    @Override
-    public void onItemSelected(final File item) {
-      EventBus.getDefault().post(new ItemClickedEvent<>(FileUtils.toAttachment(item)));
-      Log.d(getClass().getCanonicalName(), "Select: " + item.getPath());
-    }
-
-    @Override
-    public void onItemUnselected(final File item) {
-      EventBus.getDefault().post(new ItemClickedEvent<>(FileUtils.toAttachment(item)));
-      Log.d(getClass().getCanonicalName(), "Remove: " + item.getPath());
-    }
-  };
 }

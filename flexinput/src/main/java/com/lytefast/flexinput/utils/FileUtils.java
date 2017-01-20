@@ -3,7 +3,7 @@ package com.lytefast.flexinput.utils;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import com.lytefast.flexinput.model.Attachment;
+import com.lytefast.flexinput.model.Generic;
 
 import java.io.File;
 
@@ -14,8 +14,8 @@ import java.io.File;
 public class FileUtils {
 
   @NonNull
-  public static Attachment toAttachment(final File f) {
-    return new Attachment(f.hashCode(), toUri(f), f.getName());
+  public static Generic toAttachment(final File f) {
+    return new Generic<>(f.hashCode(), toUri(f), f.getName(), f);
   }
 
   public static Uri toUri(final File f) {
