@@ -1,11 +1,14 @@
 package com.lytefast.flexinput.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -23,6 +26,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -93,10 +97,12 @@ public class CameraFragment extends Fragment {
     final File photoFile = fileManager.newImageFile();
     photoTakenCallback.onPhotoTaken(photoFile);
 
+    Uri photoUri = fileManager.toFileProviderUri(getContext(), photoFile);
     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        .putExtra(MediaStore.EXTRA_OUTPUT, fileManager.toFileProviderUri(getContext(), photoFile))
+        .putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
         .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
     if (takePictureIntent.resolveActivity(getContext().getPackageManager()) != null) {
+      grantWriteAccessToURI(getContext(), takePictureIntent, photoUri);
       startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
       // TODO need to handle the result: 1) save thumbnail, 2) call #addToMediaStore
     }
@@ -167,5 +173,26 @@ public class CameraFragment extends Fragment {
 
   public interface PhotoTakenCallback {
     void onPhotoTaken(File photoFile);
+  }
+
+  /**
+   * This is a hack to allow the file provider API to still
+   * work on older API versions.
+   *
+   * @see http://bit.ly/2iC4bUJ
+   */
+  private static void grantWriteAccessToURI(final @NonNull Context context,
+                                            final @NonNull Intent intent,
+                                            final @NonNull Uri uri) {
+    final List<ResolveInfo> resInfoList = context
+        .getPackageManager()
+        .queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+
+    for (ResolveInfo resolveInfo : resInfoList) {
+      final String packageName = resolveInfo.activityInfo.packageName;
+      final int mode = Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION;
+
+      context.grantUriPermission(packageName, uri, mode);
+    }
   }
 }
