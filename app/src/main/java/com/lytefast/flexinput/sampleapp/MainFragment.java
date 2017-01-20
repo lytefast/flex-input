@@ -76,6 +76,7 @@ public class MainFragment extends Fragment {
     flexInput
         // Can be extended to provide custom previews (e.g. larger preview images, onclick) etc.
         .setAttachmentPreviewAdapter(new AttachmentPreviewAdapter(getContext().getContentResolver()))
+        .initContentPages()
         .setInputListener(flexInputListener)
         .setFileManager(new SimpleFileManager("com.lytefast.flexinput.fileprovider", "FlexInput"))
         .setKeyboardManager(new KeyboardManager() {

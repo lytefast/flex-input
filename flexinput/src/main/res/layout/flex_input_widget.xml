@@ -112,26 +112,8 @@
                 android:id="@+id/add_content_keyboard_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:contentDescription="Show keyboard"
+                android:contentDescription="@string/attachments_keyboard"
                 android:icon="@drawable/ic_keyboard_24dp"/>
-            <android.support.design.widget.TabItem
-                android:id="@+id/add_content_file_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="Show file browser"
-                android:icon="@drawable/ic_attach_file_24dp"/>
-            <android.support.design.widget.TabItem
-                android:id="@+id/add_content_image_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="Show image browser"
-                android:icon="@drawable/ic_image_24dp"/>
-            <android.support.design.widget.TabItem
-                android:id="@+id/add_content_photo_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="Show camera"
-                android:icon="@drawable/ic_add_a_photo_24dp"/>
         </android.support.design.widget.TabLayout>
     </RelativeLayout>
 

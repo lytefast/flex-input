@@ -2,8 +2,6 @@ package com.lytefast.flexinput.fragment;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -13,16 +11,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -32,6 +26,7 @@ import android.widget.Toast;
 import com.lytefast.flexinput.InputListener;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
+import com.lytefast.flexinput.adapters.AddContentPagerAdapter;
 import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
 import com.lytefast.flexinput.FlexInputCoordinator;
 import com.lytefast.flexinput.managers.FileManager;
@@ -40,7 +35,6 @@ import com.lytefast.flexinput.model.Attachment;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,40 +45,38 @@ import butterknife.Unbinder;
 
 
 /**
+ * Main widget fragment that controls all aspects of the FlexInput widget.
+ *
+ * This is the controller which maintains all the interactions between the various components.
+ *
  * @author Sam Shih
  */
 public class FlexInputFragment extends Fragment implements FlexInputCoordinator {
-
-  public static final int TAB_PHOTOS = 1;
-  public static final int TAB_FILES = 0;
-  public static final int TAB_CAMERA = 2;
 
   @BindView(R2.id.attachment_preview_container) View attachmentPreviewContainer;
   @BindView(R2.id.main_input_container) View inputContainer;
   @BindView(R2.id.add_content_container) View addContentContainer;
   @BindView(R2.id.emoji_container) View emojiContainer;
 
-  @BindView(R2.id.attachment_preview_list)
-  RecyclerView attachmentPreviewList;
+  @BindView(R2.id.attachment_preview_list) RecyclerView attachmentPreviewList;
 
   @BindView(R2.id.text_input) AppCompatEditText textEt;
   @BindView(R2.id.emoji_btn) AppCompatImageButton emojiBtn;
   @BindView(R2.id.add_content_pager) ViewPager addContentPager;
   @BindView(R2.id.add_content_tabs) TabLayout addContentTabs;
 
-    /**
+  private Unbinder unbinder;
+
+  /**
    * Temporarily stores the UI attributes until we can apply them after inflation.
    */
   private Runnable initializeUiAttributes;
-
-
   private KeyboardManager keyboardManager;
   private InputListener inputListener;
 
   private FileManager fileManager;
   private AttachmentPreviewAdapter attachmentPreviewAdapter;
   private final ArrayList<SelectionCoordinator<?>> selectionCoordinators = new ArrayList<>(4);
-  private Unbinder unbinder;
 
 
   public FlexInputFragment() {}
@@ -112,7 +104,6 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
     this.initializeUiAttributes.run();
     this.initializeUiAttributes = null;
 
-    initContentPages();
     setAttachmentPreviewAdapter(new AttachmentPreviewAdapter(getContext().getContentResolver()));
     return root;
   }
@@ -209,38 +200,22 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
     return this;
   }
 
-  public FlexInputFragment initContentPages() {
-    return initContentPages(new FragmentPagerAdapter(getChildFragmentManager()) {
-      @Override
-      public Fragment getItem(final int position) {
-        switch (position) {
-          default:
-            return null;
-          case TAB_FILES:
-            return new FilesFragment();
-          case TAB_PHOTOS:
-            return new PhotosFragment();
-          case TAB_CAMERA:
-            return new CameraFragment();
-        }
-      }
-
-      @Override
-      public int getCount() {
-        return 3;
-      }
-    });
+  public FlexInputFragment initContentPages(AddContentPagerAdapter.PageSupplier... pageSuppliers) {
+    return initContentPages(new AddContentPagerAdapter(getChildFragmentManager(), pageSuppliers));
   }
 
-  public FlexInputFragment initContentPages(final FragmentPagerAdapter pagerAdapter) {
+  public FlexInputFragment initContentPages(final AddContentPagerAdapter pagerAdapter) {
     addContentPager.setAdapter(pagerAdapter);
+    pagerAdapter.initTabs(getContext(), addContentTabs);
     synchronizeTabAndPagerEvents();
-    initIconColors();
     return this;
   }
 
   public void synchronizeTabAndPagerEvents() {
     addContentTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+      /**
+       * Special cases the first item (keyboard) by closing the pager and opening the keyboard on click.
+       */
       @Override
       public void onTabSelected(final TabLayout.Tab tab) {
         int tabPosition = tab.getPosition();
@@ -270,21 +245,6 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
       @Override
       public void onPageScrollStateChanged(final int state) { }
     });
-  }
-
-  private void initIconColors() {
-    ColorStateList iconColors =
-        ContextCompat.getColorStateList(getContext(), R.color.tab_icon_color_selector);
-
-    for (int i = 0; i < addContentTabs.getTabCount(); i++) {
-      TabLayout.Tab tab = addContentTabs.getTabAt(i);
-
-      Drawable icon = tab.getIcon();
-      if (icon != null) {
-        icon = DrawableCompat.wrap(icon);
-        DrawableCompat.setTintList(icon, iconColors);
-      }
-    }
   }
 
   public void requestFocus() {
