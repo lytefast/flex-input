@@ -14,7 +14,7 @@ import java.io.File;
 public class FileUtils {
 
   @NonNull
-  public static Generic toAttachment(final File f) {
+  public static Generic<File> toAttachment(final File f) {
     return new Generic<>(f.hashCode(), toUri(f), f.getName(), f);
   }
 
