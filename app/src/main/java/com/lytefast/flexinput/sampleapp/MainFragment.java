@@ -15,10 +15,12 @@ import android.widget.TextView;
 
 import com.lytefast.flexinput.FlexInput;
 import com.lytefast.flexinput.InputListener;
+import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
+import com.lytefast.flexinput.eventbus.EventBusManager;
 import com.lytefast.flexinput.managers.KeyboardManager;
 import com.lytefast.flexinput.managers.SimpleFileManager;
-import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
 import com.lytefast.flexinput.model.Attachment;
+import com.lytefast.flexinput.rxjava.EventRxJavaManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +75,7 @@ public class MainFragment extends Fragment {
       flexInput.setEmojiFragment(getChildFragmentManager(), new UnicodeEmojiCategoryPagerFragment());
     }
 
+    FlexInput.eventManager = true ? new EventRxJavaManager() : new EventBusManager();
     flexInput
         .initContentPages(getChildFragmentManager())
         // Can be extended to provide custom previews (e.g. larger preview images, onclick) etc.
