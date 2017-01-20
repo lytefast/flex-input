@@ -11,8 +11,8 @@ Android text/emoji/media input field
 # Dependencies
 - This is currently using the still in development [cameraview](https://github.com/google/cameraview/)
   - at the current moment the cameraview project is just a symlink to the [camereaview/library project](https://github.com/google/cameraview/tree/master/library)
-- [EventBus 3](http://greenrobot.org/eventbus/) (internal use only. API contracts with this widget should be done via the XML or interfaces. See sample app)
 - [Butterknife](http://jakewharton.github.io/butterknife/)
+- [Fresco](http://frescolib.org/)
 
 # Work in Progress
 - [ ] Design attachment callback interface
