@@ -5,6 +5,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.LayoutInflaterCompat;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.view.LayoutInflater;
@@ -91,6 +93,18 @@ public class MainFragment extends Fragment {
             imm.hideSoftInputFromWindow(flexInput.getView().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
           }
         });
+
+    tryRiskyFeatures();
+  }
+
+  private void tryRiskyFeatures() {
+    final boolean hasCustomEditText = false;
+    if (hasCustomEditText) {
+      LayoutInflater inflater = LayoutInflater.from(getContext());
+      AppCompatEditText myEditText = (AppCompatEditText) inflater.inflate(
+          R.layout.my_edit_text_view, (ViewGroup) flexInput.getView(), false);
+      flexInput.setEditTextComponent(myEditText);
+    }
   }
 
   @Override

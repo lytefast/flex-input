@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.lytefast.flexinput.InputListener;
@@ -54,7 +55,7 @@ import butterknife.Unbinder;
 public class FlexInputFragment extends Fragment implements FlexInputCoordinator {
 
   @BindView(R2.id.attachment_preview_container) View attachmentPreviewContainer;
-  @BindView(R2.id.main_input_container) View inputContainer;
+  @BindView(R2.id.main_input_container) LinearLayout inputContainer;
   @BindView(R2.id.add_content_container) View addContentContainer;
   @BindView(R2.id.emoji_container) View emojiContainer;
 
@@ -245,6 +246,35 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
       @Override
       public void onPageScrollStateChanged(final int state) { }
     });
+  }
+
+  /**
+   * Allows overriding the default {@link AppCompatEditText} to a custom component.
+   *
+   * Use at your own risk.
+   *
+   * @param customEditText the custom {@link AppCompatEditText} which you wish to use instead.
+   */
+  public FlexInputFragment setEditTextComponent(final AppCompatEditText customEditText) {
+    customEditText.setId(R.id.text_input);
+
+    inputContainer.post(new Runnable() {
+      @Override
+      public void run() {
+        final int editTextIndex = inputContainer.indexOfChild(textEt);
+        inputContainer.removeView(textEt);
+        inputContainer.addView(customEditText, editTextIndex);
+
+        customEditText.setLayoutParams(new LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f));
+        customEditText.requestLayout();
+
+        // Rebind Butterknife to make sure hooks work
+        unbinder.unbind();
+        unbinder = ButterKnife.bind(FlexInputFragment.this, getView());
+      }
+    });
+    return this;
   }
 
   public void requestFocus() {

@@ -11,11 +11,11 @@ Android text/emoji/media input field
 # Dependencies
 - This is currently using the still in development [cameraview](https://github.com/google/cameraview/)
   - at the current moment the cameraview project is just a symlink to the [camereaview/library project](https://github.com/google/cameraview/tree/master/library)
+  - you must do the same (include as a local project module dependency) in you project
 - [Butterknife](http://jakewharton.github.io/butterknife/)
 - [Fresco](http://frescolib.org/)
 
 # Work in Progress
-- [ ] Design attachment callback interface
 - [ ] Implement allowing custom emojis (non-unicode)
 - [ ] Handle permission requests and denials
 
@@ -103,3 +103,22 @@ private final InputListener flexInputListener = new InputListener() {
 ```
 
 That's it! Now you have the output string and the attachments (in order) from the user.
+
+# Power Overrides (Risky)
+
+Additionaly there are some ways to integrate easier with your apps. However these features could potentially cause unforeseen problems. Last warning!
+
+Using a custom EditText:
+```java
+private void tryRiskyFeatures() {
+  final boolean hasCustomEditText = true;
+  if (hasCustomEditText) {
+    LayoutInflater inflater = LayoutInflater.from(getContext());
+    AppCompatEditText myEditText = (AppCompatEditText) inflater.inflate(
+        R.layout.my_edit_text_view, (ViewGroup) flexInput.getView(), false);
+    flexInput.setEditTextComponent(myEditText);
+  }
+}
+```
+
+You can trigger the feature via the sample app to experiment.
