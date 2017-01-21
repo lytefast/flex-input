@@ -52,14 +52,6 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
     this.contentResolver = contentResolver;
     this.files = Collections.EMPTY_LIST;
     this.selectionCoordinator = selectionCoordinator.bind(this);
-
-    Collections.sort(files, new Comparator<Generic<File>>() {
-      @Override
-      public int compare(final Generic<File> o1, final Generic<File> o2) {
-        // Sort by newest first
-        return Long.valueOf(o2.rawData.lastModified()).compareTo(o1.rawData.lastModified());
-      }
-    });
   }
 
   @Override
@@ -81,6 +73,14 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
 
   public void load(File root) {
     this.files = flattenFileList(root);
+
+    Collections.sort(files, new Comparator<Generic<File>>() {
+      @Override
+      public int compare(final Generic<File> o1, final Generic<File> o2) {
+        // Sort by newest first
+        return Long.valueOf(o2.rawData.lastModified()).compareTo(o1.rawData.lastModified());
+      }
+    });
     notifyDataSetChanged();
   }
 
