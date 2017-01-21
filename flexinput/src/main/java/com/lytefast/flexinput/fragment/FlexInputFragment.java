@@ -15,6 +15,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -24,12 +25,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.lytefast.flexinput.FlexInputCoordinator;
 import com.lytefast.flexinput.InputListener;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.adapters.AddContentPagerAdapter;
 import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
-import com.lytefast.flexinput.FlexInputCoordinator;
 import com.lytefast.flexinput.managers.FileManager;
 import com.lytefast.flexinput.managers.KeyboardManager;
 import com.lytefast.flexinput.model.Attachment;
@@ -41,6 +42,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
+import butterknife.OnTextChanged;
 import butterknife.OnTouch;
 import butterknife.Unbinder;
 
@@ -63,6 +65,7 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
 
   @BindView(R2.id.text_input) AppCompatEditText textEt;
   @BindView(R2.id.emoji_btn) AppCompatImageButton emojiBtn;
+  @BindView(R2.id.send_btn) AppCompatImageButton sendBtn;
   @BindView(R2.id.add_content_pager) ViewPager addContentPager;
   @BindView(R2.id.add_content_tabs) TabLayout addContentTabs;
 
@@ -290,10 +293,6 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
 
   @OnClick(R2.id.send_btn)
   void onSend() {
-    if (textEt.length() == 0) {
-      return;  // Nothing to do here
-    }
-
     inputListener.onSend(textEt.getText(), attachmentPreviewAdapter.getAttachments());
     textEt.setText("");
     clearAttachments();
@@ -307,6 +306,7 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
     for (SelectionCoordinator<?> coordinators : selectionCoordinators) {
       coordinators.clearSelectedItems();
     }
+    updateSendBtnEnableState(textEt.getText());
   }
 
   @OnLongClick(R2.id.add_btn)
@@ -376,6 +376,11 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
     }
   }
 
+  @OnTextChanged(value = R2.id.text_input, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
+  void onTextChanged(Editable after) {
+    updateSendBtnEnableState(after);
+  }
+
   // endregion
 
   private void hideEmojiTray() {
@@ -389,11 +394,9 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
     emojiBtn.setImageResource(R.drawable.ic_keyboard_24dp);
   }
 
-  @Override
-  public void onAttachFragment(final Fragment childFragment) {
-    super.onAttachFragment(childFragment);
+  private void updateSendBtnEnableState(final Editable message) {
+    sendBtn.setEnabled(message.length() > 0 || attachmentPreviewAdapter.getItemCount() > 0);
   }
-
 
   public void append(CharSequence data) {
     // TODO figure out some way to allow custom spannables (e.g. fresco's DraweeSpan)
@@ -404,6 +407,8 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
     attachmentPreviewAdapter.toggleItem(item);
     attachmentPreviewContainer.setVisibility(
         attachmentPreviewAdapter.getItemCount() == 0 ? View.GONE : View.VISIBLE);
+
+    updateSendBtnEnableState(textEt.getText());
   }
 
   // region FlexInputController methods

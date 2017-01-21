@@ -10,7 +10,7 @@
     </style>
 
     <style name="Input.Button" parent="Input">
-        <item name="android:tint">?colorPrimary</item>
+        <item name="android:tint">@color/button_color_selector</item>
         <item name="android:padding">8dp</item>
     </style>
 
