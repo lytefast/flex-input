@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:color="@color/colorPrimaryDark"
+    <item android:color="@color/colorControlDisabled"
           android:state_enabled="false"/>
 
-    <item android:color="@color/colorPrimary"/>
+    <item android:color="@color/colorControlActivated"
+          android:state_selected="true"/>
+
+    <item android:color="@color/colorControlNormal"/>
 </selector>

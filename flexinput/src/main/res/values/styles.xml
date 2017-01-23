@@ -1,8 +1,11 @@
 <resources>
 
+    <attr name="flexInputButtonColorSelector" format="color|reference" />
+
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.DayNight">
         <!-- Customize your theme here. -->
+        <item name="flexInputButtonColorSelector">@color/button_color_selector</item>
     </style>
 
     <style name="FlexInput.Main" parent="AppTheme">
@@ -14,7 +17,7 @@
     </style>
 
     <style name="FlexInput.Input.Button" parent="FlexInput.Input">
-        <item name="android:tint">@color/button_color_selector</item>
+        <item name="android:tint">?flexInputButtonColorSelector</item>
         <item name="android:padding">8dp</item>
     </style>
 

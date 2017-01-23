@@ -48,7 +48,7 @@ public class AddContentPagerAdapter extends FragmentPagerAdapter {
 
   public void initTabs(final Context context, final TabLayout tabLayout) {
     final ColorStateList iconColors =
-        ContextCompat.getColorStateList(context, R.color.tab_icon_color_selector);
+        ContextCompat.getColorStateList(context, R.color.button_color_selector);
 
     // Color the existing tabs
     for (int i = 0; i < tabLayout.getTabCount(); i++) {

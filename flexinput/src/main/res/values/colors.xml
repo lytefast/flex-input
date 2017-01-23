@@ -4,6 +4,10 @@
     <color name="colorPrimary">#333333</color>
     <color name="colorPrimaryDark">#1d1d1d</color>
 
+    <color name="colorControlNormal">?attr/colorControlNormal</color>
+    <color name="colorControlDisabled">#a0414141</color>
+    <color name="colorControlActivated">?attr/colorControlActivated</color>
+
     <color name="selected">#FF458BBE</color>
     <color name="selected_alpha_50">#88458BBE</color>
 </resources>

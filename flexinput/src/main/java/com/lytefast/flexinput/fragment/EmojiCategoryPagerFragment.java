@@ -86,7 +86,7 @@ public abstract class EmojiCategoryPagerFragment extends Fragment {
 
   private void setIcons(final List<Emoji.EmojiCategory> emojiCategories) {
     ColorStateList iconColors =
-        ContextCompat.getColorStateList(getContext(), R.color.tab_icon_color_selector);
+        ContextCompat.getColorStateList(getContext(), R.color.button_color_selector);
 
     for (int i = 0; i < emojiCategories.size(); i++) {
       TabLayout.Tab tab = pageTabs.getTabAt(i)

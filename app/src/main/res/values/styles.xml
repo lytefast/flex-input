@@ -5,7 +5,12 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+
+        <!--Colors that FlexInput uses by default-->
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorControlNormal">?colorPrimary</item>
+        <item name="colorControlActivated">?colorPrimaryDark</item>
+        <item name="flexInputButtonColorSelector">@color/button_color_selector</item>
     </style>
 
     <!-- FlexInput style overrides: implement to customize the look -->
@@ -13,9 +18,9 @@
         <item name="android:background">#40000000</item>
     </style>
 
-    <!--<style name="FlexInput.Items.File.Name" parent="TextAppearance.AppCompat.Title">-->
-        <!--<item name="android:textColor">@color/colorAccent</item>-->
-    <!--</style>-->
+    <style name="FlexInput.Items.File.Name" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
 
     <!--<style name="FlexInput.Items.File.Path" parent="TextAppearance.AppCompat.Caption">-->
         <!--<item name="android:textColor">@color/colorAccent_alpha_50</item>-->

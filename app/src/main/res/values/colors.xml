@@ -4,6 +4,10 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#32b363</color>
 
+    <!--<color name="colorControlNormal">#F00</color>-->
+    <color name="colorControlDisabled">#89a1b7</color>
+    <!--<color name="colorControlActivated">#00F</color>-->
+
     <color name="colorHint">#d0808080</color>
 
     <color name="colorAccent_alpha_50">#8032b363</color>
