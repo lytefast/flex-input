@@ -42,6 +42,8 @@ To use the widget, you can just include it in your layout `my_layout.xml`:
 ### Appearance styles
 The widget tries to reuse as much of the app style as possible: icon colors are set via the `colorPrimary`, `colorPrimaryDark`, and `colorAccent` style attributes.
 
+There are also `styles.xml` overrides that you can provide. All styles are prefixed by `FlexInput`. See `[styles.xml](flexinput/src/main/res/values/sytles.xml)` for the full set of styles.
+
 Addtionally there are special `app` attributes that you may set to customize the appearance of the widget.
 - `inputBackground` defines the background for the text input row
 - `previewBackground` defines the background for the attachment preview row

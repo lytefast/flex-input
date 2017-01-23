@@ -27,6 +27,7 @@
 
     <TextView
         android:id="@+id/file_name_tv"
+        style="@style/FlexInput.Items.File.Name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/thumb_iv"
@@ -39,13 +40,12 @@
 
     <TextView
         android:id="@+id/file_path_tv"
+        style="@style/FlexInput.Items.File.Path"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/file_name_tv"
         android:layout_alignStart="@id/file_name_tv"
         android:layout_below="@id/file_name_tv"
-        android:text="file path"
-        android:textColor="?colorControlHighlight"
-        android:textSize="10sp"/>
+        android:text="file path"/>
 
 </RelativeLayout>

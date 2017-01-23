@@ -8,4 +8,18 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- FlexInput style overrides: implement to customize the look -->
+    <style name="FlexInput.Main" parent="AppTheme">
+        <item name="android:background">#40000000</item>
+    </style>
+
+    <!--<style name="FlexInput.Items.File.Name" parent="TextAppearance.AppCompat.Title">-->
+        <!--<item name="android:textColor">@color/colorAccent</item>-->
+    <!--</style>-->
+
+    <!--<style name="FlexInput.Items.File.Path" parent="TextAppearance.AppCompat.Caption">-->
+        <!--<item name="android:textColor">@color/colorAccent_alpha_50</item>-->
+        <!--<item name="android:textSize">10dp</item>-->
+    <!--</style>-->
+
 </resources>
