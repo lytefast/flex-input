@@ -21,7 +21,7 @@ public class FileUtils {
   public static Uri toUri(final File f) {
     // Use parse due to bug with fresco loader: https://github.com/facebook/fresco/issues/1596
     // FIXME 2017-01: when https://github.com/facebook/fresco/issues/1596 is resolve remove
-    // Uri fileUri = Uri.toAttachment(f);
+    // Uri fileUri = Uri.fromFile(f);
     return Uri.parse("file://" + f.getAbsolutePath());
   }
 
