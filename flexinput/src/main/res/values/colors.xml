@@ -4,9 +4,9 @@
     <color name="colorPrimary">#333333</color>
     <color name="colorPrimaryDark">#1d1d1d</color>
 
-    <color name="colorControlNormal">?attr/colorControlNormal</color>
-    <color name="colorControlDisabled">#a0414141</color>
-    <color name="colorControlActivated">?attr/colorControlActivated</color>
+    <color name="flexInputIconColor">?colorButtonNormal</color>
+    <color name="flexInputIconColorActivated">?colorControlActivated</color>
+    <color name="flexInputIconColorDisabled">?colorControlHighlight</color>
 
     <color name="selected">#FF458BBE</color>
     <color name="selected_alpha_50">#88458BBE</color>

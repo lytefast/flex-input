@@ -40,9 +40,20 @@ To use the widget, you can just include it in your layout `my_layout.xml`:
     app:hintColor="@color/colorHint"/>
 ```
 ### Appearance styles
-The widget tries to reuse as much of the app style as possible: icon colors are set via the `colorPrimary`, `colorPrimaryDark`, and `colorAccent` style attributes.
+The widget tries to reuse as much of the app style as possible: icon colors are set via the `colorButtonNormal`, `colorControlActivated`, and `colorControlHighlight` style attributes.
 
-There are also `styles.xml` overrides that you can provide. All styles are prefixed by `FlexInput`. See `[styles.xml](flexinput/src/main/res/values/sytles.xml)` for the full set of styles.
+See [`colors.xml`](flexinput/src/main/res/values/colors.xml):
+```xml
+<!--These are used within FlexInput. Override to customize.-->
+<!-- Defaults for these values are style attr and listed beside the overrides-->
+<color name="flexInputIconColor">@color/colorPrimary</color>  <!-- colorButtonNormal -->
+<color name="flexInputIconColorActivated">@color/colorPrimaryDark</color>  <!-- colorControlActivated -->
+<color name="flexInputIconColorDisabled">#c03f4a54</color>  <!-- colorControlHighlight -->
+```
+Or the same attributes in [`styles.xml`](flexinput/src/main/res/values/styles.xml).
+
+
+There are also `styles.xml` overrides that you can provide. All styles are prefixed by `FlexInput`. See [`styles.xml`](flexinput/src/main/res/values/styles.xml) for the full set of styles.
 
 Addtionally there are special `app` attributes that you may set to customize the appearance of the widget.
 - `inputBackground` defines the background for the text input row

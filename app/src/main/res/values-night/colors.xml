@@ -5,9 +5,11 @@
 
     <color name="colorHint">#d037474f</color>
 
-    <!--<color name="colorControlNormal">#F00</color>-->
-    <color name="colorControlDisabled">#c03f4a54</color>
-    <!--<color name="colorControlActivated">#00F</color>-->
+    <!--These are used within FlexInput. Override to customize.-->
+    <!-- Defaults for these values are style attr and listed beside the overrides-->
+    <color name="flexInputIconColor">@color/colorPrimary</color>  <!-- colorButtonNormal -->
+    <color name="flexInputIconColorActivated">@color/colorPrimaryDark</color>  <!-- colorControlActivated -->
+    <color name="flexInputIconColorDisabled">#c03f4a54</color>  <!-- colorControlHighlight -->
 
     <color name="content_tab_background_alpha_80">#cc222222</color>
     <color name="highlight_alpha_50">#80222222</color>

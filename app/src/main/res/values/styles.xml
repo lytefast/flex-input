@@ -5,12 +5,13 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorButtonNormal">?colorPrimary</item>
 
         <!--Colors that FlexInput uses by default-->
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorControlNormal">?colorPrimary</item>
-        <item name="colorControlActivated">?colorPrimaryDark</item>
-        <item name="flexInputButtonColorSelector">@color/button_color_selector</item>
+        <item name="flexInputIconColor">@color/flexInputIconColor</item>
+        <item name="flexInputIconColorActivated">@color/flexInputIconColorActivated</item>
+        <item name="flexInputIconColorDisabled">@color/flexInputIconColorDisabled</item>
     </style>
 
     <!-- FlexInput style overrides: implement to customize the look -->

@@ -22,9 +22,9 @@
         app:fadeDuration="@android:integer/config_shortAnimTime"
         app:pressedStateOverlayImage="?selectableItemBackgroundBorderless"
         app:actualImageScaleType="centerCrop"
-        app:placeholderImage="@drawable/ic_file_24dp"
+        app:placeholderImage="@drawable/ic_image_24dp"
         app:placeholderImageScaleType="centerInside"
-        tools:src="@drawable/ic_file_24dp"/>
+        tools:src="@drawable/ic_image_24dp"/>
 
     <ImageView
         android:id="@+id/item_check_indicator"
