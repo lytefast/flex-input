@@ -4,6 +4,8 @@
               style="@style/FlexInput.Main"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              android:divider="?android:dividerHorizontal"
+              android:showDividers="middle"
               android:orientation="vertical">
 
     <LinearLayout
@@ -74,7 +76,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/emoji_keyboard_toggle"
-            android:src="@drawable/ic_insert_emoticon_24dp"/>
+            android:src="@drawable/ic_insert_emoticon_24dp"
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
         <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/send_btn"
@@ -82,6 +86,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/send_contents"
+            android:enabled="false"
             android:src="@drawable/ic_send_24dp"/>
 
     </LinearLayout>
@@ -98,7 +103,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
-            android:paddingTop="8dp"/>
+            android:paddingTop="@dimen/margin"/>
 
         <android.support.design.widget.TabLayout
             android:id="@+id/add_content_tabs"

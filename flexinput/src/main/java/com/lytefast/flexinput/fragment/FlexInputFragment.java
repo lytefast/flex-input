@@ -85,6 +85,7 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
 
   public FlexInputFragment() {}
 
+
   //region Initialization Methods
   @Override
   public void onInflate(final Context context, final AttributeSet attrs, final Bundle savedInstanceState) {
@@ -104,6 +105,10 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
   public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable final Bundle savedInstanceState) {
     View root = inflater.inflate(R.layout.flex_input_widget, container, false);
     this.unbinder = ButterKnife.bind(this, root);
+
+    if (getChildFragmentManager().findFragmentById(R.id.emoji_container) != null) {
+      this.emojiBtn.setVisibility(View.VISIBLE);
+    }
 
     this.initializeUiAttributes.run();
     this.initializeUiAttributes = null;
@@ -169,6 +174,8 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
         .beginTransaction()
         .replace(R.id.emoji_container, emojiFragment)
         .commit();
+
+    emojiBtn.setVisibility(View.VISIBLE);
     return this;
   }
 
