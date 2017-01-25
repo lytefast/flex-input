@@ -19,7 +19,6 @@ import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.adapters.EmptyListAdapter;
 import com.lytefast.flexinput.adapters.PhotoCursorAdapter;
-import com.lytefast.flexinput.managers.PermissionsManager;
 import com.lytefast.flexinput.model.Photo;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 
@@ -33,17 +32,15 @@ import butterknife.Unbinder;
  *
  * @author Sam Shih
  */
-public class PhotosFragment extends Fragment {
+public class PhotosFragment extends PermissionsFragment {
 
+  private static final String REQUIRED_PERMISSION = Manifest.permission.READ_EXTERNAL_STORAGE;
 
   private final SelectionCoordinator<Photo> selectionCoordinator = new SelectionCoordinator<>();
 
   @BindView(R2.id.swipeRefreshLayout) SwipeRefreshLayout swipeRefreshLayout;
   @BindView(R2.id.list) RecyclerView recyclerView;
   private Unbinder unbinder;
-
-  private PermissionsManager permissionsManager;
-
 
   /**
    * Mandatory empty constructor for the fragment manager to instantiate the
@@ -60,10 +57,6 @@ public class PhotosFragment extends Fragment {
       FlexInputCoordinator flexInputCoordinator = (FlexInputCoordinator) parentFrag;
       flexInputCoordinator.addSelectionCoordinator(selectionCoordinator);
     }
-
-    if (parentFrag instanceof PermissionsManager) {
-      this.permissionsManager = (PermissionsManager) parentFrag;
-    }
   }
 
   @Override
@@ -75,9 +68,7 @@ public class PhotosFragment extends Fragment {
     final PhotoCursorAdapter photoAdapter = new PhotoCursorAdapter(
         getContext().getContentResolver(), selectionCoordinator);
 
-    final boolean canRead = ContextCompat.checkSelfPermission(
-            getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
-    if (canRead) {
+    if (hasPermissions(REQUIRED_PERMISSION)) {
       recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
       recyclerView.setAdapter(photoAdapter);
     } else {
@@ -112,7 +103,7 @@ public class PhotosFragment extends Fragment {
   }
 
   private void requestPermissions(final PhotoCursorAdapter photoAdapter) {
-    permissionsManager.requestFileReadPermission(new PermissionsManager.PermissionsResultCallback() {
+    requestPermissions(new PermissionsResultCallback() {
       @Override
       public void granted() {
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
@@ -125,6 +116,6 @@ public class PhotosFragment extends Fragment {
         Toast.makeText(
             getContext(), R.string.files_permission_reason_msg, Toast.LENGTH_LONG).show();
       }
-    });
+    }, REQUIRED_PERMISSION);
   }
 }

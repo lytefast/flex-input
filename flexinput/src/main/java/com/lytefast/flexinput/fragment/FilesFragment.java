@@ -20,7 +20,6 @@ import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.adapters.EmptyListAdapter;
 import com.lytefast.flexinput.adapters.FileListAdapter;
-import com.lytefast.flexinput.managers.PermissionsManager;
 import com.lytefast.flexinput.model.Generic;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 
@@ -36,7 +35,9 @@ import butterknife.Unbinder;
  *
  * @author Sam Shih
  */
-public class FilesFragment extends Fragment {
+public class FilesFragment extends PermissionsFragment {
+
+  private static final String REQUIRED_PERMISSION = Manifest.permission.READ_EXTERNAL_STORAGE;
 
   private final SelectionCoordinator<Generic<File>> selectionCoordinator = new SelectionCoordinator<>();
 
@@ -45,8 +46,6 @@ public class FilesFragment extends Fragment {
   private Unbinder unbinder;
 
   private FileListAdapter adapter;
-
-  private PermissionsManager permissionsManager;
 
   /**
    * Mandatory empty constructor for the fragment manager to instantiate the
@@ -63,10 +62,6 @@ public class FilesFragment extends Fragment {
       FlexInputCoordinator flexInputCoordinator = (FlexInputCoordinator) parentFrag;
       flexInputCoordinator.addSelectionCoordinator(selectionCoordinator);
     }
-
-    if (parentFrag instanceof PermissionsManager) {
-      this.permissionsManager = (PermissionsManager) parentFrag;
-    }
   }
 
   @Override
@@ -79,9 +74,7 @@ public class FilesFragment extends Fragment {
         new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
     recyclerView.addItemDecoration(bottomPadding);
 
-    final boolean canRead = ContextCompat.checkSelfPermission(
-            getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
-    if (canRead) {
+    if (hasPermissions(REQUIRED_PERMISSION)) {
       adapter = new FileListAdapter(getContext().getContentResolver(), selectionCoordinator);
       recyclerView.setAdapter(adapter);
     } else {
@@ -127,7 +120,7 @@ public class FilesFragment extends Fragment {
   }
 
   private void requestPermissions() {
-    permissionsManager.requestFileReadPermission(new PermissionsManager.PermissionsResultCallback() {
+    requestPermissions(new PermissionsResultCallback() {
       @Override
       public void granted() {
         adapter = new FileListAdapter(getContext().getContentResolver(), selectionCoordinator);
@@ -140,6 +133,6 @@ public class FilesFragment extends Fragment {
         Toast.makeText(
             getContext(), R.string.files_permission_reason_msg, Toast.LENGTH_LONG).show();
       }
-    });
+    }, REQUIRED_PERMISSION);
   }
 }

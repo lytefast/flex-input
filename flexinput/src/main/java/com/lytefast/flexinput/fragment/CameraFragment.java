@@ -23,7 +23,6 @@ import com.google.android.cameraview.CameraView;
 import com.lytefast.flexinput.FlexInputCoordinator;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
-import com.lytefast.flexinput.managers.PermissionsManager;
 import com.lytefast.flexinput.utils.FileUtils;
 
 import java.io.File;
@@ -43,7 +42,9 @@ import butterknife.Unbinder;
  *
  * @author Sam Shih
  */
-public class CameraFragment extends Fragment {
+public class CameraFragment extends PermissionsFragment {
+  private static final String[] REQUIRED_PERMISSIONS =
+      {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
 
   private static final String TAG = CameraFragment.class.getCanonicalName();
 
@@ -55,7 +56,6 @@ public class CameraFragment extends Fragment {
   private Unbinder unbinder;
 
   private FlexInputCoordinator flexInputCoordinator;
-  private PermissionsManager permissionsManager;
 
 
   @Override
@@ -66,9 +66,6 @@ public class CameraFragment extends Fragment {
       this.flexInputCoordinator = (FlexInputCoordinator) parentFrag;
     }
 
-    if (parentFrag instanceof PermissionsManager) {
-      this.permissionsManager = (PermissionsManager) parentFrag;
-    }
   }
 
   @Nullable
@@ -86,7 +83,7 @@ public class CameraFragment extends Fragment {
     super.onResume();
 
     if (!getContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)
-        || !hasPermissions()) {
+        || !hasPermissions(REQUIRED_PERMISSIONS)) {
       cameraActionContainer.setVisibility(View.GONE);
       permissionsContainer.setVisibility(View.VISIBLE);
       return;  // No camera detected. just chill
@@ -94,13 +91,6 @@ public class CameraFragment extends Fragment {
     cameraActionContainer.setVisibility(View.VISIBLE);
     permissionsContainer.setVisibility(View.GONE);
     cameraView.start();
-  }
-
-  private boolean hasPermissions() {
-    return ContextCompat.checkSelfPermission(
-            getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-        && ContextCompat.checkSelfPermission(
-            getContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
   }
 
   @Override
@@ -117,7 +107,7 @@ public class CameraFragment extends Fragment {
 
   @OnClick(R2.id.permissions_req_btn)
   void requestPermissionClick() {
-    this.permissionsManager.requestCameraPermission(new PermissionsManager.PermissionsResultCallback() {
+    requestPermissions(new PermissionsResultCallback() {
       @Override
       public void granted() {
         cameraView.post(new Runnable() {
@@ -131,7 +121,7 @@ public class CameraFragment extends Fragment {
       @Override
       public void denied() {
       }
-    });
+    }, REQUIRED_PERMISSIONS);
   }
 
   @OnClick(R2.id.take_photo_btn)

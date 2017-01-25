@@ -36,7 +36,6 @@ import com.lytefast.flexinput.adapters.AddContentPagerAdapter;
 import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
 import com.lytefast.flexinput.managers.FileManager;
 import com.lytefast.flexinput.managers.KeyboardManager;
-import com.lytefast.flexinput.managers.PermissionsManager;
 import com.lytefast.flexinput.model.Attachment;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 
@@ -59,12 +58,7 @@ import butterknife.Unbinder;
  * @author Sam Shih
  */
 public class FlexInputFragment extends Fragment
-    implements FlexInputCoordinator, PermissionsManager {
-
-  /**
-   * Random code to uniquely identify a permissions response.
-   */
-  private static final int PERMISSIONS_REQUEST_CODE = 2525;
+    implements FlexInputCoordinator {
 
   @BindView(R2.id.attachment_preview_container) View attachmentPreviewContainer;
   @BindView(R2.id.main_input_container) LinearLayout inputContainer;
@@ -85,7 +79,6 @@ public class FlexInputFragment extends Fragment
    * Temporarily stores the UI attributes until we can apply them after inflation.
    */
   private Runnable initializeUiAttributes;
-  private PermissionsResultCallback permissionRequestCallback;
   private KeyboardManager keyboardManager;
   private InputListener inputListener;
 
@@ -464,76 +457,4 @@ public class FlexInputFragment extends Fragment
   }
 
   // endregion
-
-  //region PermissionsManager methods
-
-  @Override
-  public boolean requestFileReadPermission(final PermissionsManager.PermissionsResultCallback callback) {
-    permissionRequestCallback = callback;
-    if (!hasPermissions(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-      requestPermissions(
-          new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-          PERMISSIONS_REQUEST_CODE);
-      return false;
-    }
-    callback.granted();
-    return true;
-  }
-
-  @Override
-  public boolean requestCameraPermission(final PermissionsManager.PermissionsResultCallback callback) {
-    if (!hasPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)) {
-      permissionRequestCallback = callback;
-      requestPermissions(
-          new String[]{
-              Manifest.permission.WRITE_EXTERNAL_STORAGE,
-              Manifest.permission.CAMERA},
-          PERMISSIONS_REQUEST_CODE);
-      return false;
-    }
-    callback.granted();
-    return true;
-  }
-
-  //endregion
-
-  protected boolean hasPermissions(String... requiredPermissionList) {
-    Context context = getContext();
-
-    for (String reqPerm : requiredPermissionList) {
-      boolean isGranted = ContextCompat.checkSelfPermission(context, reqPerm) == PackageManager.PERMISSION_GRANTED;
-      if (!isGranted) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  @Override
-  public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
-    if (requestCode != PERMISSIONS_REQUEST_CODE) {
-      permissionRequestCallback = null;
-      return;
-    }
-
-    // If request is cancelled, the result arrays are empty.
-    if (areAllPermissionsGranted(grantResults)) {
-      permissionRequestCallback.granted();
-    } else {
-      permissionRequestCallback.denied();
-    }
-    permissionRequestCallback = null;
-  }
-
-  private boolean areAllPermissionsGranted(int... permissionsAccessList) {
-    if (permissionsAccessList.length < 1) {
-      return false;
-    }
-    for (int reqPermAccess : permissionsAccessList) {
-      if (PackageManager.PERMISSION_GRANTED != reqPermAccess) {
-        return false;
-      }
-    }
-    return true;
-  }
 }
