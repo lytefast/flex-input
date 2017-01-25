@@ -1,7 +1,9 @@
 package com.lytefast.flexinput.fragment;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -11,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageButton;
@@ -55,7 +58,13 @@ import butterknife.Unbinder;
  *
  * @author Sam Shih
  */
-public class FlexInputFragment extends Fragment implements FlexInputCoordinator {
+public class FlexInputFragment extends Fragment
+    implements FlexInputCoordinator, PermissionsManager {
+
+  /**
+   * Random code to uniquely identify a permissions response.
+   */
+  private static final int PERMISSIONS_REQUEST_CODE = 2525;
 
   @BindView(R2.id.attachment_preview_container) View attachmentPreviewContainer;
   @BindView(R2.id.main_input_container) LinearLayout inputContainer;
@@ -76,7 +85,7 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
    * Temporarily stores the UI attributes until we can apply them after inflation.
    */
   private Runnable initializeUiAttributes;
-  private PermissionsManager permissionsManager;
+  private PermissionsResultCallback permissionRequestCallback;
   private KeyboardManager keyboardManager;
   private InputListener inputListener;
 
@@ -198,11 +207,6 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
   public FlexInputFragment setAttachmentPreviewAdapter(@NonNull final AttachmentPreviewAdapter previewAdapter) {
     this.attachmentPreviewAdapter = previewAdapter;
     this.attachmentPreviewList.setAdapter(attachmentPreviewAdapter);
-    return this;
-  }
-
-  public FlexInputFragment setPermissionsManager(final PermissionsManager permissionsManager) {
-    this.permissionsManager = permissionsManager;
     return this;
   }
 
@@ -438,10 +442,6 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
     });
   }
 
-  public PermissionsManager getPermissionsManager() {
-    return permissionsManager;
-  }
-
   @Override
   public FileManager getFileManager() {
     return fileManager;
@@ -464,4 +464,76 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
   }
 
   // endregion
+
+  //region PermissionsManager methods
+
+  @Override
+  public boolean requestFileReadPermission(final PermissionsManager.PermissionsResultCallback callback) {
+    permissionRequestCallback = callback;
+    if (!hasPermissions(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+      requestPermissions(
+          new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+          PERMISSIONS_REQUEST_CODE);
+      return false;
+    }
+    callback.granted();
+    return true;
+  }
+
+  @Override
+  public boolean requestCameraPermission(final PermissionsManager.PermissionsResultCallback callback) {
+    if (!hasPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)) {
+      permissionRequestCallback = callback;
+      requestPermissions(
+          new String[]{
+              Manifest.permission.WRITE_EXTERNAL_STORAGE,
+              Manifest.permission.CAMERA},
+          PERMISSIONS_REQUEST_CODE);
+      return false;
+    }
+    callback.granted();
+    return true;
+  }
+
+  //endregion
+
+  protected boolean hasPermissions(String... requiredPermissionList) {
+    Context context = getContext();
+
+    for (String reqPerm : requiredPermissionList) {
+      boolean isGranted = ContextCompat.checkSelfPermission(context, reqPerm) == PackageManager.PERMISSION_GRANTED;
+      if (!isGranted) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  @Override
+  public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
+    if (requestCode != PERMISSIONS_REQUEST_CODE) {
+      permissionRequestCallback = null;
+      return;
+    }
+
+    // If request is cancelled, the result arrays are empty.
+    if (areAllPermissionsGranted(grantResults)) {
+      permissionRequestCallback.granted();
+    } else {
+      permissionRequestCallback.denied();
+    }
+    permissionRequestCallback = null;
+  }
+
+  private boolean areAllPermissionsGranted(int... permissionsAccessList) {
+    if (permissionsAccessList.length < 1) {
+      return false;
+    }
+    for (int reqPermAccess : permissionsAccessList) {
+      if (PackageManager.PERMISSION_GRANTED != reqPermAccess) {
+        return false;
+      }
+    }
+    return true;
+  }
 }

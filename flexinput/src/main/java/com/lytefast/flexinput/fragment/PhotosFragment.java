@@ -59,8 +59,10 @@ public class PhotosFragment extends Fragment {
     if (parentFrag instanceof FlexInputCoordinator) {
       FlexInputCoordinator flexInputCoordinator = (FlexInputCoordinator) parentFrag;
       flexInputCoordinator.addSelectionCoordinator(selectionCoordinator);
+    }
 
-      this.permissionsManager = flexInputCoordinator.getPermissionsManager();
+    if (parentFrag instanceof PermissionsManager) {
+      this.permissionsManager = (PermissionsManager) parentFrag;
     }
   }
 
@@ -85,8 +87,7 @@ public class PhotosFragment extends Fragment {
           requestPermissions(photoAdapter);
         }
       };
-      recyclerView.setAdapter(new EmptyListAdapter(
-          R.layout.item_permission_storage, R.id.action_btn, onClickListener));
+      recyclerView.setAdapter(newPermissionRequestAdapter(onClickListener));
     }
 
     swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -97,6 +98,11 @@ public class PhotosFragment extends Fragment {
       }
     });
     return view;
+  }
+
+  protected EmptyListAdapter newPermissionRequestAdapter(final View.OnClickListener onClickListener) {
+    return new EmptyListAdapter(
+        R.layout.item_permission_storage, R.id.permissions_req_btn, onClickListener);
   }
 
   @Override

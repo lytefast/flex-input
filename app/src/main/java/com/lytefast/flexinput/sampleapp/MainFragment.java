@@ -2,15 +2,9 @@ package com.lytefast.flexinput.sampleapp;
 
 
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.Manifest;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.PermissionChecker;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -18,13 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Toast;
 
 import com.lytefast.flexinput.InputListener;
 import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
 import com.lytefast.flexinput.fragment.FlexInputFragment;
 import com.lytefast.flexinput.managers.KeyboardManager;
-import com.lytefast.flexinput.managers.PermissionsManager;
 import com.lytefast.flexinput.managers.SimpleFileManager;
 import com.lytefast.flexinput.model.Attachment;
 
@@ -40,16 +32,13 @@ import butterknife.Unbinder;
  *
  * @author Sam Shih
  */
-public class MainFragment extends Fragment implements PermissionsManager {
-
-  private static final int MY_PERMISSIONS_REQUEST_CODE = 9999;
+public class MainFragment extends Fragment {
 
   @BindView(R.id.message_list) RecyclerView recyclerView;
   private FlexInputFragment flexInput;
 
   private Unbinder unbinder;
   private MessageAdapter msgAdapter;
-  private PermissionsResultCallback permissionRequestCallback;
 
   public MainFragment() {
     this.msgAdapter = new MessageAdapter();
@@ -86,7 +75,6 @@ public class MainFragment extends Fragment implements PermissionsManager {
     }
 
     flexInput
-        .setPermissionsManager(this)
         .initContentPages(/* You can add custom PageSuppliers here */)
         // Can be extended to provide custom previews (e.g. larger preview images, onclick) etc.
         .setAttachmentPreviewAdapter(new AttachmentPreviewAdapter(getContext().getContentResolver()))
@@ -138,62 +126,4 @@ public class MainFragment extends Fragment implements PermissionsManager {
       }
     }
   };
-
-  //region PermissionsManager methods
-
-  @Override
-  public boolean requestFileReadPermission(final PermissionsManager.PermissionsResultCallback callback) {
-    permissionRequestCallback = callback;
-    if (ContextCompat.checkSelfPermission(
-            getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-        || ContextCompat.checkSelfPermission(
-            getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-        || ContextCompat.checkSelfPermission(
-            getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-
-      // Should we show an explanation?
-      if (shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-
-        // Show an explanation to the user *asynchronously* -- don't block
-        // this thread waiting for the user's response! After the user
-        // sees the explanation, try again to request the permission.
-        Toast.makeText(getContext(), "Why we need permissions...", Toast.LENGTH_SHORT).show();
-
-      } else {
-        // No explanation needed, we can request the permission.
-      }
-      requestPermissions(
-          new String[]{
-              Manifest.permission.READ_EXTERNAL_STORAGE,
-              Manifest.permission.WRITE_EXTERNAL_STORAGE,
-              Manifest.permission.CAMERA},
-          MY_PERMISSIONS_REQUEST_CODE);
-      return false;
-    }
-    callback.granted();
-    return true;
-  }
-
-  @Override
-  public boolean requestCameraPermission(final PermissionsManager.PermissionsResultCallback callback) {
-    return requestCameraPermission(callback);
-  }
-
-  //endregion
-
-
-  @Override
-  public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
-    if (requestCode != MY_PERMISSIONS_REQUEST_CODE) {
-      return;
-    }
-
-    // If request is cancelled, the result arrays are empty.
-    if (grantResults.length > 0
-        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-      permissionRequestCallback.granted();
-    } else {
-      permissionRequestCallback.denied();
-    }
-  }
 }

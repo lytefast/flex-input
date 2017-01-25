@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,8 +62,10 @@ public class FilesFragment extends Fragment {
     if (parentFrag instanceof FlexInputCoordinator) {
       FlexInputCoordinator flexInputCoordinator = (FlexInputCoordinator) parentFrag;
       flexInputCoordinator.addSelectionCoordinator(selectionCoordinator);
+    }
 
-      this.permissionsManager = flexInputCoordinator.getPermissionsManager();
+    if (parentFrag instanceof PermissionsManager) {
+      this.permissionsManager = (PermissionsManager) parentFrag;
     }
   }
 
@@ -91,7 +92,7 @@ public class FilesFragment extends Fragment {
         }
       };
       recyclerView.setAdapter(new EmptyListAdapter(
-          R.layout.item_permission_storage, R.id.action_btn, onClickListener));
+          R.layout.item_permission_storage, R.id.permissions_req_btn, onClickListener));
     }
 
     swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

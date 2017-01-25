@@ -23,6 +23,7 @@ import com.google.android.cameraview.CameraView;
 import com.lytefast.flexinput.FlexInputCoordinator;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
+import com.lytefast.flexinput.managers.PermissionsManager;
 import com.lytefast.flexinput.utils.FileUtils;
 
 import java.io.File;
@@ -54,6 +55,7 @@ public class CameraFragment extends Fragment {
   private Unbinder unbinder;
 
   private FlexInputCoordinator flexInputCoordinator;
+  private PermissionsManager permissionsManager;
 
 
   @Override
@@ -62,6 +64,10 @@ public class CameraFragment extends Fragment {
     final Fragment parentFrag = getParentFragment();
     if (parentFrag instanceof FlexInputCoordinator) {
       this.flexInputCoordinator = (FlexInputCoordinator) parentFrag;
+    }
+
+    if (parentFrag instanceof PermissionsManager) {
+      this.permissionsManager = (PermissionsManager) parentFrag;
     }
   }
 
@@ -107,6 +113,25 @@ public class CameraFragment extends Fragment {
   public void onDestroyView() {
     unbinder.unbind();
     super.onDestroyView();
+  }
+
+  @OnClick(R2.id.permissions_req_btn)
+  void requestPermissionClick() {
+    this.permissionsManager.requestCameraPermission(new PermissionsManager.PermissionsResultCallback() {
+      @Override
+      public void granted() {
+        cameraView.post(new Runnable() {
+          @Override
+          public void run() {
+            // #onResume will take care of this for us
+          }
+        });
+      }
+
+      @Override
+      public void denied() {
+      }
+    });
   }
 
   @OnClick(R2.id.take_photo_btn)
