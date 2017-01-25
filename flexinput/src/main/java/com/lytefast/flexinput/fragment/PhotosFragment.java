@@ -1,11 +1,9 @@
 package com.lytefast.flexinput.fragment;
 
 import android.Manifest;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -72,13 +70,12 @@ public class PhotosFragment extends PermissionsFragment {
       recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
       recyclerView.setAdapter(photoAdapter);
     } else {
-      View.OnClickListener onClickListener = new View.OnClickListener() {
+      recyclerView.setAdapter(newPermissionsRequestAdapter(new View.OnClickListener() {
         @Override
         public void onClick(final View v) {
           requestPermissions(photoAdapter);
         }
-      };
-      recyclerView.setAdapter(newPermissionRequestAdapter(onClickListener));
+      }));
     }
 
     swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -91,7 +88,16 @@ public class PhotosFragment extends PermissionsFragment {
     return view;
   }
 
-  protected EmptyListAdapter newPermissionRequestAdapter(final View.OnClickListener onClickListener) {
+  /**
+   * Provides an adapter that is shown when the fragment doesn't have the necessary permissions.
+   * Override this for a more customized UX.
+   *
+   * @param onClickListener listener to be triggered when the user requests permissions.
+   *
+   * @return {@link RecyclerView.Adapter} shown when user has no permissions.
+   * @see EmptyListAdapter
+   */
+  protected EmptyListAdapter newPermissionsRequestAdapter(final View.OnClickListener onClickListener) {
     return new EmptyListAdapter(
         R.layout.item_permission_storage, R.id.permissions_req_btn, onClickListener);
   }
