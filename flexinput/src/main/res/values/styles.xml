@@ -16,6 +16,14 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
 
+    <style name="FlexInput.Camera.Controller" parent="AppTheme">
+        <item name="android:layout_gravity">bottom|center_horizontal</item>
+        <item name="layout_anchorGravity">bottom|center_horizontal</item>
+        <item name="android:layout_marginBottom">@dimen/add_content_viewpager_bottom_margin</item>
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_marginRight">8dp</item>
+    </style>
+
     <style name="FlexInput.Input" parent="AppTheme">
         <item name="android:background">?selectableItemBackgroundBorderless</item>
     </style>

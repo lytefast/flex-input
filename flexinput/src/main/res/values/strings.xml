@@ -9,4 +9,9 @@
     <string name="attachment_photos">Photos Selector</string>
     <string name="attachment_camera">Camera</string>
     <string name="attachments_keyboard">Show keyboard</string>
+
+    <string name="request_permission_msg">Enable permission</string>
+    <string name="storage_permission_denied_msg">Storage permissions required</string>
+    <string name="camera_permission_denied_msg">Camera permissions required</string>
+    <string name="files_permission_reason_msg">Storage permissions needed to show files</string>
 </resources>

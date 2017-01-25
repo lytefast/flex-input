@@ -1,5 +1,6 @@
 package com.lytefast.flexinput.fragment;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,6 +12,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +49,8 @@ public class CameraFragment extends Fragment {
   public static final int REQUEST_IMAGE_CAPTURE = 4567;
 
   @BindView(R2.id.camera_view) CameraView cameraView;
+  @BindView(R2.id.camera_action_container) View cameraActionContainer;
+  @BindView(R2.id.permissions_container) View permissionsContainer;
   private Unbinder unbinder;
 
   private FlexInputCoordinator flexInputCoordinator;
@@ -75,11 +79,22 @@ public class CameraFragment extends Fragment {
   public void onResume() {
     super.onResume();
 
-    if (!getContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+    if (!getContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)
+        || !hasPermissions()) {
+      cameraActionContainer.setVisibility(View.GONE);
+      permissionsContainer.setVisibility(View.VISIBLE);
       return;  // No camera detected. just chill
-      // TODO show empty state so buttons are disabled
     }
+    cameraActionContainer.setVisibility(View.VISIBLE);
+    permissionsContainer.setVisibility(View.GONE);
     cameraView.start();
+  }
+
+  private boolean hasPermissions() {
+    return ContextCompat.checkSelfPermission(
+            getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+        && ContextCompat.checkSelfPermission(
+            getContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
   }
 
   @Override

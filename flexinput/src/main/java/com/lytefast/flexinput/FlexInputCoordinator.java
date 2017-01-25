@@ -1,6 +1,7 @@
 package com.lytefast.flexinput;
 
 import com.lytefast.flexinput.managers.FileManager;
+import com.lytefast.flexinput.managers.PermissionsManager;
 import com.lytefast.flexinput.model.Attachment;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 
@@ -12,6 +13,7 @@ import com.lytefast.flexinput.utils.SelectionCoordinator;
  * @author Sam Shih
  */
 public interface FlexInputCoordinator {
+  PermissionsManager getPermissionsManager();
   FileManager getFileManager();
 
   /**

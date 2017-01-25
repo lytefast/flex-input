@@ -33,6 +33,7 @@ import com.lytefast.flexinput.adapters.AddContentPagerAdapter;
 import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
 import com.lytefast.flexinput.managers.FileManager;
 import com.lytefast.flexinput.managers.KeyboardManager;
+import com.lytefast.flexinput.managers.PermissionsManager;
 import com.lytefast.flexinput.model.Attachment;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 
@@ -75,6 +76,7 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
    * Temporarily stores the UI attributes until we can apply them after inflation.
    */
   private Runnable initializeUiAttributes;
+  private PermissionsManager permissionsManager;
   private KeyboardManager keyboardManager;
   private InputListener inputListener;
 
@@ -97,7 +99,6 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
         initAttributes(attrs);
       }
     };
-
   }
 
   @Nullable
@@ -160,6 +161,7 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
   }
   //endregion
 
+  //region Functional Setters
   /**
    * Set the custom emoji {@link Fragment} for the input.
    *
@@ -168,7 +170,6 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
    *
    * @return
    */
-  //region Functional Setters
   public FlexInputFragment setEmojiFragment(final Fragment emojiFragment) {
     getChildFragmentManager()
         .beginTransaction()
@@ -197,6 +198,11 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
   public FlexInputFragment setAttachmentPreviewAdapter(@NonNull final AttachmentPreviewAdapter previewAdapter) {
     this.attachmentPreviewAdapter = previewAdapter;
     this.attachmentPreviewList.setAdapter(attachmentPreviewAdapter);
+    return this;
+  }
+
+  public FlexInputFragment setPermissionsManager(final PermissionsManager permissionsManager) {
+    this.permissionsManager = permissionsManager;
     return this;
   }
 
@@ -418,7 +424,7 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
     updateSendBtnEnableState(textEt.getText());
   }
 
-  // region FlexInputController methods
+  // region FlexInputCoordinator methods
 
   @Override
   public <T extends Attachment> void onPhotoTaken(final T photo) {
@@ -430,6 +436,10 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
         // TODO invalidate photo picker
       }
     });
+  }
+
+  public PermissionsManager getPermissionsManager() {
+    return permissionsManager;
   }
 
   @Override
