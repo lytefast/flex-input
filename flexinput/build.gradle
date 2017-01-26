@@ -1,7 +1,7 @@
 buildscript {
   repositories {
     mavenCentral()
-   }
+  }
 
   dependencies {
     classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
@@ -37,7 +37,7 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(path: ':cameraview')
+    compile project(path: ':cameraview-aar')
 
     compile "com.android.support:appcompat-v7:$supportLibraryVersion"
     compile "com.android.support:design:$supportLibraryVersion"
