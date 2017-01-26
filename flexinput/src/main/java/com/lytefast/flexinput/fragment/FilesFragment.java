@@ -121,6 +121,7 @@ public class FilesFragment extends PermissionsFragment {
 
   private void loadDownloadFolder() {
     if (adapter == null) {
+      swipeRefreshLayout.setRefreshing(false);
       return;
     }
     File downloadFolder =

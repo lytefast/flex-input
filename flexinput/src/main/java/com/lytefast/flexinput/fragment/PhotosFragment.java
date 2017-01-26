@@ -81,7 +81,9 @@ public class PhotosFragment extends PermissionsFragment {
     swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
       @Override
       public void onRefresh() {
-        photoAdapter.loadPhotos();
+        if (hasPermissions(REQUIRED_PERMISSION)) {
+          photoAdapter.loadPhotos();
+        }
         swipeRefreshLayout.setRefreshing(false);
       }
     });
