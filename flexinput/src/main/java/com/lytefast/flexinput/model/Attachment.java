@@ -11,17 +11,39 @@ import com.facebook.common.util.HashCodeUtil;
  *
  * @author Sam Shih
  */
-public class Attachment {
-    public final long id;
-    public final Uri uri;
-    public final String displayName;
+public class Attachment<T> {
+  protected final long id;
+  protected final Uri uri;
+  protected final String displayName;
+  protected final T data;
 
 
-    public Attachment(final long id, final Uri uri, final String displayName) {
-      this.id = id;
-      this.uri = uri;
-      this.displayName = displayName;
-    }
+  public Attachment(final long id, final Uri uri, final String displayName, T data) {
+    this.id = id;
+    this.uri = uri;
+    this.displayName = displayName;
+    this.data = data;
+  }
+
+  //region Getters
+
+  public long getId() {
+    return id;
+  }
+
+  public Uri getUri() {
+    return uri;
+  }
+
+  public String getDisplayName() {
+    return displayName;
+  }
+
+  public T getData() {
+    return data;
+  }
+
+  //endregion
 
   @Override
   public boolean equals(final Object obj) {

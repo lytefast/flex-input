@@ -66,7 +66,7 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
 
   @Override
   public long getItemId(final int position) {
-    return getPhoto(position).id;
+    return getPhoto(position).getId();
   }
 
   @Override
@@ -96,9 +96,10 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
 
   private Photo getPhoto(int position) {
     cursor.moveToPosition(position);
-    Uri fileUri = Uri.withAppendedPath(
-        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, Integer.toString(cursor.getInt(colId)));
-    return new Photo(cursor.getLong(colId), fileUri, cursor.getString(colName));
+    final String photoId = Integer.toString(cursor.getInt(colId));
+    final Uri fileUri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, photoId);
+    return new Photo(
+        cursor.getLong(colId), fileUri, cursor.getString(colName), cursor.getString(colData));
   }
 
   protected class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

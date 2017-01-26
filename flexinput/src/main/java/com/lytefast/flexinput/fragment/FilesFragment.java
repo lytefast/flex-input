@@ -18,7 +18,7 @@ import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.adapters.EmptyListAdapter;
 import com.lytefast.flexinput.adapters.FileListAdapter;
-import com.lytefast.flexinput.model.Generic;
+import com.lytefast.flexinput.model.Attachment;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 
 import java.io.File;
@@ -37,7 +37,7 @@ public class FilesFragment extends PermissionsFragment {
 
   private static final String REQUIRED_PERMISSION = Manifest.permission.READ_EXTERNAL_STORAGE;
 
-  private final SelectionCoordinator<Generic<File>> selectionCoordinator = new SelectionCoordinator<>();
+  private final SelectionCoordinator<Attachment<File>> selectionCoordinator = new SelectionCoordinator<>();
 
   @BindView(R2.id.swipeRefreshLayout) SwipeRefreshLayout swipeRefreshLayout;
   @BindView(R2.id.list) RecyclerView recyclerView;

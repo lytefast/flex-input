@@ -122,7 +122,7 @@ public class MainFragment extends Fragment {
 
       for (int i = 0; i < attachments.size(); i++) {
         msgAdapter.addMessage(Editable.Factory.getInstance().newEditable(
-            String.format("[%d] Attachment - %s", i, attachments.get(i).displayName)));
+            String.format("[%d] Attachment - %s", i, attachments.get(i).getDisplayName())));
       }
     }
   };

@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
-import com.lytefast.flexinput.model.Generic;
+import com.lytefast.flexinput.model.Attachment;
 import com.lytefast.flexinput.utils.FileUtils;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 
@@ -41,14 +41,14 @@ import butterknife.ButterKnife;
  */
 public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHolder> {
 
-  private final SelectionCoordinator<Generic<File>> selectionCoordinator;
+  private final SelectionCoordinator<Attachment<File>> selectionCoordinator;
 
   private ContentResolver contentResolver;
-  private List<Generic<File>> files;
+  private List<Attachment<File>> files;
 
 
   public FileListAdapter(ContentResolver contentResolver,
-                         final SelectionCoordinator<Generic<File>> selectionCoordinator) {
+                         final SelectionCoordinator<Attachment<File>> selectionCoordinator) {
     this.contentResolver = contentResolver;
     this.files = Collections.EMPTY_LIST;
     this.selectionCoordinator = selectionCoordinator.bind(this);
@@ -74,11 +74,11 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
   public void load(File root) {
     this.files = flattenFileList(root);
 
-    Collections.sort(files, new Comparator<Generic<File>>() {
+    Collections.sort(files, new Comparator<Attachment<File>>() {
       @Override
-      public int compare(final Generic<File> o1, final Generic<File> o2) {
+      public int compare(final Attachment<File> o1, final Attachment<File> o2) {
         // Sort by newest first
-        return Long.valueOf(o2.rawData.lastModified()).compareTo(o1.rawData.lastModified());
+        return Long.valueOf(o2.getData().lastModified()).compareTo(o1.getData().lastModified());
       }
     });
     notifyDataSetChanged();
@@ -91,7 +91,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
     @BindView(R2.id.file_name_tv) TextView fileNameTv;
     @BindView(R2.id.file_path_tv) TextView filePathTV;
 
-    private Generic<File> genericFile = null;
+    private Attachment<File> AttachmentFile = null;
 
 
     public ViewHolder(final View itemView) {
@@ -100,11 +100,11 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
       ButterKnife.bind(this, itemView);
     }
 
-    public void bind(final Generic<File> genericFile) {
-      this.genericFile = genericFile;
-      setSelected(selectionCoordinator.isSelected(genericFile));
+    public void bind(final Attachment<File> fileAttachment) {
+      this.AttachmentFile = fileAttachment;
+      setSelected(selectionCoordinator.isSelected(fileAttachment));
 
-      final File file = genericFile.rawData;
+      final File file = fileAttachment.getData();
       fileNameTv.setText(file.getName());
       filePathTV.setText(file.getPath());
 
@@ -151,12 +151,12 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
 
     @Override
     public void onClick(final View v) {
-      setSelected(selectionCoordinator.toggleItem(genericFile, getAdapterPosition()));
+      setSelected(selectionCoordinator.toggleItem(AttachmentFile, getAdapterPosition()));
     }
   }
 
-  private static List<Generic<File>> flattenFileList(File parentDir) {
-    List<Generic<File>> flattenedFileList = new ArrayList<>();
+  private static List<Attachment<File>> flattenFileList(File parentDir) {
+    List<Attachment<File>> flattenedFileList = new ArrayList<>();
     Queue<File> files = new LinkedList<>();
     files.addAll(Arrays.asList(parentDir.listFiles()));
     while (!files.isEmpty()) {
