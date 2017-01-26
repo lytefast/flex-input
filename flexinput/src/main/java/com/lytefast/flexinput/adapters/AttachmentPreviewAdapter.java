@@ -1,6 +1,7 @@
 package com.lytefast.flexinput.adapters;
 
 import android.content.ContentResolver;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -85,10 +86,13 @@ public class AttachmentPreviewAdapter extends RecyclerView.Adapter<AttachmentPre
     public void bind(Attachment item) {
       if (item instanceof Photo) {
         draweeView.setImageURI(((Photo) item).getThumbnailUri(contentResolver));
-      } else if (item.uri != null) {
-        draweeView.setImageURI(item.uri);
       } else {
-        draweeView.setImageResource(R.drawable.ic_attach_file_24dp);
+        final Uri uri = item.getUri();
+        if (uri != null) {
+          draweeView.setImageURI(uri);
+        } else {
+          draweeView.setImageResource(R.drawable.ic_attach_file_24dp);
+        }
       }
     }
   }

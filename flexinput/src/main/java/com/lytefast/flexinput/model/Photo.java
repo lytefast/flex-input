@@ -13,9 +13,9 @@ import android.support.annotation.Nullable;
  *
  * @author Sam Shih
  */
-public class Photo extends Attachment {
-  public Photo(final long id, final Uri uri, final String displayName) {
-    super(id, uri, displayName);
+public class Photo extends Attachment<String> {
+  public Photo(final long id, final Uri uri, final String displayName, String photoDataLocation) {
+    super(id, uri, displayName, photoDataLocation);
   }
 
   @Nullable
