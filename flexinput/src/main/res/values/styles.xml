@@ -3,6 +3,7 @@
     <attr name="flexInputIconColor" format="color|reference" />
     <attr name="flexInputIconColorActivated" format="color|reference" />
     <attr name="flexInputIconColorDisabled" format="color|reference" />
+    <attr name="flexInputColorHighlight" format="color|reference" />
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.DayNight">
@@ -10,6 +11,7 @@
         <item name="flexInputIconColor">@color/flexInputIconColor</item>
         <item name="flexInputIconColorActivated">@color/flexInputIconColorActivated</item>
         <item name="flexInputIconColorDisabled">@color/flexInputIconColorDisabled</item>
+        <item name="flexInputColorHighlight">?colorControlHighlight</item>
     </style>
 
     <style name="FlexInput.Main" parent="AppTheme">

@@ -1,11 +1,13 @@
 package com.lytefast.flexinput.adapters;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.model.Photo;
+import com.lytefast.flexinput.utils.ColorUtils;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 
 
@@ -132,7 +135,8 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
     void setSelected(boolean isSelected) {
       imageView.setSelected(isSelected);
       if (isSelected) {
-        itemView.setBackgroundResource(R.drawable.rect_rounded_highlight);
+        itemView.setBackground(
+            ColorUtils.getColor(itemView.getContext(), R.attr.flexInputColorHighlight));
         checkIndicator.setVisibility(View.VISIBLE);
       } else {
         itemView.setBackgroundResource(0);

@@ -33,7 +33,7 @@
         android:layout_gravity="right|end"
         android:layout_margin="4dp"
         android:src="@drawable/ic_check_circle_24dp"
-        android:tint="@color/selected"
+        android:tint="?flexInputIconColorActivated"
         android:visibility="gone"
         tools:visibility="visible"/>
 </FrameLayout>

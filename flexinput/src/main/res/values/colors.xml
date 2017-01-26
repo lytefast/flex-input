@@ -8,6 +8,4 @@
     <color name="flexInputIconColorActivated">?colorControlActivated</color>
     <color name="flexInputIconColorDisabled">?colorControlHighlight</color>
 
-    <color name="selected">#FF458BBE</color>
-    <color name="selected_alpha_50">#88458BBE</color>
 </resources>
