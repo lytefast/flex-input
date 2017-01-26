@@ -15,13 +15,13 @@ Android text/emoji/media input field
 # Dependencies
 - This is currently using the still in development [cameraview](https://github.com/google/cameraview/)
   - at the current moment the cameraview project is just a symlink to the [camereaview/library project](https://github.com/google/cameraview/tree/master/library)
-  - you must do the same (include as a local project module dependency) in you project
+  - you must include a `cameraview.arr` into your project for now
 - [Butterknife](http://jakewharton.github.io/butterknife/)
 - [Fresco](http://frescolib.org/)
 
 # Work in Progress
 - [ ] Implement allowing custom emojis (non-unicode)
-- [ ] Handle permission requests and denials
+- [ ] Allow user to open system picker for photos/files
 
 # Usage
 For more details refer to the sample app included in this project.
