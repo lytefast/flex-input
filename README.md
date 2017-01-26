@@ -55,13 +55,23 @@ See [`colors.xml`](flexinput/src/main/res/values/colors.xml):
 <color name="flexInputIconColorDisabled">#c03f4a54</color>  <!-- colorControlHighlight -->
 ```
 Or the same attributes in [`styles.xml`](flexinput/src/main/res/values/styles.xml).
+<details>
+ <summary>Sample overrides of interest</summary>
+  ```
+  <style name="FlexInput.Main" parent="AppTheme">
+    <item name="android:background">@color/app_input_background_color</item>
+  </style>
+  <style name="FlexInput.AddContent.TabLayout" parent="FlexInput.AddContent.Base.TabLayout">
+    <item name="android:background">@drawable/rounded_rect</item>
+  </style>
+  ```
+</details>
 
 There are also `styles.xml` overrides that you can provide. All styles are prefixed by `FlexInput`. See [`styles.xml`](flexinput/src/main/res/values/styles.xml) for the full set of styles.
 
 Addtionally there are special `app` attributes that you may set to customize the appearance of the widget.
 - `inputBackground` defines the background for the text input row
 - `previewBackground` defines the background for the attachment preview row
-- `tabsBackground` defines the background for the media content tabs
 
 ## Setup
 Now you need to add some hooks and adapters to make sure everything works. Don't worry there are some default implementations that can just be dropped in.
@@ -83,7 +93,7 @@ public void onViewCreated(final View view, @Nullable final Bundle savedInstanceS
   }
 
   flexInput
-      .initContentPages(/* You can add custom PageSuppliers here */)
+      .setContentPages(/* You can add custom PageSuppliers here */)
       .setInputListener(flexInputListener)
       .setFileManager(new SimpleFileManager("com.lytefast.flexinput.fileprovider", "FlexInput"))
       .setKeyboardManager(new KeyboardManager() {
@@ -123,9 +133,7 @@ That's it! Now you have the output string and the attachments (in order) from th
 private void optionalFeatures() {
   flexInput
       // Can be extended to provide custom previews (e.g. larger preview images, onclick) etc.
-      .setAttachmentPreviewAdapter(new AttachmentPreviewAdapter(getContext().getContentResolver()))
-      // Additional button shown on add content screen
-      .setAddContentActionButton(quickSendFab);
+      .setAttachmentPreviewAdapter(new AttachmentPreviewAdapter(getContext().getContentResolver()));
 }
 ```
 
