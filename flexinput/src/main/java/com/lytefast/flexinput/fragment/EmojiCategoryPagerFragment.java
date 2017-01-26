@@ -50,17 +50,14 @@ public abstract class EmojiCategoryPagerFragment extends Fragment {
 
     pageTabs.setupWithViewPager(viewPager);
 
-    Emoji[] emojis = new Emoji[100];
-    Emoji sampleEmoji = new Emoji("☺", new String[]{"smile", "happy"});
-    for (int i = 0; i < 100; i++) {
-      emojis[i] = sampleEmoji;
-    }
-
-    initFrom(buildEmojiCategoryData(emojis));
+    initFrom(buildEmojiCategoryData());
     return rootView;
   }
 
-  public abstract List<Emoji.EmojiCategory> buildEmojiCategoryData(final Emoji[] emojis);
+  /**
+   * @return a list where each {@link com.lytefast.flexinput.model.Emoji.EmojiCategory} represents a tab.
+   */
+  public abstract List<Emoji.EmojiCategory> buildEmojiCategoryData();
 
   @Override
   public void onDestroyView() {

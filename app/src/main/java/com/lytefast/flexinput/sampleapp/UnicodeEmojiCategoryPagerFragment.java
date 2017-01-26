@@ -26,7 +26,7 @@ public class UnicodeEmojiCategoryPagerFragment extends EmojiCategoryPagerFragmen
   public static final String ASSET_PATH_EMOJIS = "emojis.json";
 
   @Override
-  public List<Emoji.EmojiCategory> buildEmojiCategoryData(final Emoji[] emojis) {
+  public List<Emoji.EmojiCategory> buildEmojiCategoryData() {
     JsonReader jsonReader = null;
     try {
       final Reader reader = new InputStreamReader(
