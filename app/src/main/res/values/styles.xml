@@ -20,6 +20,10 @@
         <item name="android:background">#40000000</item>
     </style>
 
+    <style name="FlexInput.AddContent.TabLayout" parent="FlexInput.AddContent.Base.TabLayout">
+        <item name="android:background">@drawable/content_tab_background</item>
+    </style>
+
     <style name="FlexInput.Items.File.Name" parent="TextAppearance.AppCompat.Title">
         <item name="android:textColor">@color/colorAccent</item>
     </style>
