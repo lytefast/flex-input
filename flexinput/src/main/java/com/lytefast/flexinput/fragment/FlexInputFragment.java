@@ -1,7 +1,9 @@
 package com.lytefast.flexinput.fragment;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -11,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageButton;
@@ -54,7 +57,8 @@ import butterknife.Unbinder;
  *
  * @author Sam Shih
  */
-public class FlexInputFragment extends Fragment implements FlexInputCoordinator {
+public class FlexInputFragment extends Fragment
+    implements FlexInputCoordinator {
 
   @BindView(R2.id.attachment_preview_container) View attachmentPreviewContainer;
   @BindView(R2.id.main_input_container) LinearLayout inputContainer;
@@ -97,7 +101,6 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
         initAttributes(attrs);
       }
     };
-
   }
 
   @Nullable
@@ -160,6 +163,7 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
   }
   //endregion
 
+  //region Functional Setters
   /**
    * Set the custom emoji {@link Fragment} for the input.
    *
@@ -168,7 +172,6 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
    *
    * @return
    */
-  //region Functional Setters
   public FlexInputFragment setEmojiFragment(final Fragment emojiFragment) {
     getChildFragmentManager()
         .beginTransaction()
@@ -418,7 +421,7 @@ public class FlexInputFragment extends Fragment implements FlexInputCoordinator 
     updateSendBtnEnableState(textEt.getText());
   }
 
-  // region FlexInputController methods
+  // region FlexInputCoordinator methods
 
   @Override
   public <T extends Attachment> void onPhotoTaken(final T photo) {

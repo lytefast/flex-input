@@ -1,20 +1,22 @@
 package com.lytefast.flexinput.fragment;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.lytefast.flexinput.FlexInputCoordinator;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
+import com.lytefast.flexinput.adapters.EmptyListAdapter;
 import com.lytefast.flexinput.adapters.FileListAdapter;
 import com.lytefast.flexinput.model.Generic;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
@@ -31,13 +33,16 @@ import butterknife.Unbinder;
  *
  * @author Sam Shih
  */
-public class FilesFragment extends Fragment {
+public class FilesFragment extends PermissionsFragment {
+
+  private static final String REQUIRED_PERMISSION = Manifest.permission.READ_EXTERNAL_STORAGE;
 
   private final SelectionCoordinator<Generic<File>> selectionCoordinator = new SelectionCoordinator<>();
 
   @BindView(R2.id.swipeRefreshLayout) SwipeRefreshLayout swipeRefreshLayout;
   @BindView(R2.id.list) RecyclerView recyclerView;
   private Unbinder unbinder;
+
   private FileListAdapter adapter;
 
   /**
@@ -66,10 +71,18 @@ public class FilesFragment extends Fragment {
     DividerItemDecoration bottomPadding =
         new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
     recyclerView.addItemDecoration(bottomPadding);
-    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-    adapter = new FileListAdapter(getContext().getContentResolver(), selectionCoordinator);
-    recyclerView.setAdapter(adapter);
+    if (hasPermissions(REQUIRED_PERMISSION)) {
+      adapter = new FileListAdapter(getContext().getContentResolver(), selectionCoordinator);
+      recyclerView.setAdapter(adapter);
+    } else {
+      recyclerView.setAdapter(newPermissionsRequestAdapter(new View.OnClickListener() {
+        @Override
+        public void onClick(final View v) {
+          requestPermissions();
+        }
+      }));
+    }
 
     swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
       @Override
@@ -78,6 +91,20 @@ public class FilesFragment extends Fragment {
       }
     });
     return view;
+  }
+
+  /**
+   * Provides an adapter that is shown when the fragment doesn't have the necessary permissions.
+   * Override this for a more customized UX.
+   *
+   * @param onClickListener listener to be triggered when the user requests permissions.
+   *
+   * @return {@link RecyclerView.Adapter} shown when user has no permissions.
+   * @see EmptyListAdapter
+   */
+  protected EmptyListAdapter newPermissionsRequestAdapter(final View.OnClickListener onClickListener) {
+    return new EmptyListAdapter(
+        R.layout.item_permission_storage, R.id.permissions_req_btn, onClickListener);
   }
 
   @Override
@@ -93,9 +120,29 @@ public class FilesFragment extends Fragment {
   }
 
   private void loadDownloadFolder() {
+    if (adapter == null) {
+      return;
+    }
     File downloadFolder =
         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
     adapter.load(downloadFolder);
     swipeRefreshLayout.setRefreshing(false);
+  }
+
+  private void requestPermissions() {
+    requestPermissions(new PermissionsResultCallback() {
+      @Override
+      public void granted() {
+        adapter = new FileListAdapter(getContext().getContentResolver(), selectionCoordinator);
+        recyclerView.setAdapter(adapter);
+        loadDownloadFolder();
+      }
+
+      @Override
+      public void denied() {
+        Toast.makeText(
+            getContext(), R.string.files_permission_reason_msg, Toast.LENGTH_LONG).show();
+      }
+    }, REQUIRED_PERMISSION);
   }
 }

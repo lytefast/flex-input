@@ -1,5 +1,6 @@
 package com.lytefast.flexinput.fragment;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,6 +12,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,13 +42,17 @@ import butterknife.Unbinder;
  *
  * @author Sam Shih
  */
-public class CameraFragment extends Fragment {
+public class CameraFragment extends PermissionsFragment {
+  private static final String[] REQUIRED_PERMISSIONS =
+      {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
 
   private static final String TAG = CameraFragment.class.getCanonicalName();
 
   public static final int REQUEST_IMAGE_CAPTURE = 4567;
 
   @BindView(R2.id.camera_view) CameraView cameraView;
+  @BindView(R2.id.camera_action_container) View cameraActionContainer;
+  @BindView(R2.id.permissions_container) View permissionsContainer;
   private Unbinder unbinder;
 
   private FlexInputCoordinator flexInputCoordinator;
@@ -59,6 +65,7 @@ public class CameraFragment extends Fragment {
     if (parentFrag instanceof FlexInputCoordinator) {
       this.flexInputCoordinator = (FlexInputCoordinator) parentFrag;
     }
+
   }
 
   @Nullable
@@ -75,10 +82,14 @@ public class CameraFragment extends Fragment {
   public void onResume() {
     super.onResume();
 
-    if (!getContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+    if (!getContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)
+        || !hasPermissions(REQUIRED_PERMISSIONS)) {
+      cameraActionContainer.setVisibility(View.GONE);
+      permissionsContainer.setVisibility(View.VISIBLE);
       return;  // No camera detected. just chill
-      // TODO show empty state so buttons are disabled
     }
+    cameraActionContainer.setVisibility(View.VISIBLE);
+    permissionsContainer.setVisibility(View.GONE);
     cameraView.start();
   }
 
@@ -92,6 +103,25 @@ public class CameraFragment extends Fragment {
   public void onDestroyView() {
     unbinder.unbind();
     super.onDestroyView();
+  }
+
+  @OnClick(R2.id.permissions_req_btn)
+  void requestPermissionClick() {
+    requestPermissions(new PermissionsResultCallback() {
+      @Override
+      public void granted() {
+        cameraView.post(new Runnable() {
+          @Override
+          public void run() {
+            // #onResume will take care of this for us
+          }
+        });
+      }
+
+      @Override
+      public void denied() {
+      }
+    }, REQUIRED_PERMISSIONS);
   }
 
   @OnClick(R2.id.take_photo_btn)

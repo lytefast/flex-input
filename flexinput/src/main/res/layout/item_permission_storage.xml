@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:gravity="center"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <TextView
+        style="@style/TextAppearance.AppCompat.Title"
+        android:gravity="center"
+        android:clickable="false"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/storage_permission_denied_msg"/>
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/permissions_req_btn"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/request_permission_msg"/>
+
+</LinearLayout>
