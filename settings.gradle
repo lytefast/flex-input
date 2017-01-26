@@ -1,1 +1,1 @@
-include ':app', ':flexinput', 'cameraview'
+include ':app', ':flexinput', ':cameraview-aar'
