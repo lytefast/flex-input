@@ -3,6 +3,7 @@ package com.lytefast.flexinput.model;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -28,12 +29,15 @@ public class Photo extends Attachment<String> {
         null);
 
     if (cursor == null || !cursor.moveToFirst()) {
-      return null;
+      // Generate thumbnail for next time
+      MediaStore.Images.Thumbnails.getThumbnail(
+          contentResolver, id, MediaStore.Images.Thumbnails.MINI_KIND, null);
+      return uri;  // Slow due to photo size and manipulation but better than nothing
     }
     try {
       final long thumbId = cursor.getLong(0);
-      return ContentUris.withAppendedId(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
-          thumbId);
+      return ContentUris.withAppendedId(
+          MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, thumbId);
     } finally {
       cursor.close();
     }
