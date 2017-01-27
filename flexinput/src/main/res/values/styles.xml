@@ -6,7 +6,8 @@
     <attr name="flexInputColorHighlight" format="color|reference" />
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight">
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight"/>
+    <style name="FlexInput" parent="AppTheme">
         <!-- Customize your theme here. -->
         <item name="flexInputIconColor">@color/flexInputIconColor</item>
         <item name="flexInputIconColorActivated">@color/flexInputIconColorActivated</item>

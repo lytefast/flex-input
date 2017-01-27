@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.content.res.AppCompatResources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,7 +84,7 @@ public abstract class EmojiCategoryPagerFragment extends Fragment {
 
   private void setIcons(final List<Emoji.EmojiCategory> emojiCategories) {
     ColorStateList iconColors =
-        ContextCompat.getColorStateList(getContext(), R.color.button_color_selector);
+        AppCompatResources.getColorStateList(getContext(), R.color.button_color_selector);
 
     for (int i = 0; i < emojiCategories.size(); i++) {
       TabLayout.Tab tab = pageTabs.getTabAt(i)

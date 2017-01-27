@@ -8,7 +8,7 @@
     <!--These are used within FlexInput. Override to customize.-->
     <!-- Defaults for these values are style attr and listed beside the overrides-->
     <color name="flexInputIconColor">@color/colorPrimary</color>  <!-- colorButtonNormal -->
-    <color name="flexInputIconColorActivated">@color/colorPrimaryDark</color>  <!-- colorControlActivated -->
+    <color name="flexInputIconColorActivated">@color/colorAccent</color>  <!-- colorControlActivated -->
     <color name="flexInputIconColorDisabled">#c03f4a54</color>  <!-- colorControlHighlight -->
 
     <color name="content_tab_background_alpha_80">#cc222222</color>

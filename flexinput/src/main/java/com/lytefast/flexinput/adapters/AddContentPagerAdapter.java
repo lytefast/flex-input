@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.content.res.AppCompatResources;
 
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.fragment.CameraFragment;
@@ -48,7 +49,7 @@ public class AddContentPagerAdapter extends FragmentPagerAdapter {
 
   public void initTabs(final Context context, final TabLayout tabLayout) {
     final ColorStateList iconColors =
-        ContextCompat.getColorStateList(context, R.color.button_color_selector);
+        AppCompatResources.getColorStateList(context, R.color.button_color_selector);
 
     // Color the existing tabs
     for (int i = 0; i < tabLayout.getTabCount(); i++) {
