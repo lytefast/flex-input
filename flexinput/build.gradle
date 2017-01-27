@@ -21,17 +21,10 @@ android {
         versionCode 1
         versionName "0.6.5"
 
+        consumerProguardFiles 'proguard-rules.pro'
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-    }
-    buildTypes {
-        debug {
-            versionNameSuffix " Debug"
-            debuggable true
-        }
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
+
     }
 }
 
@@ -43,7 +36,6 @@ dependencies {
     compile "com.android.support:design:$supportLibraryVersion"
     compile "com.android.support:recyclerview-v7:$supportLibraryVersion"
     compile "com.android.support:support-v4:$supportLibraryVersion"
-    compile "com.google.android.gms:play-services:10.0.1"
 
     compile "com.jakewharton:butterknife:8.4.0"
     annotationProcessor "com.jakewharton:butterknife-compiler:8.4.0"
