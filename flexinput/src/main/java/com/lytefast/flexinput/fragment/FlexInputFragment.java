@@ -282,6 +282,8 @@ public class FlexInputFragment extends Fragment
         // Rebind Butterknife to make sure hooks work
         unbinder.unbind();
         unbinder = ButterKnife.bind(FlexInputFragment.this, getView());
+
+        updateSendBtnEnableState(customEditText.getText());
       }
     });
     return this;
