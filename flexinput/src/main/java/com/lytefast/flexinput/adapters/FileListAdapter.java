@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.TypedArrayUtils;
@@ -112,7 +113,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
       fileNameTv.setText(file.getName());
       filePathTV.setText(file.getPath());
 
-      thumbIv.setImageResource(0);
+      thumbIv.setImageURI((Uri) null);
       typeIv.setImageResource(R.drawable.ic_file_24dp);
 
       String mimeType = getMimeType(file);
