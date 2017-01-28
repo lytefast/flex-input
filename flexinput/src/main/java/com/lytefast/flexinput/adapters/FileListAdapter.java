@@ -113,16 +113,19 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
       fileNameTv.setText(file.getName());
       filePathTV.setText(file.getPath());
 
+      // Set defaults
       thumbIv.setImageURI((Uri) null);
-      typeIv.setImageResource(R.drawable.ic_file_24dp);
+      typeIv.setVisibility(View.GONE);
 
       String mimeType = getMimeType(file);
       if (!TextUtils.isEmpty(mimeType)) {
         if (mimeType.startsWith("image")) {
           typeIv.setImageResource(R.drawable.ic_image_24dp);
+          typeIv.setVisibility(View.VISIBLE);
           bindThumbIvWithImage(file);
         } else if (mimeType.startsWith("video")) {
           typeIv.setImageResource(R.drawable.ic_movie_24dp);
+          typeIv.setVisibility(View.VISIBLE);
           thumbIv.setImageURI(FileUtils.toUri(file));
         }
       }
