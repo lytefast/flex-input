@@ -40,6 +40,21 @@
         <item name="android:tint">@android:color/white</item>
     </style>
 
+    <style name="FlexInput.Items" parent="AppTheme">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="FlexInput.Items.Selected.Icon" parent="FlexInput.Items">
+        <item name="android:layout_gravity">top|right|end</item>
+        <item name="roundAsCircle">true</item>
+        <item name="roundingBorderWidth">@dimen/margin</item>
+        <item name="roundingBorderColor">?flexInputColorHighlight</item>
+        <item name="roundWithOverlayColor">@android:color/transparent</item>
+        <item name="placeholderImage">@drawable/ic_check_circle_24dp</item>
+        <item name="placeholderImageScaleType">fitCenter</item>
+        <item name="android:tint">?flexInputIconColorActivated</item>
+    </style>
+
     <style name="FlexInput.Items.File.Name" parent="AppTheme">
         <item name="android:textSize">14dp</item>
     </style>

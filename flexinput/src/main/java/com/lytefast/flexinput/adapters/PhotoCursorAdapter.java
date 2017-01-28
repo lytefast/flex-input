@@ -1,13 +1,13 @@
 package com.lytefast.flexinput.adapters;
 
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -134,13 +134,21 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
 
     void setSelected(boolean isSelected) {
       imageView.setSelected(isSelected);
+
       if (isSelected) {
-        itemView.setBackground(
-            ColorUtils.getColor(itemView.getContext(), R.attr.flexInputColorHighlight));
         checkIndicator.setVisibility(View.VISIBLE);
+
+        final AnimatorSet shrinkAnim = (AnimatorSet) AnimatorInflater.loadAnimator(
+            itemView.getContext(), R.animator.selection_shrink);
+        shrinkAnim.setTarget(imageView);
+        shrinkAnim.start();
       } else {
-        itemView.setBackgroundResource(0);
         checkIndicator.setVisibility(View.GONE);
+
+        final AnimatorSet growAnim = (AnimatorSet) AnimatorInflater.loadAnimator(
+                itemView.getContext(), R.animator.selection_grow);
+        growAnim.setTarget(imageView);
+        growAnim.start();
       }
     }
 
