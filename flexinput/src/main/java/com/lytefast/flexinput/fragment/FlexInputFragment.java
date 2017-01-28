@@ -369,7 +369,7 @@ public class FlexInputFragment extends Fragment
   @OnClick(R2.id.add_btn)
   void onAddToggle() {
     hideEmojiTray();
-    if (addContentContainer.getVisibility() == View.VISIBLE) {
+    if (addContentContainer.isShown()) {
       addContentContainer.setVisibility(View.GONE);
       addContentPager.setVisibility(View.GONE);  // set this to force destroy fragments
 
@@ -383,6 +383,8 @@ public class FlexInputFragment extends Fragment
       inputContainer.setVisibility(View.GONE);
       keyboardManager.requestHide();  // Make sure the keyboard is hidden
     }
+
+    updateAttachmentPreviewContainer();
   }
 
   @OnTextChanged(value = R2.id.text_input, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
@@ -403,10 +405,6 @@ public class FlexInputFragment extends Fragment
     emojiBtn.setImageResource(R.drawable.ic_keyboard_24dp);
   }
 
-  private void updateSendBtnEnableState(final Editable message) {
-    sendBtn.setEnabled(message.length() > 0 || attachmentPreviewAdapter.getItemCount() > 0);
-  }
-
   public void append(CharSequence data) {
     // TODO figure out some way to allow custom spannables (e.g. fresco's DraweeSpan)
     textEt.getText().append(data);
@@ -414,10 +412,22 @@ public class FlexInputFragment extends Fragment
 
   public void handleAttachmentClick(Attachment item) {
     attachmentPreviewAdapter.toggleItem(item);
-    attachmentPreviewContainer.setVisibility(
-        attachmentPreviewAdapter.getItemCount() == 0 ? View.GONE : View.VISIBLE);
 
     updateSendBtnEnableState(textEt.getText());
+    updateAttachmentPreviewContainer();
+  }
+
+  private void updateSendBtnEnableState(final Editable message) {
+    sendBtn.setEnabled(message.length() > 0 || attachmentPreviewAdapter.getItemCount() > 0);
+  }
+
+  private void updateAttachmentPreviewContainer() {
+    int shouldShow =
+        attachmentPreviewAdapter.getItemCount() == 0 || addContentContainer.isShown()
+        ? View.GONE : View.VISIBLE;
+
+    attachmentPreviewContainer.setVisibility(
+        shouldShow);
   }
 
   // region FlexInputCoordinator methods
