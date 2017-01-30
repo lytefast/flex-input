@@ -5,7 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/FlexInput.Items"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    android:clickable="true">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/thumb_iv"
@@ -29,6 +31,18 @@
         android:tint="?flexInputIconColor"
         tools:src="@drawable/ic_file_24dp"/>
 
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/selection_indicator"
+        android:padding="@dimen/margin"
+        android:layout_marginRight="@dimen/text_margin"
+        android:layout_marginEnd="@dimen/text_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerInParent="true"
+        android:src="@drawable/file_item_selection_indicator_btn"/>
+
     <TextView
         android:id="@+id/file_name_tv"
         style="@style/FlexInput.Items.File.Name"
@@ -36,6 +50,8 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/thumb_iv"
         android:layout_toRightOf="@id/thumb_iv"
+        android:layout_toLeftOf="@id/selection_indicator"
+        android:layout_toStartOf="@id/selection_indicator"
         android:layout_marginLeft="@dimen/text_margin"
         android:layout_marginStart="@dimen/text_margin"
         android:layout_marginTop="@dimen/margin"
@@ -49,6 +65,8 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/file_name_tv"
         android:layout_alignStart="@id/file_name_tv"
+        android:layout_toLeftOf="@id/selection_indicator"
+        android:layout_toStartOf="@id/selection_indicator"
         android:layout_below="@id/file_name_tv"
         android:text="file path"/>
 

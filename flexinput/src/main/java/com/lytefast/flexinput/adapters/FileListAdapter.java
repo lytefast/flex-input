@@ -103,6 +103,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
 
     public ViewHolder(final View itemView) {
       super(itemView);
+      this.itemView.setClickable(true);
       this.itemView.setOnClickListener(this);
       ButterKnife.bind(this, itemView);
     }
@@ -151,12 +152,17 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
     }
 
     void setSelected(boolean isSelected) {
-      thumbIv.setSelected(isSelected);
+      itemView.setSelected(isSelected);
       if (isSelected) {
-        itemView.setBackground(
-            ColorUtils.getColor(itemView.getContext(), R.attr.flexInputColorHighlight));
+        final AnimatorSet shrinkAnim = (AnimatorSet) AnimatorInflater.loadAnimator(
+            thumbIv.getContext(), R.animator.selection_shrink);
+        shrinkAnim.setTarget(thumbIv);
+        shrinkAnim.start();
       } else {
-        itemView.setBackgroundResource(0);
+        final AnimatorSet growAnim = (AnimatorSet) AnimatorInflater.loadAnimator(
+            thumbIv.getContext(), R.animator.selection_grow);
+        growAnim.setTarget(thumbIv);
+        growAnim.start();
       }
     }
 
