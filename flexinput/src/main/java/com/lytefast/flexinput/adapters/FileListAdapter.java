@@ -1,5 +1,7 @@
 package com.lytefast.flexinput.adapters;
 
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
@@ -160,7 +162,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
 
     @Override
     public void onClick(final View v) {
-      setSelected(selectionCoordinator.toggleItem(AttachmentFile, getAdapterPosition()));
+      selectionCoordinator.toggleItem(AttachmentFile, getAdapterPosition());
     }
   }
 

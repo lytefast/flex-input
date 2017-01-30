@@ -84,11 +84,6 @@ public class AttachmentPreviewAdapter<T extends Attachment<?>>
     final boolean wasRemoved = attachments.remove(item);
     if (wasRemoved) {
       notifyItemRemoved(oldIndex);
-      for (SelectionCoordinator<T> coordinator : childSelectionCoordinators) {
-        if (coordinator.isSelected(item)) {
-          coordinator.toggleItem(item, 0 /* not looked at for removals */);
-        }
-      }
       itemSelectionListener.onItemUnselected(item);
     } else {
       attachments.add(item);
@@ -138,12 +133,17 @@ public class AttachmentPreviewAdapter<T extends Attachment<?>>
         }
       }
 
-//      itemView.setOnClickListener(new View.OnClickListener() {
-//        @Override
-//        public void onClick(final View v) {
-//          toggleItem(item);
-//        }
-//      });
+      itemView.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(final View v) {
+          // Let the child delete the item, and notify us
+          for (SelectionCoordinator<T> coordinator : childSelectionCoordinators) {
+            if (coordinator.isSelected(item)) {
+              coordinator.toggleItem(item, 0 /* not looked at for removals */);
+            }
+          }
+        }
+      });
     }
   }
 }
