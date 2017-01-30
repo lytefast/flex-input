@@ -16,9 +16,10 @@ public class SelectionCoordinator<T> {
   /**
    * Maintains a mapping from the selected item to the position in the adapter.
    */
-  private final ArrayMap<T, Integer> selectedItemPositionMap;
-  private RecyclerView.Adapter<?> adapter;
-  private ItemSelectionListener itemSelectionListener;
+  protected final ArrayMap<T, Integer> selectedItemPositionMap;
+  protected ItemSelectionListener itemSelectionListener;
+  protected RecyclerView.Adapter<?> adapter;
+
 
   public SelectionCoordinator() {
     this.selectedItemPositionMap = new ArrayMap<>(4);
@@ -53,6 +54,11 @@ public class SelectionCoordinator<T> {
 
   /**
    * Toggle the selection state for the item.
+   *
+   * @param item     instance of the item to be toggled. This must have {@link #equals(Object)}
+   *                 and {@link #hashCode()} equivalancy for equal items.
+   * @param position the position in the list where the item appears. Inspected only on adds and
+   *                 used to notify the adapter on removals.
    *
    * @return True if the item was added. False otherwise.
    */

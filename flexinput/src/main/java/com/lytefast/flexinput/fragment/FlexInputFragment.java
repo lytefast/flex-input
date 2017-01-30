@@ -36,8 +36,6 @@ import com.lytefast.flexinput.managers.KeyboardManager;
 import com.lytefast.flexinput.model.Attachment;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 
-import java.util.ArrayList;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -81,7 +79,6 @@ public class FlexInputFragment extends Fragment
 
   private FileManager fileManager;
   private AttachmentPreviewAdapter attachmentPreviewAdapter;
-  private final ArrayList<SelectionCoordinator<?>> selectionCoordinators = new ArrayList<>(4);
 
 
   public FlexInputFragment() {}
@@ -197,6 +194,23 @@ public class FlexInputFragment extends Fragment
   public FlexInputFragment setAttachmentPreviewAdapter(@NonNull final AttachmentPreviewAdapter previewAdapter) {
     this.attachmentPreviewAdapter = previewAdapter;
     this.attachmentPreviewList.setAdapter(attachmentPreviewAdapter);
+
+    previewAdapter.setItemSelectionListener(new SelectionCoordinator.ItemSelectionListener() {
+      @Override
+      public void onItemSelected(final Object item) {
+        updateUi();
+      }
+
+      @Override
+      public void onItemUnselected(final Object item) {
+        updateUi();
+      }
+
+      private void updateUi() {
+        updateSendBtnEnableState(textEt.getText());
+        updateAttachmentPreviewContainer();
+      }
+    });
     return this;
   }
 
@@ -312,9 +326,6 @@ public class FlexInputFragment extends Fragment
     attachmentPreviewAdapter.clear();
     attachmentPreviewContainer.setVisibility(View.GONE);
 
-    for (SelectionCoordinator<?> coordinators : selectionCoordinators) {
-      coordinators.clearSelectedItems();
-    }
     updateSendBtnEnableState(textEt.getText());
   }
 
@@ -426,8 +437,7 @@ public class FlexInputFragment extends Fragment
         attachmentPreviewAdapter.getItemCount() == 0 || addContentContainer.isShown()
         ? View.GONE : View.VISIBLE;
 
-    attachmentPreviewContainer.setVisibility(
-        shouldShow);
+    attachmentPreviewContainer.setVisibility(shouldShow);
   }
 
   // region FlexInputCoordinator methods
@@ -451,18 +461,7 @@ public class FlexInputFragment extends Fragment
 
   @Override
   public <T extends Attachment> void addSelectionCoordinator(SelectionCoordinator<T> coordinator) {
-    this.selectionCoordinators.add(coordinator);
-    coordinator.setItemSelectionListener(new SelectionCoordinator.ItemSelectionListener<T>() {
-      @Override
-      public void onItemSelected(T item) {
-        handleAttachmentClick(item);
-      }
-
-      @Override
-      public void onItemUnselected(T item) {
-        handleAttachmentClick(item);
-      }
-    });
+    attachmentPreviewAdapter.addChildSelectionCoordinator(coordinator);
   }
 
   // endregion
