@@ -95,6 +95,8 @@ public class FlexInputFragment extends Fragment
         initAttributes(attrs);
       }
     };
+    // Set this so we can capture SelectionCoordinators ASAP
+    this.attachmentPreviewAdapter = new AttachmentPreviewAdapter(getContext().getContentResolver());
   }
 
   @Nullable
@@ -109,7 +111,6 @@ public class FlexInputFragment extends Fragment
 
     this.initializeUiAttributes.run();
     this.initializeUiAttributes = null;
-
     setAttachmentPreviewAdapter(new AttachmentPreviewAdapter(getContext().getContentResolver()));
     return root;
   }
@@ -192,25 +193,27 @@ public class FlexInputFragment extends Fragment
    * @see AttachmentPreviewAdapter#AttachmentPreviewAdapter(ContentResolver) for a default implementation of attachment previews
    */
   public FlexInputFragment setAttachmentPreviewAdapter(@NonNull final AttachmentPreviewAdapter previewAdapter) {
+    previewAdapter
+        .initFrom(attachmentPreviewAdapter)
+        .setItemSelectionListener(new SelectionCoordinator.ItemSelectionListener() {
+          @Override
+          public void onItemSelected(final Object item) {
+            updateUi();
+          }
+
+          @Override
+          public void onItemUnselected(final Object item) {
+            updateUi();
+          }
+
+          private void updateUi() {
+            updateSendBtnEnableState(textEt.getText());
+            updateAttachmentPreviewContainer();
+          }
+        });
+
     this.attachmentPreviewAdapter = previewAdapter;
     this.attachmentPreviewList.setAdapter(attachmentPreviewAdapter);
-
-    previewAdapter.setItemSelectionListener(new SelectionCoordinator.ItemSelectionListener() {
-      @Override
-      public void onItemSelected(final Object item) {
-        updateUi();
-      }
-
-      @Override
-      public void onItemUnselected(final Object item) {
-        updateUi();
-      }
-
-      private void updateUi() {
-        updateSendBtnEnableState(textEt.getText());
-        updateAttachmentPreviewContainer();
-      }
-    });
     return this;
   }
 

@@ -14,6 +14,8 @@ import com.lytefast.flexinput.model.Photo;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -59,6 +61,15 @@ public class AttachmentPreviewAdapter<T extends Attachment<?>>
     return attachments.size();
   }
 
+  public AttachmentPreviewAdapter<T> initFrom(AttachmentPreviewAdapter oldAdapter) {
+    if (oldAdapter != null) {
+      this.attachments.addAll(oldAdapter.attachments);
+      addChildSelectionCoordinator(oldAdapter.childSelectionCoordinators);
+      this.itemSelectionListener = oldAdapter.itemSelectionListener;
+    }
+    return this;
+  }
+
   public void setItemSelectionListener(
       SelectionCoordinator.ItemSelectionListener itemSelectionListener) {
     this.itemSelectionListener = itemSelectionListener;
@@ -96,6 +107,11 @@ public class AttachmentPreviewAdapter<T extends Attachment<?>>
   }
 
   public void addChildSelectionCoordinator(SelectionCoordinator<T>... childSelectionCoordinators) {
+    addChildSelectionCoordinator(Arrays.asList(childSelectionCoordinators));
+  }
+
+  public void addChildSelectionCoordinator(
+      Collection<SelectionCoordinator<T>> childSelectionCoordinators) {
     for (SelectionCoordinator<T> child : childSelectionCoordinators) {
       this.childSelectionCoordinators.add(child);
       child.setItemSelectionListener(new SelectionCoordinator.ItemSelectionListener<T>() {
