@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -72,6 +73,10 @@ public class CameraFragment extends PermissionsFragment {
   public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable final Bundle savedInstanceState) {
     View rootView = inflater.inflate(R.layout.fragment_camera, container, false);
     unbinder = ButterKnife.bind(this, rootView);
+
+    if (isBlacklistedDevice()) {
+      ButterKnife.findById(rootView, R.id.launch_camera_btn).setVisibility(View.GONE);
+    }
 
     cameraView.addCallback(cameraCallback);
     return rootView;
@@ -203,7 +208,7 @@ public class CameraFragment extends PermissionsFragment {
    * This is a hack to allow the file provider API to still
    * work on older API versions.
    *
-   * @see http://bit.ly/2iC4bUJ
+   * http://bit.ly/2iC4bUJ
    */
   private static void grantWriteAccessToURI(final @NonNull Context context,
                                             final @NonNull Intent intent,
@@ -218,5 +223,9 @@ public class CameraFragment extends PermissionsFragment {
 
       context.grantUriPermission(packageName, uri, mode);
     }
+  }
+
+  private boolean isBlacklistedDevice() {
+    return Build.MODEL.equalsIgnoreCase("Pixel") && Build.MANUFACTURER.equalsIgnoreCase("Google");
   }
 }
