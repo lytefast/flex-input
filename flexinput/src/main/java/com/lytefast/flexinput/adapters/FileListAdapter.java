@@ -1,9 +1,12 @@
 package com.lytefast.flexinput.adapters;
 
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.TypedArrayUtils;
@@ -100,6 +103,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
 
     public ViewHolder(final View itemView) {
       super(itemView);
+      this.itemView.setClickable(true);
       this.itemView.setOnClickListener(this);
       ButterKnife.bind(this, itemView);
     }
@@ -112,16 +116,19 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
       fileNameTv.setText(file.getName());
       filePathTV.setText(file.getPath());
 
-      thumbIv.setImageResource(0);
-      typeIv.setImageResource(R.drawable.ic_file_24dp);
+      // Set defaults
+      thumbIv.setImageURI((Uri) null);
+      typeIv.setVisibility(View.GONE);
 
       String mimeType = getMimeType(file);
       if (!TextUtils.isEmpty(mimeType)) {
         if (mimeType.startsWith("image")) {
           typeIv.setImageResource(R.drawable.ic_image_24dp);
+          typeIv.setVisibility(View.VISIBLE);
           bindThumbIvWithImage(file);
         } else if (mimeType.startsWith("video")) {
           typeIv.setImageResource(R.drawable.ic_movie_24dp);
+          typeIv.setVisibility(View.VISIBLE);
           thumbIv.setImageURI(FileUtils.toUri(file));
         }
       }
@@ -145,18 +152,23 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
     }
 
     void setSelected(boolean isSelected) {
-      thumbIv.setSelected(isSelected);
+      itemView.setSelected(isSelected);
       if (isSelected) {
-        itemView.setBackground(
-            ColorUtils.getColor(itemView.getContext(), R.attr.flexInputColorHighlight));
+        final AnimatorSet shrinkAnim = (AnimatorSet) AnimatorInflater.loadAnimator(
+            thumbIv.getContext(), R.animator.selection_shrink);
+        shrinkAnim.setTarget(thumbIv);
+        shrinkAnim.start();
       } else {
-        itemView.setBackgroundResource(0);
+        final AnimatorSet growAnim = (AnimatorSet) AnimatorInflater.loadAnimator(
+            thumbIv.getContext(), R.animator.selection_grow);
+        growAnim.setTarget(thumbIv);
+        growAnim.start();
       }
     }
 
     @Override
     public void onClick(final View v) {
-      setSelected(selectionCoordinator.toggleItem(AttachmentFile, getAdapterPosition()));
+      selectionCoordinator.toggleItem(AttachmentFile, getAdapterPosition());
     }
   }
 

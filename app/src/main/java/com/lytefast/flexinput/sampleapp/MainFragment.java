@@ -19,6 +19,7 @@ import com.lytefast.flexinput.fragment.FlexInputFragment;
 import com.lytefast.flexinput.managers.KeyboardManager;
 import com.lytefast.flexinput.managers.SimpleFileManager;
 import com.lytefast.flexinput.model.Attachment;
+import com.lytefast.flexinput.utils.SelectionCoordinator;
 
 import java.util.List;
 

@@ -12,7 +12,7 @@
         <item name="flexInputIconColor">@color/flexInputIconColor</item>
         <item name="flexInputIconColorActivated">@color/flexInputIconColorActivated</item>
         <item name="flexInputIconColorDisabled">@color/flexInputIconColorDisabled</item>
-        <item name="flexInputColorHighlight">@color/flexInputIconColorActivated</item>
+        <item name="flexInputColorHighlight">@color/flexInputColorHighlight</item>
     </style>
 
     <!-- FlexInput style overrides: implement to customize the look -->

@@ -16,9 +16,16 @@ public class SelectionCoordinator<T> {
   /**
    * Maintains a mapping from the selected item to the position in the adapter.
    */
-  private final ArrayMap<T, Integer> selectedItemPositionMap;
-  private RecyclerView.Adapter<?> adapter;
-  private ItemSelectionListener itemSelectionListener;
+  @SuppressWarnings("WeakerAccess")
+  protected final ArrayMap<T, Integer> selectedItemPositionMap;
+  @SuppressWarnings("WeakerAccess")
+  protected ItemSelectionListener itemSelectionListener;
+  /**
+   * The {@link android.support.v7.widget.RecyclerView.Adapter} that should be notified when selection changes occur.
+   */
+  @SuppressWarnings("WeakerAccess")
+  protected RecyclerView.Adapter<?> adapter;
+
 
   public SelectionCoordinator() {
     this.selectedItemPositionMap = new ArrayMap<>(4);
@@ -54,14 +61,23 @@ public class SelectionCoordinator<T> {
   /**
    * Toggle the selection state for the item.
    *
+   * @param item     instance of the item to be toggled. This must have {@link #equals(Object)}
+   *                 and {@link #hashCode()} equivalancy for equal items.
+   * @param position the position in the list where the item appears. Inspected only on adds and
+   *                 used to notify the adapter on removals.
+   *
    * @return True if the item was added. False otherwise.
    */
   public boolean toggleItem(T item, int position) {
+    final Integer savedPosition = selectedItemPositionMap.get(item);
+
     if (selectedItemPositionMap.remove(item) == null) {
       selectedItemPositionMap.put(item, position);
+      adapter.notifyItemChanged(position);
       itemSelectionListener.onItemSelected(item);
       return true;
     }
+    adapter.notifyItemChanged(savedPosition);
     itemSelectionListener.onItemUnselected(item);
     return false;
   }

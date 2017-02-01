@@ -3,10 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/FlexInput.Items"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
-    android:padding="2dp"
+    android:clickable="true"
+    android:padding="@dimen/grid_item_padding"
     tools:layout_width="120dp"
     tools:gravity="center_horizontal">
 
@@ -16,24 +18,22 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:layout_margin="@dimen/grid_item_padding"
+        android:padding="@dimen/grid_item_padding"
         android:scaleType="fitCenter"
 
         app:viewAspectRatio="1.0"
         app:fadeDuration="@android:integer/config_shortAnimTime"
-        app:pressedStateOverlayImage="?selectableItemBackgroundBorderless"
         app:actualImageScaleType="centerCrop"
         app:placeholderImage="@drawable/ic_image_24dp"
         app:placeholderImageScaleType="centerInside"
         tools:src="@drawable/ic_image_24dp"/>
 
-    <ImageView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/item_check_indicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right|end"
-        android:layout_margin="4dp"
-        android:src="@drawable/ic_check_circle_24dp"
-        android:tint="?flexInputIconColorActivated"
+        style="@style/FlexInput.Items.Selected.Icon"
+        android:layout_width="@dimen/selection_indicator_icon_size"
+        android:layout_height="@dimen/selection_indicator_icon_size"
         android:visibility="gone"
+        tools:src="@drawable/ic_check_circle_24dp"
         tools:visibility="visible"/>
 </FrameLayout>

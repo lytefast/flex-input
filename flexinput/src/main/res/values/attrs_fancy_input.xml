@@ -1,7 +1,6 @@
 <resources>
     <declare-styleable name="FlexInput">
         <attr name="hint" format="string"/>
-        <attr name="exampleDimension" format="dimension"/>
         <attr name="hintColor" format="color"/>
         <attr name="inputBackground" format="color|reference"/>
         <attr name="tabsBackground" format="color|reference"/>
