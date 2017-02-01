@@ -264,10 +264,22 @@ public class FlexInputFragment extends Fragment
     return this;
   }
 
+  /**
+   * Initialize the add content pages. If no page suppliers are specified, the default set of pages is used.
+   *
+   * @param pageSuppliers ordered list of pages to be shown when the user tried to add content
+   */
   public FlexInputFragment initContentPages(AddContentPagerAdapter.PageSupplier... pageSuppliers) {
     return initContentPages(new AddContentPagerAdapter(getChildFragmentManager(), pageSuppliers));
   }
 
+  /**
+   * Exposed to allow a fully customizable {@link AddContentPagerAdapter}.
+   *
+   * @param pagerAdapter custom adapter to use to render the add content pages.
+   *
+   * @see #initContentPages(AddContentPagerAdapter.PageSupplier...) for default implementation
+   */
   public FlexInputFragment initContentPages(final AddContentPagerAdapter pagerAdapter) {
     addContentPager.setAdapter(pagerAdapter);
     pagerAdapter.initTabs(getContext(), addContentTabs);
@@ -342,6 +354,10 @@ public class FlexInputFragment extends Fragment
     return this;
   }
 
+  /**
+   * Set a clickable action button that is displayed on the add content screen when there are attachments.
+   * This can be use for quick sends directly from the action screen.
+   */
   public FlexInputFragment setAddContentActionButton(@Nullable View actionButton) {
     this.addContentActionButton = actionButton;
     return this;

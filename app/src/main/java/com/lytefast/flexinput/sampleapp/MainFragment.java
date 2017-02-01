@@ -20,7 +20,6 @@ import com.lytefast.flexinput.fragment.FlexInputFragment;
 import com.lytefast.flexinput.managers.KeyboardManager;
 import com.lytefast.flexinput.managers.SimpleFileManager;
 import com.lytefast.flexinput.model.Attachment;
-import com.lytefast.flexinput.utils.SelectionCoordinator;
 
 import java.util.List;
 
@@ -38,7 +37,7 @@ import butterknife.Unbinder;
 public class MainFragment extends Fragment {
 
   @BindView(R.id.message_list) RecyclerView recyclerView;
-  @BindView(R.id.fab) FloatingActionButton fab;
+  @BindView(R.id.fab) FloatingActionButton quickSendFab;
   private Unbinder unbinder;
 
   private FlexInputFragment flexInput;
@@ -80,10 +79,7 @@ public class MainFragment extends Fragment {
 
     flexInput
         .initContentPages(/* You can add custom PageSuppliers here */)
-        // Can be extended to provide custom previews (e.g. larger preview images, onclick) etc.
-        .setAttachmentPreviewAdapter(new AttachmentPreviewAdapter(getContext().getContentResolver()))
         .setInputListener(flexInputListener)
-        .setAddContentActionButton(fab)
         .setFileManager(new SimpleFileManager("com.lytefast.flexinput.fileprovider", "FlexInput"))
         .setKeyboardManager(new KeyboardManager() {
           @Override
@@ -98,7 +94,16 @@ public class MainFragment extends Fragment {
           }
         });
 
+    optionalFeatures();
     tryRiskyFeatures();
+  }
+
+  private void optionalFeatures() {
+    flexInput
+        // Can be extended to provide custom previews (e.g. larger preview images, onclick) etc.
+        .setAttachmentPreviewAdapter(new AttachmentPreviewAdapter(getContext().getContentResolver()))
+        // Additional button shown on add content screen
+        .setAddContentActionButton(quickSendFab);
   }
 
   private void tryRiskyFeatures() {

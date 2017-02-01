@@ -56,7 +56,6 @@ See [`colors.xml`](flexinput/src/main/res/values/colors.xml):
 ```
 Or the same attributes in [`styles.xml`](flexinput/src/main/res/values/styles.xml).
 
-
 There are also `styles.xml` overrides that you can provide. All styles are prefixed by `FlexInput`. See [`styles.xml`](flexinput/src/main/res/values/styles.xml) for the full set of styles.
 
 Addtionally there are special `app` attributes that you may set to customize the appearance of the widget.
@@ -85,8 +84,6 @@ public void onViewCreated(final View view, @Nullable final Bundle savedInstanceS
 
   flexInput
       .initContentPages(/* You can add custom PageSuppliers here */)
-      // Can be extended to provide custom previews (e.g. larger preview images, onclick) etc.
-      .setAttachmentPreviewAdapter(new AttachmentPreviewAdapter(getContext().getContentResolver()))
       .setInputListener(flexInputListener)
       .setFileManager(new SimpleFileManager("com.lytefast.flexinput.fileprovider", "FlexInput"))
       .setKeyboardManager(new KeyboardManager() {
@@ -120,6 +117,17 @@ private final InputListener flexInputListener = new InputListener() {
 ```
 
 That's it! Now you have the output string and the attachments (in order) from the user.
+
+# Optional Features
+```java
+private void optionalFeatures() {
+  flexInput
+      // Can be extended to provide custom previews (e.g. larger preview images, onclick) etc.
+      .setAttachmentPreviewAdapter(new AttachmentPreviewAdapter(getContext().getContentResolver()))
+      // Additional button shown on add content screen
+      .setAddContentActionButton(quickSendFab);
+}
+```
 
 # Power Overrides (Risky)
 
