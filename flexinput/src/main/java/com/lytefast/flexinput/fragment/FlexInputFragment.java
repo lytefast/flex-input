@@ -25,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -72,6 +73,7 @@ public class FlexInputFragment extends Fragment
   @BindView(R2.id.send_btn) AppCompatImageButton sendBtn;
   @BindView(R2.id.add_content_pager) ViewPager addContentPager;
   @BindView(R2.id.add_content_tabs) TabLayout addContentTabs;
+  View addContentActionButton;
 
   private Unbinder unbinder;
 
@@ -84,7 +86,6 @@ public class FlexInputFragment extends Fragment
 
   private FileManager fileManager;
   private AttachmentPreviewAdapter attachmentPreviewAdapter;
-
 
   public FlexInputFragment() {}
 
@@ -274,7 +275,7 @@ public class FlexInputFragment extends Fragment
     return this;
   }
 
-  public void synchronizeTabAndPagerEvents() {
+  protected void synchronizeTabAndPagerEvents() {
     addContentTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
       /**
        * Special cases the first item (keyboard) by closing the pager and opening the keyboard on click.
@@ -341,6 +342,11 @@ public class FlexInputFragment extends Fragment
     return this;
   }
 
+  public FlexInputFragment setAddContentActionButton(@Nullable View actionButton) {
+    this.addContentActionButton = actionButton;
+    return this;
+  }
+
   public void requestFocus() {
     getView().post(new Runnable() {
       @Override
@@ -353,10 +359,15 @@ public class FlexInputFragment extends Fragment
   // region UI Event Handlers
 
   @OnClick(R2.id.send_btn)
-  void onSend() {
+  public void onSend() {
     inputListener.onSend(textEt.getText(), attachmentPreviewAdapter.getAttachments());
     textEt.setText("");
     clearAttachments();
+
+    // reset to text input
+    if (addContentContainer.isShown()) {
+      onAddToggle();
+    }
   }
 
   @OnClick(R2.id.attachment_clear_btn)
@@ -471,9 +482,18 @@ public class FlexInputFragment extends Fragment
   }
 
   private void updateAttachmentPreviewContainer() {
-    boolean shouldShow =
-        attachmentPreviewAdapter.getItemCount() > 0 && !addContentContainer.isShown();
-    attachmentPreviewContainer.setVisibility(shouldShow? View.VISIBLE : View.GONE);
+    if (attachmentPreviewAdapter.getItemCount() == 0) {
+      attachmentPreviewContainer.setVisibility(View.GONE);
+      if (addContentActionButton != null) {
+        addContentActionButton.setVisibility(View.GONE);
+      }
+      return;
+    }
+
+    attachmentPreviewContainer.setVisibility(addContentContainer.isShown() ? View.GONE : View.VISIBLE);
+    if (addContentActionButton != null) {
+      addContentActionButton.setVisibility(addContentContainer.isShown() ? View.VISIBLE : View.GONE);
+    }
   }
 
   // region FlexInputCoordinator methods

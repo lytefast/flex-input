@@ -4,6 +4,7 @@ package com.lytefast.flexinput.sampleapp;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +26,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 
@@ -36,9 +38,10 @@ import butterknife.Unbinder;
 public class MainFragment extends Fragment {
 
   @BindView(R.id.message_list) RecyclerView recyclerView;
-  private FlexInputFragment flexInput;
-
+  @BindView(R.id.fab) FloatingActionButton fab;
   private Unbinder unbinder;
+
+  private FlexInputFragment flexInput;
   private MessageAdapter msgAdapter;
 
   public MainFragment() {
@@ -80,6 +83,7 @@ public class MainFragment extends Fragment {
         // Can be extended to provide custom previews (e.g. larger preview images, onclick) etc.
         .setAttachmentPreviewAdapter(new AttachmentPreviewAdapter(getContext().getContentResolver()))
         .setInputListener(flexInputListener)
+        .setAddContentActionButton(fab)
         .setFileManager(new SimpleFileManager("com.lytefast.flexinput.fileprovider", "FlexInput"))
         .setKeyboardManager(new KeyboardManager() {
           @Override
@@ -111,6 +115,11 @@ public class MainFragment extends Fragment {
   public void onDestroyView() {
     unbinder.unbind();
     super.onDestroyView();
+  }
+
+  @OnClick(R.id.fab)
+  public void onSendClick() {
+    flexInput.onSend();
   }
 
   /**
