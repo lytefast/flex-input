@@ -1,7 +1,10 @@
 package com.lytefast.flexinput.model;
 
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.support.annotation.CallSuper;
 
 import com.facebook.common.util.HashCodeUtil;
 
@@ -11,7 +14,7 @@ import com.facebook.common.util.HashCodeUtil;
  *
  * @author Sam Shih
  */
-public class Attachment<T> {
+public class Attachment<T> implements Parcelable {
   protected final long id;
   protected final Uri uri;
   protected final String displayName;
@@ -25,7 +28,26 @@ public class Attachment<T> {
     this.data = data;
   }
 
+  protected Attachment(Parcel in) {
+    this.id = in.readLong();
+    this.uri = in.readParcelable(Uri.class.getClassLoader());
+    this.displayName = in.readString();
+    this.data = null;  // this shouldn't be required anyways.
+  }
+
   //region Getters
+
+  public static final Creator<Attachment> CREATOR = new Creator<Attachment>() {
+    @Override
+    public Attachment createFromParcel(Parcel in) {
+      return new Attachment(in);
+    }
+
+    @Override
+    public Attachment[] newArray(int size) {
+      return new Attachment[size];
+    }
+  };
 
   public long getId() {
     return id;
@@ -57,5 +79,19 @@ public class Attachment<T> {
   @Override
   public int hashCode() {
     return HashCodeUtil.hashCode(id, uri);
+  }
+
+  @Override
+  public int describeContents() {
+    return 0;
+  }
+
+  @CallSuper
+  @Override
+  public void writeToParcel(final Parcel dest, final int flags) {
+    dest.writeLong(id);
+    dest.writeParcelable(uri, flags);
+    dest.writeString(displayName);
+//    dest.writeParcelable(data, flags);
   }
 }

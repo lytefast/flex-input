@@ -7,6 +7,7 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,6 +20,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -36,6 +38,8 @@ import com.lytefast.flexinput.managers.FileManager;
 import com.lytefast.flexinput.managers.KeyboardManager;
 import com.lytefast.flexinput.model.Attachment;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -102,7 +106,8 @@ public class FlexInputFragment extends Fragment
 
   @Nullable
   @Override
-  public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable final Bundle savedInstanceState) {
+  public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container,
+                           @Nullable final Bundle savedInstanceState) {
     View root = inflater.inflate(R.layout.flex_input_widget, container, false);
     this.unbinder = ButterKnife.bind(this, root);
 
@@ -113,7 +118,24 @@ public class FlexInputFragment extends Fragment
     this.initializeUiAttributes.run();
     this.initializeUiAttributes = null;
     setAttachmentPreviewAdapter(new AttachmentPreviewAdapter(getContext().getContentResolver()));
+
+    if (savedInstanceState != null ) {
+      ArrayList<Parcelable> savedAttachments = savedInstanceState.getParcelableArrayList("Attachments");
+      if (savedAttachments != null && savedAttachments.size() > 0) {
+        for (Parcelable p : savedAttachments) {
+          Attachment<?> attachment = (Attachment<?>) p;
+          Log.d("TEST", "attachment load: "+attachment);
+          attachmentPreviewAdapter.toggleItem(attachment);
+        }
+      }
+    }
     return root;
+  }
+
+  @Override
+  public void onSaveInstanceState(final Bundle outState) {
+    super.onSaveInstanceState(outState);
+    outState.putParcelableArrayList("Attachments", attachmentPreviewAdapter.getAttachments());
   }
 
   @Override

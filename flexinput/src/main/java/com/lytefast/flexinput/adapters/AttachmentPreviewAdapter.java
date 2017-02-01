@@ -16,7 +16,6 @@ import com.lytefast.flexinput.utils.SelectionCoordinator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 
 /**
@@ -32,9 +31,9 @@ public class AttachmentPreviewAdapter<T extends Attachment<?>>
   private SelectionCoordinator.ItemSelectionListener itemSelectionListener;
 
   @SuppressWarnings("WeakerAccess")
-  protected final List<T> attachments;
+  protected final ArrayList<T> attachments;
   @SuppressWarnings("WeakerAccess")
-  protected final List<SelectionCoordinator<T>> childSelectionCoordinators;
+  protected final ArrayList<SelectionCoordinator<T>> childSelectionCoordinators;
 
 
   public AttachmentPreviewAdapter(final ContentResolver contentResolver) {
@@ -75,7 +74,7 @@ public class AttachmentPreviewAdapter<T extends Attachment<?>>
     this.itemSelectionListener = itemSelectionListener;
   }
 
-  public List<T> getAttachments() {
+  public ArrayList<T> getAttachments() {
     return attachments;
   }
 
