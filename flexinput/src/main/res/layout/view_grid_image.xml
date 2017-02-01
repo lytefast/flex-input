@@ -14,18 +14,12 @@
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/content_iv"
+        style="FlexInput.Items.Photo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
         android:layout_margin="@dimen/grid_item_padding"
-        android:padding="@dimen/grid_item_padding"
-        android:scaleType="fitCenter"
-
-        app:viewAspectRatio="1.0"
-        app:fadeDuration="@android:integer/config_shortAnimTime"
-        app:actualImageScaleType="centerCrop"
-        app:placeholderImage="@drawable/ic_image_24dp"
-        app:placeholderImageScaleType="centerInside"
+        android:adjustViewBounds="true"
+        app:roundedCornerRadius="4dp"
         tools:src="@drawable/ic_image_24dp"/>
 
     <com.facebook.drawee.view.SimpleDraweeView

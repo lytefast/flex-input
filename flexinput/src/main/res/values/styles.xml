@@ -44,6 +44,16 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
 
+    <style name="FlexInput.Items.Photo" parent="FlexInput.Items">
+        <item name="android:scaleType">fitCenter</item>
+        <item name="actualImageScaleType">centerCrop</item>
+        <item name="viewAspectRatio">1.0</item>
+        <item name="fadeDuration">@android:integer/config_shortAnimTime</item>
+        <item name="roundedCornerRadius">4dp</item>
+        <item name="placeholderImage">@drawable/ic_image_24dp</item>
+        <item name="placeholderImageScaleType">fitCenter</item>
+    </style>
+
     <style name="FlexInput.Items.Selected.Icon" parent="FlexInput.Items">
         <item name="android:layout_gravity">top|right|end</item>
         <item name="roundAsCircle">true</item>
