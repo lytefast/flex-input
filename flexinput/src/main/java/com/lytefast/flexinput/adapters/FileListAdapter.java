@@ -3,16 +3,13 @@ package com.lytefast.flexinput.adapters;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v4.content.res.TypedArrayUtils;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +21,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.model.Attachment;
-import com.lytefast.flexinput.utils.ColorUtils;
 import com.lytefast.flexinput.utils.FileUtils;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 
@@ -92,13 +88,15 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
   }
 
   protected class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private final AnimatorSet shrinkAnim;
+    private final AnimatorSet growAnim;
 
     @BindView(R2.id.thumb_iv) SimpleDraweeView thumbIv;
     @BindView(R2.id.type_iv) ImageView typeIv;
     @BindView(R2.id.file_name_tv) TextView fileNameTv;
     @BindView(R2.id.file_path_tv) TextView filePathTV;
 
-    private Attachment<File> AttachmentFile = null;
+    private Attachment<File> attachmentFile = null;
 
 
     public ViewHolder(final View itemView) {
@@ -106,11 +104,21 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
       this.itemView.setClickable(true);
       this.itemView.setOnClickListener(this);
       ButterKnife.bind(this, itemView);
+
+      //region Perf: Load animations once
+      this.shrinkAnim = (AnimatorSet) AnimatorInflater.loadAnimator(
+          itemView.getContext(), R.animator.selection_shrink);
+      this.shrinkAnim.setTarget(thumbIv);
+
+      this.growAnim = (AnimatorSet) AnimatorInflater.loadAnimator(
+          itemView.getContext(), R.animator.selection_grow);
+      this.growAnim.setTarget(thumbIv);
+      //endregion
     }
 
     public void bind(final Attachment<File> fileAttachment) {
-      this.AttachmentFile = fileAttachment;
-      setSelected(selectionCoordinator.isSelected(fileAttachment));
+      this.attachmentFile = fileAttachment;
+      setSelected(selectionCoordinator.isSelected(fileAttachment), false);
 
       final File file = fileAttachment.getData();
       fileNameTv.setText(file.getName());
@@ -151,24 +159,29 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
       thumbIv.setImageBitmap(thumbnail);
     }
 
-    void setSelected(boolean isSelected) {
+    void setSelected(boolean isSelected, boolean isAnimationRequested) {
       itemView.setSelected(isSelected);
+
       if (isSelected) {
-        final AnimatorSet shrinkAnim = (AnimatorSet) AnimatorInflater.loadAnimator(
-            thumbIv.getContext(), R.animator.selection_shrink);
-        shrinkAnim.setTarget(thumbIv);
-        shrinkAnim.start();
+        if (thumbIv.getScaleX() == 1.0f) {
+          shrinkAnim.start();
+          if (!isAnimationRequested) {
+            shrinkAnim.end();
+          }
+        }
       } else {
-        final AnimatorSet growAnim = (AnimatorSet) AnimatorInflater.loadAnimator(
-            thumbIv.getContext(), R.animator.selection_grow);
-        growAnim.setTarget(thumbIv);
-        growAnim.start();
+        if (thumbIv.getScaleX() != 1.0f) {
+          growAnim.start();
+          if (!isAnimationRequested) {
+            growAnim.end();
+          }
+        }
       }
     }
 
     @Override
     public void onClick(final View v) {
-      selectionCoordinator.toggleItem(AttachmentFile, getAdapterPosition());
+      setSelected(selectionCoordinator.toggleItem(attachmentFile, getAdapterPosition()), true);
     }
   }
 

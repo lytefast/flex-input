@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.model.Photo;
-import com.lytefast.flexinput.utils.ColorUtils;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 
 
@@ -106,6 +105,9 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
   }
 
   protected class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private final AnimatorSet shrinkAnim;
+    private final AnimatorSet growAnim;
+
     public final SimpleDraweeView imageView;
     private final View checkIndicator;
 
@@ -118,11 +120,21 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
 
       this.imageView = (SimpleDraweeView) itemView.findViewById(R.id.content_iv);
       this.checkIndicator = itemView.findViewById(R.id.item_check_indicator);
+
+      //region Perf: Load animations once
+      this.shrinkAnim = (AnimatorSet) AnimatorInflater.loadAnimator(
+          itemView.getContext(), R.animator.selection_shrink);
+      this.shrinkAnim.setTarget(imageView);
+
+      this.growAnim = (AnimatorSet) AnimatorInflater.loadAnimator(
+          itemView.getContext(), R.animator.selection_grow);
+      this.growAnim.setTarget(imageView);
+      //endregion
     }
 
     public void bind(final Photo photo) {
       this.photo = photo;
-      setSelected(selectionCoordinator.isSelected(photo));
+      setSelected(selectionCoordinator.isSelected(photo), false);
 
       Uri thumbnailUri = photo.getThumbnailUri(contentResolver);
       if (thumbnailUri == null) {
@@ -132,29 +144,31 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
       }
     }
 
-    void setSelected(boolean isSelected) {
-      imageView.setSelected(isSelected);
+    void setSelected(boolean isSelected, boolean isAnimationRequested) {
+      itemView.setSelected(isSelected);
 
       if (isSelected) {
         checkIndicator.setVisibility(View.VISIBLE);
-
-        final AnimatorSet shrinkAnim = (AnimatorSet) AnimatorInflater.loadAnimator(
-            itemView.getContext(), R.animator.selection_shrink);
-        shrinkAnim.setTarget(imageView);
-        shrinkAnim.start();
+        if (imageView.getScaleX() == 1.0f) {
+          shrinkAnim.start();
+          if (!isAnimationRequested) {
+            shrinkAnim.end();
+          }
+        }
       } else {
         checkIndicator.setVisibility(View.GONE);
-
-        final AnimatorSet growAnim = (AnimatorSet) AnimatorInflater.loadAnimator(
-                itemView.getContext(), R.animator.selection_grow);
-        growAnim.setTarget(imageView);
-        growAnim.start();
+        if (imageView.getScaleX() != 1.0f) {
+          growAnim.start();
+          if (!isAnimationRequested) {
+            growAnim.end();
+          }
+        }
       }
     }
 
     @Override
     public void onClick(final View v) {
-      setSelected(selectionCoordinator.toggleItem(photo, getAdapterPosition()));
+      setSelected(selectionCoordinator.toggleItem(photo, getAdapterPosition()), true);
     }
   }
 }
