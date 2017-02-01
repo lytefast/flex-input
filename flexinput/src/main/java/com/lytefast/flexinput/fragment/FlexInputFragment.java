@@ -108,8 +108,10 @@ public class FlexInputFragment extends Fragment
   @Override
   public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container,
                            @Nullable final Bundle savedInstanceState) {
-    View root = inflater.inflate(R.layout.flex_input_widget, container, false);
+    LinearLayout root = (LinearLayout) inflater.inflate(R.layout.flex_input_widget, container, false);
     this.unbinder = ButterKnife.bind(this, root);
+    root.getLayoutTransition()
+        .setDuration(getResources().getInteger(android.R.integer.config_shortAnimTime));
 
     if (getChildFragmentManager().findFragmentById(R.id.emoji_container) != null) {
       this.emojiBtn.setVisibility(View.VISIBLE);
@@ -469,11 +471,9 @@ public class FlexInputFragment extends Fragment
   }
 
   private void updateAttachmentPreviewContainer() {
-    int shouldShow =
-        attachmentPreviewAdapter.getItemCount() == 0 || addContentContainer.isShown()
-        ? View.GONE : View.VISIBLE;
-
-    attachmentPreviewContainer.setVisibility(shouldShow);
+    boolean shouldShow =
+        attachmentPreviewAdapter.getItemCount() > 0 && !addContentContainer.isShown();
+    attachmentPreviewContainer.setVisibility(shouldShow? View.VISIBLE : View.GONE);
   }
 
   // region FlexInputCoordinator methods

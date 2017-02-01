@@ -4,9 +4,10 @@
               style="@style/FlexInput.Main"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              android:orientation="vertical"
               android:divider="?android:dividerHorizontal"
-              android:showDividers="middle"
-              android:orientation="vertical">
+              android:animateLayoutChanges="true"
+              android:showDividers="middle">
 
     <LinearLayout
         android:id="@+id/attachment_preview_container"
