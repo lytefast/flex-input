@@ -4,11 +4,11 @@
      <objectAnimator
          android:duration="@android:integer/config_shortAnimTime"
          android:propertyName="scaleX"
-         android:valueTo="0.9"
+         android:valueTo="@string/selection_shrink_scale"
          android:valueType="floatType"/>
     <objectAnimator
         android:duration="@android:integer/config_shortAnimTime"
         android:propertyName="scaleY"
-        android:valueTo="0.9"
+        android:valueTo="@string/selection_shrink_scale"
         android:valueType="floatType"/>
 </set>

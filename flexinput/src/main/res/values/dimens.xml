@@ -15,4 +15,6 @@
     <dimen name="emoji_grid_item_size">48dp</dimen>
     <dimen name="file_type_icon_dimen">16dp</dimen>
     <dimen name="selection_indicator_icon_size">28dp</dimen>
+
+    <string name="selection_shrink_scale">0.85</string>
 </resources>
