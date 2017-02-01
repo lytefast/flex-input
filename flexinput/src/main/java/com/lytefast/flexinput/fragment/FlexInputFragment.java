@@ -2,6 +2,7 @@ package com.lytefast.flexinput.fragment;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -84,7 +85,7 @@ public class FlexInputFragment extends Fragment
   public FlexInputFragment() {}
 
 
-  //region Initialization Methods
+  //region Fragment Methods
   @Override
   public void onInflate(final Context context, final AttributeSet attrs, final Bundle savedInstanceState) {
     super.onInflate(context, attrs, savedInstanceState);
@@ -156,6 +157,16 @@ public class FlexInputFragment extends Fragment
       a.recycle();
     }
   }
+
+  @Override
+  public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    // Forward to child activities
+    for (Fragment childFrag : getChildFragmentManager().getFragments()) {
+      childFrag.onActivityResult(requestCode, resultCode, data);
+    }
+  }
+
   //endregion
 
   //region Functional Setters
@@ -447,7 +458,7 @@ public class FlexInputFragment extends Fragment
 
   @Override
   public <T extends Attachment> void onPhotoTaken(final T photo) {
-    getView().post(new Runnable() {
+    getActivity().runOnUiThread(new Runnable() {
       @Override
       public void run() {
         onAddToggle();

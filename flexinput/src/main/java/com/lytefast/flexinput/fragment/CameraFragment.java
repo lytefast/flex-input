@@ -1,6 +1,7 @@
 package com.lytefast.flexinput.fragment;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -37,6 +38,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 
+
 /**
  * {@link Fragment} that allows the user to take a live photo directly from the camera.
  *
@@ -57,6 +59,12 @@ public class CameraFragment extends PermissionsFragment {
 
   private FlexInputCoordinator flexInputCoordinator;
 
+  /**
+   * Temporary holder for when we intent to the camera. This is used because the resulting intent
+   * doesn't return any data if you set the output file in the request.
+   */
+  private File photoFile;
+
 
   @Override
   public void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -65,7 +73,6 @@ public class CameraFragment extends PermissionsFragment {
     if (parentFrag instanceof FlexInputCoordinator) {
       this.flexInputCoordinator = (FlexInputCoordinator) parentFrag;
     }
-
   }
 
   @Nullable
@@ -137,18 +144,33 @@ public class CameraFragment extends PermissionsFragment {
   void onLaunchCameraClick() {
     cameraView.stop();
 
-    final File photoFile = flexInputCoordinator.getFileManager().newImageFile();
-    flexInputCoordinator.onPhotoTaken(FileUtils.toAttachment(photoFile));
-
-    Uri photoUri = flexInputCoordinator.getFileManager().toFileProviderUri(getContext(), photoFile);
+    photoFile = flexInputCoordinator.getFileManager().newImageFile();
+    Uri photoUri =  flexInputCoordinator.getFileManager().toFileProviderUri(getContext(), photoFile);
     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         .putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
         .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
     if (takePictureIntent.resolveActivity(getContext().getPackageManager()) != null) {
       grantWriteAccessToURI(getContext(), takePictureIntent, photoUri);
-      startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+      getParentFragment().startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
       // TODO need to handle the result: 1) save thumbnail, 2) call #addToMediaStore
+    }
+  }
+
+  @Override
+  public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (REQUEST_IMAGE_CAPTURE != requestCode) {
+      return;
+    }
+    if (Activity.RESULT_OK != resultCode) {
+      Toast.makeText(getContext(), R.string.camera_intent_result_error, Toast.LENGTH_SHORT).show();
+      if (photoFile != null) {
+        photoFile.delete();  // cleanup
+      }
+      cameraView.start();
+    } else if (photoFile != null) {
+      flexInputCoordinator.onPhotoTaken(FileUtils.toAttachment(photoFile));
     }
   }
 
