@@ -19,9 +19,10 @@ import java.util.Date;
 public class SimpleFileManager implements FileManager {
 
   private static final String TAG = SimpleFileManager.class.getCanonicalName();
-  private final String providerAuthority;
-  private final String imageDirName;
-  private final String imagePrefix;
+
+  protected final String providerAuthority;
+  protected final String imageDirName;
+  protected final String imagePrefix;
 
   public SimpleFileManager(String providerAuthority, String imageDirName) {
     this(providerAuthority, imageDirName, "JPEG_");
