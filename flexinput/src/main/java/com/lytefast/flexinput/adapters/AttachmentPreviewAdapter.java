@@ -7,7 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.ResizeOptions;
+import com.facebook.imagepipeline.common.RotationOptions;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.model.Attachment;
 import com.lytefast.flexinput.model.Photo;
@@ -142,7 +147,19 @@ public class AttachmentPreviewAdapter<T extends Attachment<?>>
       } else {
         final Uri uri = item.getUri();
         if (uri != null) {
-          draweeView.setImageURI(uri);
+          // Make sure large images don't crash drawee
+          // http://stackoverflow.com/questions/33676807/fresco-bitmap-too-large-to-be-uploaded-into-a-texture
+          final int height = draweeView.getLayoutParams().height;
+          ImageRequestBuilder imageRequestBuilder = ImageRequestBuilder.newBuilderWithSource(uri)
+            .setRotationOptions(RotationOptions.autoRotate())
+            .setResizeOptions(new ResizeOptions(height, height));
+
+          DraweeController controller = Fresco.newDraweeControllerBuilder()
+              .setOldController(draweeView.getController())
+              .setImageRequest(imageRequestBuilder.build())
+              .build();
+
+          draweeView.setController(controller);
         } else {
           draweeView.setImageResource(R.drawable.ic_attach_file_24dp);
         }

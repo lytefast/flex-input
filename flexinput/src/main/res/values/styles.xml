@@ -66,11 +66,11 @@
     </style>
 
     <style name="FlexInput.Items.File.Name" parent="AppTheme">
-        <item name="android:textSize">14dp</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="FlexInput.Items.File.Path" parent="AppTheme">
-        <item name="android:textSize">10dp</item>
+        <item name="android:textSize">10sp</item>
     </style>
 
 </resources>
