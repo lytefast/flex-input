@@ -50,9 +50,9 @@ public class PhotosFragment extends PermissionsFragment {
   @Override
   public void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    final Fragment parentFrag = getParentFragment();
-    if (parentFrag instanceof FlexInputCoordinator) {
-      FlexInputCoordinator flexInputCoordinator = (FlexInputCoordinator) parentFrag;
+    final Fragment targetFragment = getParentFragment().getTargetFragment();
+    if (targetFragment instanceof FlexInputCoordinator) {
+      FlexInputCoordinator flexInputCoordinator = (FlexInputCoordinator) targetFragment;
       flexInputCoordinator.addSelectionCoordinator(selectionCoordinator);
     }
   }
