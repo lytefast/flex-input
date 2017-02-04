@@ -69,9 +69,9 @@ public class CameraFragment extends PermissionsFragment {
   @Override
   public void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    final Fragment parentFrag = getParentFragment();
-    if (parentFrag instanceof FlexInputCoordinator) {
-      this.flexInputCoordinator = (FlexInputCoordinator) parentFrag;
+    final Fragment targetFragment = getParentFragment().getTargetFragment();
+    if (targetFragment instanceof FlexInputCoordinator) {
+      this.flexInputCoordinator = (FlexInputCoordinator) targetFragment;
     }
   }
 

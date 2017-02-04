@@ -11,6 +11,7 @@ import android.os.Parcelable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageButton;
@@ -374,8 +375,9 @@ public class FlexInputFragment extends Fragment
     hideEmojiTray();
     keyboardManager.requestHide();  // Make sure the keyboard is hidden
 
-    new ViewPagerDialogFragment()
-        .show(getChildFragmentManager(), ADD_CONTENT_FRAG_TAG);
+    final ViewPagerDialogFragment frag = new ViewPagerDialogFragment();
+    frag.setTargetFragment(this, 100);
+    frag.show(getChildFragmentManager(), ADD_CONTENT_FRAG_TAG);
     updateAttachmentPreviewContainer();
   }
 
@@ -425,8 +427,12 @@ public class FlexInputFragment extends Fragment
     getActivity().runOnUiThread(new Runnable() {
       @Override
       public void run() {
-        onAddToggle();
         handleAttachmentClick(photo);
+        DialogFragment dialogFragment =
+            (DialogFragment) getChildFragmentManager().findFragmentByTag(ADD_CONTENT_FRAG_TAG);
+        if (dialogFragment != null) {
+          dialogFragment.dismiss();
+        }
         // TODO invalidate photo picker
       }
     });
