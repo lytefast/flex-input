@@ -15,11 +15,11 @@
         <item name="flexInputColorHighlight">?colorControlHighlight</item>
     </style>
 
-    <style name="FlexInput.Main" parent="AppTheme">
+    <style name="FlexInput.Main" parent="FlexInput">
         <item name="android:background">@android:color/transparent</item>
     </style>
 
-    <style name="FlexInput.Camera.Controller" parent="AppTheme">
+    <style name="FlexInput.Camera.Controller" parent="FlexInput">
         <item name="android:layout_gravity">bottom|center_horizontal</item>
         <item name="layout_anchorGravity">bottom|center_horizontal</item>
         <item name="android:layout_marginBottom">@dimen/add_content_viewpager_bottom_margin</item>
@@ -27,7 +27,7 @@
         <item name="android:layout_marginRight">8dp</item>
     </style>
 
-    <style name="FlexInput.Input" parent="AppTheme">
+    <style name="FlexInput.Input" parent="FlexInput">
         <item name="android:background">?selectableItemBackgroundBorderless</item>
     </style>
 
@@ -38,6 +38,16 @@
 
     <style name="FlexInput.Input.Button.Tab" parent="FlexInput.Input.Button">
         <item name="android:tint">@android:color/white</item>
+    </style>
+
+    <style name="FlexInput.AddContent.TabLayout" parent="FlexInput.Main">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/input_height</item>
+        <item name="android:layout_margin">16dp</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="tabGravity">fill</item>
+        <item name="tabMode">fixed</item>
     </style>
 
     <style name="FlexInput.Items" parent="AppTheme">
@@ -65,11 +75,11 @@
         <item name="android:tint">?flexInputIconColorActivated</item>
     </style>
 
-    <style name="FlexInput.Items.File.Name" parent="AppTheme">
+    <style name="FlexInput.Items.File.Name" parent="FlexInput">
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="FlexInput.Items.File.Path" parent="AppTheme">
+    <style name="FlexInput.Items.File.Path" parent="FlexInput">
         <item name="android:textSize">10sp</item>
     </style>
 
