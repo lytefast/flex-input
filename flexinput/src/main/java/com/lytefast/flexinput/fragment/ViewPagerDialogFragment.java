@@ -60,8 +60,8 @@ public class ViewPagerDialogFragment extends AppCompatDialogFragment {
       actionButton.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(final View v) {
-          flexInputFragment.onSend();
           dismiss();
+          flexInputFragment.onSend();
         }
       });
     }
