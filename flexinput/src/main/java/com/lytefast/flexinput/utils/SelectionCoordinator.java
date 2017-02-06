@@ -3,6 +3,8 @@ package com.lytefast.flexinput.utils;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.RecyclerView;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -45,11 +47,13 @@ public class SelectionCoordinator<T> {
    * @return List of positions which were previously selected. This should be used to update the
    * UI via {@link android.support.v7.widget.RecyclerView.Adapter#notifyItemChanged(int)}
    */
-  public ArrayList<Integer> clearSelectedItems() {
+  public ArrayList<Integer> clear() {
     ArrayList<Integer> oldSelection = new ArrayList<>(selectedItemPositionMap.values());
     selectedItemPositionMap.clear();
-    for (int position: oldSelection) {
-      adapter.notifyItemChanged(position);
+    if (adapter != null) {
+      for (int position : oldSelection) {
+        adapter.notifyItemChanged(position);
+      }
     }
     return oldSelection;
   }
@@ -97,7 +101,9 @@ public class SelectionCoordinator<T> {
    */
   public void selectItem(T item, final int position) {
     selectedItemPositionMap.put(item, position);
-    adapter.notifyItemChanged(position);
+    if (adapter != null) {
+      adapter.notifyItemChanged(position);
+    }
     itemSelectionListener.onItemSelected(item);
   }
 
@@ -115,7 +121,9 @@ public class SelectionCoordinator<T> {
       return false;
     }
 
-    adapter.notifyItemChanged(removedItemPosition);
+    if (adapter != null) {
+      adapter.notifyItemChanged(removedItemPosition);
+    }
     itemSelectionListener.onItemUnselected(item);
     return true;
   }
@@ -137,6 +145,12 @@ public class SelectionCoordinator<T> {
     }
   }
 
+  public void close() {
+    if (itemSelectionListener != null) {
+      itemSelectionListener.unregister();
+    }
+  }
+
   public static class RestorationException extends Exception {
     RestorationException(String msg) {
       super(msg);
@@ -146,5 +160,11 @@ public class SelectionCoordinator<T> {
   public static class ItemSelectionListener<T> {
     public void onItemSelected(T item) {}
     public void onItemUnselected(T item) {}
+
+    /**
+     * Signals that no new notifications are required. This should be called when the
+     * {@link SelectionCoordinator} goes out of scope to clean up references.
+     */
+    public void unregister() {};
   }
 }

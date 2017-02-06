@@ -19,7 +19,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -57,9 +56,11 @@ import butterknife.Unbinder;
  * @author Sam Shih
  */
 public class FlexInputFragment extends Fragment
-    implements FlexInputCoordinator {
+    implements FlexInputCoordinator<Attachment> {
 
   public static final String ADD_CONTENT_FRAG_TAG = "Add Content";
+  public static final String EXTRA_ATTACHMENTS = "Attachments";
+
   @BindView(R2.id.attachment_preview_container) View attachmentPreviewContainer;
   @BindView(R2.id.main_input_container) LinearLayout inputContainer;
   @BindView(R2.id.emoji_container) View emojiContainer;
@@ -120,13 +121,10 @@ public class FlexInputFragment extends Fragment
     setAttachmentPreviewAdapter(new AttachmentPreviewAdapter(getContext().getContentResolver()));
 
     if (savedInstanceState != null ) {
-      ArrayList<Parcelable> savedAttachments = savedInstanceState.getParcelableArrayList("Attachments");
+      ArrayList<Parcelable> savedAttachments =
+          savedInstanceState.getParcelableArrayList(EXTRA_ATTACHMENTS);
       if (savedAttachments != null && savedAttachments.size() > 0) {
-        for (Parcelable p : savedAttachments) {
-          Attachment<?> attachment = (Attachment<?>) p;
-          Log.d("TEST", "attachment load: "+attachment);
-          attachmentPreviewAdapter.toggleItem(attachment);
-        }
+        attachmentPreviewAdapter.getSelectionAggregator().initFrom(savedAttachments);
       }
     }
     return root;
@@ -135,7 +133,8 @@ public class FlexInputFragment extends Fragment
   @Override
   public void onSaveInstanceState(final Bundle outState) {
     super.onSaveInstanceState(outState);
-    outState.putParcelableArrayList("Attachments", attachmentPreviewAdapter.getAttachments());
+    outState.putParcelableArrayList(
+        EXTRA_ATTACHMENTS, attachmentPreviewAdapter.getSelectionAggregator().getAttachments());
   }
 
   @Override
@@ -220,8 +219,8 @@ public class FlexInputFragment extends Fragment
    * @see AttachmentPreviewAdapter#AttachmentPreviewAdapter(ContentResolver) for a default implementation of attachment previews
    */
   public FlexInputFragment setAttachmentPreviewAdapter(@NonNull final AttachmentPreviewAdapter previewAdapter) {
-    previewAdapter
-        .initFrom(attachmentPreviewAdapter)
+    previewAdapter.getSelectionAggregator()
+        .initFrom(attachmentPreviewAdapter.getSelectionAggregator())
         .setItemSelectionListener(new SelectionCoordinator.ItemSelectionListener() {
           @Override
           public void onItemSelected(final Object item) {
@@ -309,7 +308,8 @@ public class FlexInputFragment extends Fragment
 
   @OnClick(R2.id.send_btn)
   public void onSend() {
-    inputListener.onSend(textEt.getText(), attachmentPreviewAdapter.getAttachments());
+    inputListener.onSend(
+        textEt.getText(), attachmentPreviewAdapter.getSelectionAggregator().getAttachments());
     textEt.setText("");
     clearAttachments();
   }
@@ -376,7 +376,7 @@ public class FlexInputFragment extends Fragment
     keyboardManager.requestHide();  // Make sure the keyboard is hidden
 
     final ViewPagerDialogFragment frag = new ViewPagerDialogFragment();
-    frag.setTargetFragment(this, 100);
+    frag.setTargetFragment(this, 0);
     frag.show(getChildFragmentManager(), ADD_CONTENT_FRAG_TAG);
     updateAttachmentPreviewContainer();
   }
@@ -404,13 +404,6 @@ public class FlexInputFragment extends Fragment
     textEt.getText().append(data);
   }
 
-  public void handleAttachmentClick(Attachment item) {
-    attachmentPreviewAdapter.toggleItem(item);
-
-    updateSendBtnEnableState(textEt.getText());
-    updateAttachmentPreviewContainer();
-  }
-
   private void updateSendBtnEnableState(final Editable message) {
     sendBtn.setEnabled(message.length() > 0 || attachmentPreviewAdapter.getItemCount() > 0);
   }
@@ -423,11 +416,17 @@ public class FlexInputFragment extends Fragment
   // region FlexInputCoordinator methods
 
   @Override
-  public <T extends Attachment> void onPhotoTaken(final T photo) {
+  public void onPhotoTaken(final Attachment photo) {
     getActivity().runOnUiThread(new Runnable() {
       @Override
       public void run() {
-        handleAttachmentClick(photo);
+
+        // Create a temporary SelectionCoordinator to add attachment
+        SelectionCoordinator<Attachment> coord = new SelectionCoordinator<>();
+        attachmentPreviewAdapter.getSelectionAggregator().registerSelectionCoordinator(coord);
+        coord.selectItem(photo, 0);
+        coord.close();
+
         DialogFragment dialogFragment =
             (DialogFragment) getChildFragmentManager().findFragmentByTag(ADD_CONTENT_FRAG_TAG);
         if (dialogFragment != null) {
@@ -444,8 +443,8 @@ public class FlexInputFragment extends Fragment
   }
 
   @Override
-  public <T extends Attachment> void addSelectionCoordinator(SelectionCoordinator<T> coordinator) {
-    attachmentPreviewAdapter.addChildSelectionCoordinator(coordinator);
+  public void addSelectionCoordinator(final SelectionCoordinator<Attachment> coordinator) {
+    attachmentPreviewAdapter.getSelectionAggregator().registerSelectionCoordinator(coordinator);
   }
 
   // endregion

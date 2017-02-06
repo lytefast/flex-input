@@ -107,6 +107,7 @@ public class PhotosFragment extends PermissionsFragment {
   @Override
   public void onDestroyView() {
     unbinder.unbind();
+    selectionCoordinator.close();
     super.onDestroyView();
   }
 
