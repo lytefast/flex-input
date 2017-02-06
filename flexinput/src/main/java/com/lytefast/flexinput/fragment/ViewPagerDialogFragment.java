@@ -27,6 +27,8 @@ import butterknife.Unbinder;
 
 
 /**
+ * Full screen dialog with a {@link ViewPager} as a bottom sheet.
+ *
  * @author Sam Shih
  */
 public class ViewPagerDialogFragment extends AppCompatDialogFragment {
@@ -50,9 +52,20 @@ public class ViewPagerDialogFragment extends AppCompatDialogFragment {
     View root = inflater.inflate(R.layout.dialog_view_pager_with_fab, container, false);
     this.unbinder = ButterKnife.bind(this, root);
 
-    FlexInputFragment parentFragment = (FlexInputFragment) getParentFragment();
-    initContentPages(
-        new AddContentPagerAdapter(getChildFragmentManager(), parentFragment.pageSuppliers));
+    if (getParentFragment() instanceof FlexInputFragment) {
+      final FlexInputFragment flexInputFragment = (FlexInputFragment) getParentFragment();
+      initContentPages(
+          new AddContentPagerAdapter(getChildFragmentManager(), flexInputFragment.pageSuppliers));
+
+      actionButton.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(final View v) {
+          flexInputFragment.onSend();
+          dismiss();
+        }
+      });
+    }
+
     return root;
   }
 
@@ -64,15 +77,9 @@ public class ViewPagerDialogFragment extends AppCompatDialogFragment {
 
   @OnClick(R2.id.content_root)
   void onContentRootClick() {
-    final Dialog dialog = getDialog();
     if (isCancelable()) {  // TODO check setCanceledOnTouchOutside
-      dialog.cancel();
+      getDialog().cancel();
     }
-  }
-
-  @OnClick(R2.id.action_btn)
-  void onActionBtnClick() {
-    dismiss();
   }
 
   protected ViewPagerDialogFragment initContentPages(@NonNull final AddContentPagerAdapter pagerAdapter) {

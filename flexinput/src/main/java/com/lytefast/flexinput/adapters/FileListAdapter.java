@@ -118,7 +118,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
 
     public void bind(final Attachment<File> fileAttachment) {
       this.attachmentFile = fileAttachment;
-      setSelected(selectionCoordinator.isSelected(fileAttachment), false);
+      setSelected(selectionCoordinator.isSelected(fileAttachment, getAdapterPosition()), false);
 
       final File file = fileAttachment.getData();
       fileNameTv.setText(file.getName());

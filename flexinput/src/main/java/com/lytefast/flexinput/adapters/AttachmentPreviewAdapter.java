@@ -3,6 +3,7 @@ package com.lytefast.flexinput.adapters;
 import android.content.ContentResolver;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +20,6 @@ import com.lytefast.flexinput.model.Photo;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 
 
 /**
@@ -31,6 +30,8 @@ import java.util.Collection;
  */
 public class AttachmentPreviewAdapter<T extends Attachment<?>>
     extends RecyclerView.Adapter<AttachmentPreviewAdapter.ViewHolder> {
+
+  public static final String TAG = AttachmentPreviewAdapter.class.getCanonicalName();
 
   private final ContentResolver contentResolver;
   private SelectionCoordinator.ItemSelectionListener itemSelectionListener;
@@ -65,10 +66,12 @@ public class AttachmentPreviewAdapter<T extends Attachment<?>>
     return attachments.size();
   }
 
-  public AttachmentPreviewAdapter<T> initFrom(AttachmentPreviewAdapter oldAdapter) {
+  public AttachmentPreviewAdapter<T> initFrom(AttachmentPreviewAdapter<T> oldAdapter) {
     if (oldAdapter != null) {
       this.attachments.addAll(oldAdapter.attachments);
-      addChildSelectionCoordinator(oldAdapter.childSelectionCoordinators);
+      for (SelectionCoordinator<T> coordinator : oldAdapter.childSelectionCoordinators) {
+        addChildSelectionCoordinatorInternal(coordinator);
+      }
       this.itemSelectionListener = oldAdapter.itemSelectionListener;
     }
     return this;
@@ -93,6 +96,14 @@ public class AttachmentPreviewAdapter<T extends Attachment<?>>
     }
   }
 
+  /**
+   * Convenience method to toggle the selection state for the item.
+   *
+   * @param item     instance of the item to be toggled. This must have {@link #equals(Object)}
+   *                 and {@link #hashCode()} equivalancy for equal items.
+   *
+   * @return True if the item was added. False otherwise.
+   */
   public boolean toggleItem(final T item) {
     final int oldIndex = attachments.indexOf(item);
 
@@ -110,25 +121,27 @@ public class AttachmentPreviewAdapter<T extends Attachment<?>>
     return wasRemoved;
   }
 
-  public void addChildSelectionCoordinator(SelectionCoordinator<T>... childSelectionCoordinators) {
-    addChildSelectionCoordinator(Arrays.asList(childSelectionCoordinators));
+  public void addChildSelectionCoordinatorInternal(SelectionCoordinator<T> selectionCoordinator) {
+    selectionCoordinator.setItemSelectionListener(new SelectionCoordinator.ItemSelectionListener<T>() {
+      @Override
+      public void onItemSelected(T item) {
+        toggleItem(item);
+      }
+
+      @Override
+      public void onItemUnselected(T item) {
+        toggleItem(item);
+      }
+    });
+    this.childSelectionCoordinators.add(selectionCoordinator);
   }
 
-  public void addChildSelectionCoordinator(
-      Collection<SelectionCoordinator<T>> childSelectionCoordinators) {
-    for (SelectionCoordinator<T> child : childSelectionCoordinators) {
-      this.childSelectionCoordinators.add(child);
-      child.setItemSelectionListener(new SelectionCoordinator.ItemSelectionListener<T>() {
-        @Override
-        public void onItemSelected(T item) {
-          toggleItem(item);
-        }
-
-        @Override
-        public void onItemUnselected(T item) {
-          toggleItem(item);
-        }
-      });
+  public void addChildSelectionCoordinator(SelectionCoordinator<T> selectionCoordinator) {
+    addChildSelectionCoordinatorInternal(selectionCoordinator);
+    try {
+      selectionCoordinator.restoreSelections(attachments);
+    } catch (SelectionCoordinator.RestorationException e) {
+      Log.w(TAG, "selections could not be synced", e);
     }
   }
 
@@ -170,9 +183,7 @@ public class AttachmentPreviewAdapter<T extends Attachment<?>>
         public void onClick(final View v) {
           // Let the child delete the item, and notify us
           for (SelectionCoordinator<T> coordinator : childSelectionCoordinators) {
-            if (coordinator.isSelected(item)) {
-              coordinator.toggleItem(item, 0 /* not looked at for removals */);
-            }
+            coordinator.unselectItem(item);
           }
         }
       });

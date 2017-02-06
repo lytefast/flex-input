@@ -134,7 +134,7 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
 
     public void bind(final Photo photo) {
       this.photo = photo;
-      setSelected(selectionCoordinator.isSelected(photo), false);
+      setSelected(selectionCoordinator.isSelected(photo, getAdapterPosition()), false);
 
       Uri thumbnailUri = photo.getThumbnailUri(contentResolver);
       if (thumbnailUri == null) {
