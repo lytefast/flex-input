@@ -1,5 +1,11 @@
 <resources>
 
+
+    <style name="FlexInput.DialogWhenLarge" parent="Theme.AppCompat.DayNight.DialogWhenLarge">
+        <item name="android:colorBackground">@android:color/transparent</item>
+        <item name="flexInputDialogBackground">@color/flexInputDialogBackground</item>
+    </style>
+
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.DayNight">
         <!-- Customize your theme here. -->
