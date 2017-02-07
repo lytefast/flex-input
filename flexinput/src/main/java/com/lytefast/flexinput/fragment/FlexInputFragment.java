@@ -35,6 +35,7 @@ import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
 import com.lytefast.flexinput.managers.FileManager;
 import com.lytefast.flexinput.managers.KeyboardManager;
 import com.lytefast.flexinput.model.Attachment;
+import com.lytefast.flexinput.utils.SelectionAggregator;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 
 import java.util.ArrayList;
@@ -100,7 +101,29 @@ public class FlexInputFragment extends Fragment
       }
     };
     // Set this so we can capture SelectionCoordinators ASAP
-    this.attachmentPreviewAdapter = new AttachmentPreviewAdapter(getContext().getContentResolver());
+    this.attachmentPreviewAdapter = initDefaultAttachmentPreviewAdapter();
+  }
+
+  private AttachmentPreviewAdapter initDefaultAttachmentPreviewAdapter() {
+    AttachmentPreviewAdapter adapter = new AttachmentPreviewAdapter(getContext().getContentResolver());
+    adapter.getSelectionAggregator()
+        .addItemSelectionListener(new SelectionCoordinator.ItemSelectionListener() {
+          @Override
+          public void onItemSelected(final Object item) {
+            updateUi();
+          }
+
+          @Override
+          public void onItemUnselected(final Object item) {
+            updateUi();
+          }
+
+          private void updateUi() {
+            updateSendBtnEnableState(textEt.getText());
+            updateAttachmentPreviewContainer();
+          }
+        });
+    return adapter;
   }
 
   @Nullable
@@ -220,23 +243,7 @@ public class FlexInputFragment extends Fragment
    */
   public FlexInputFragment setAttachmentPreviewAdapter(@NonNull final AttachmentPreviewAdapter previewAdapter) {
     previewAdapter.getSelectionAggregator()
-        .initFrom(attachmentPreviewAdapter.getSelectionAggregator())
-        .setItemSelectionListener(new SelectionCoordinator.ItemSelectionListener() {
-          @Override
-          public void onItemSelected(final Object item) {
-            updateUi();
-          }
-
-          @Override
-          public void onItemUnselected(final Object item) {
-            updateUi();
-          }
-
-          private void updateUi() {
-            updateSendBtnEnableState(textEt.getText());
-            updateAttachmentPreviewContainer();
-          }
-        });
+        .initFrom(attachmentPreviewAdapter.getSelectionAggregator());
 
     this.attachmentPreviewAdapter = previewAdapter;
     this.attachmentPreviewList.setAdapter(attachmentPreviewAdapter);
@@ -262,6 +269,10 @@ public class FlexInputFragment extends Fragment
   public FlexInputFragment setContentPages(AddContentPagerAdapter.PageSupplier... pageSuppliers) {
     this.pageSuppliers = pageSuppliers;
     return this;
+  }
+
+  public AddContentPagerAdapter.PageSupplier[] getContentPages() {
+    return pageSuppliers;
   }
 
   /**
@@ -437,14 +448,15 @@ public class FlexInputFragment extends Fragment
     });
   }
 
+
   @Override
   public FileManager getFileManager() {
     return fileManager;
   }
 
   @Override
-  public void addSelectionCoordinator(final SelectionCoordinator<Attachment> coordinator) {
-    attachmentPreviewAdapter.getSelectionAggregator().registerSelectionCoordinator(coordinator);
+  public SelectionAggregator<Attachment> getSelectionAggregator() {
+    return attachmentPreviewAdapter.getSelectionAggregator();
   }
 
   // endregion

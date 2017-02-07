@@ -4,7 +4,6 @@ import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-import com.lytefast.flexinput.FlexInputCoordinator;
 import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
 import com.lytefast.flexinput.model.Attachment;
 
@@ -27,7 +26,7 @@ public class SelectionAggregator<T extends Attachment> {
   protected final ArrayList<SelectionCoordinator<T>> childSelectionCoordinators;
 
   @SuppressWarnings("WeakerAccess")
-  protected SelectionCoordinator.ItemSelectionListener itemSelectionListener;
+  protected ArrayList<SelectionCoordinator.ItemSelectionListener> itemSelectionListeners;
 
   private final RecyclerView.Adapter adapter;
 
@@ -36,17 +35,23 @@ public class SelectionAggregator<T extends Attachment> {
     this.adapter = adapter;
     this.attachments = new ArrayList<>();
     this.childSelectionCoordinators = new ArrayList<>(4);
+    this.itemSelectionListeners = new ArrayList<>(4);
   }
 
+  /**
+   * This method allows this instance to take over responsibilities from an old {@link SelectionAggregator}.
+   *
+   * @param old the previous {@link SelectionAggregator}
+   *
+   * @return <code>this</code> instance
+   */
   public SelectionAggregator<T> initFrom(final SelectionAggregator<T> old) {
     if (old != null) {
       this.attachments.addAll(old.attachments);
-
-      // Not sure the below is necessary as they should re-register onResume()
       for (SelectionCoordinator<T> coordinator : old.childSelectionCoordinators) {
         registerSelectionCoordinatorInternal(coordinator);
       }
-      this.itemSelectionListener = old.itemSelectionListener;
+      this.itemSelectionListeners.addAll(old.itemSelectionListeners);
     }
     return this;
   }
@@ -59,12 +64,18 @@ public class SelectionAggregator<T extends Attachment> {
     return this;
   }
 
-  public SelectionAggregator<T> setItemSelectionListener(
+  public SelectionAggregator<T> addItemSelectionListener(
       final SelectionCoordinator.ItemSelectionListener itemSelectionListener) {
-    this.itemSelectionListener = itemSelectionListener;
+    if (!itemSelectionListeners.contains(itemSelectionListener)) {
+      itemSelectionListeners.add(itemSelectionListener);
+    }
     return this;
   }
 
+  public void removeItemSelectionListener(
+      final SelectionCoordinator.ItemSelectionListener itemSelectionListener) {
+    itemSelectionListeners.remove(itemSelectionListener);
+  }
 
   //region Attachment property getters
 
@@ -103,13 +114,19 @@ public class SelectionAggregator<T extends Attachment> {
     final boolean wasRemoved = attachments.remove(item);
 
     if (wasRemoved) {
-      itemSelectionListener.onItemUnselected(item);
       adapter.notifyItemRemoved(oldIndex);
+
+      for (SelectionCoordinator.ItemSelectionListener l : itemSelectionListeners) {
+        l.onItemUnselected(item);
+      }
     } else {
       attachments.add(item);
       final int position = attachments.size() - 1;
       adapter.notifyItemInserted(position);
-      itemSelectionListener.onItemSelected(item);
+
+      for (SelectionCoordinator.ItemSelectionListener l : itemSelectionListeners) {
+        l.onItemSelected(item);
+      }
     }
 
     return wasRemoved;
@@ -164,5 +181,4 @@ public class SelectionAggregator<T extends Attachment> {
     });
     this.childSelectionCoordinators.add(selectionCoordinator);
   }
-
 }
