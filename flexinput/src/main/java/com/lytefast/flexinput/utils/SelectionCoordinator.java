@@ -64,7 +64,7 @@ public class SelectionCoordinator<T> {
       return false;
     }
 
-    if(position != knownPosition) {
+    if (position != knownPosition) {
       // Update the position as it might have changed
       // Or we restored the item from an external source.
       selectedItemPositionMap.put(item, position);
