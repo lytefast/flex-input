@@ -18,6 +18,7 @@ import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.adapters.EmptyListAdapter;
 import com.lytefast.flexinput.adapters.PhotoCursorAdapter;
 import com.lytefast.flexinput.model.Photo;
+import com.lytefast.flexinput.utils.SelectionAggregator;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 
 import butterknife.BindView;
@@ -50,10 +51,12 @@ public class PhotosFragment extends PermissionsFragment {
   @Override
   public void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    final Fragment parentFrag = getParentFragment();
-    if (parentFrag instanceof FlexInputCoordinator) {
-      FlexInputCoordinator flexInputCoordinator = (FlexInputCoordinator) parentFrag;
-      flexInputCoordinator.addSelectionCoordinator(selectionCoordinator);
+    final Fragment targetFragment = getParentFragment().getTargetFragment();
+    if (targetFragment instanceof FlexInputCoordinator) {
+      FlexInputCoordinator flexInputCoordinator = (FlexInputCoordinator) targetFragment;
+
+      SelectionAggregator selectionAgg = flexInputCoordinator.getSelectionAggregator();
+      selectionAgg.registerSelectionCoordinator(selectionCoordinator);
     }
   }
 
@@ -107,6 +110,7 @@ public class PhotosFragment extends PermissionsFragment {
   @Override
   public void onDestroyView() {
     unbinder.unbind();
+    selectionCoordinator.close();
     super.onDestroyView();
   }
 

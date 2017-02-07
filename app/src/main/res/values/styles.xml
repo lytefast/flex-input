@@ -1,5 +1,11 @@
 <resources>
 
+
+    <style name="FlexInput.DialogWhenLarge" parent="Theme.AppCompat.DayNight.DialogWhenLarge">
+        <item name="android:colorBackground">@android:color/transparent</item>
+        <item name="flexInputDialogBackground">@color/flexInputDialogBackground</item>
+    </style>
+
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.DayNight">
         <!-- Customize your theme here. -->
@@ -18,6 +24,10 @@
     <!-- FlexInput style overrides: implement to customize the look -->
     <style name="FlexInput.Main" parent="AppTheme">
         <item name="android:background">#40000000</item>
+    </style>
+
+    <style name="FlexInput.AddContent.TabLayout" parent="FlexInput.AddContent.Base.TabLayout">
+        <item name="android:background">@drawable/content_tab_background</item>
     </style>
 
     <style name="FlexInput.Items.File.Name" parent="TextAppearance.AppCompat.Title">

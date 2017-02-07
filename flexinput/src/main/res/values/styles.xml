@@ -4,6 +4,12 @@
     <attr name="flexInputIconColorActivated" format="color|reference" />
     <attr name="flexInputIconColorDisabled" format="color|reference" />
     <attr name="flexInputColorHighlight" format="color|reference" />
+    <attr name="flexInputDialogBackground" format="color|reference" />
+
+    <style name="FlexInput.DialogWhenLarge" parent="Theme.AppCompat.DayNight.DialogWhenLarge">
+        <item name="android:colorBackground">@android:color/transparent</item>
+        <item name="flexInputDialogBackground">@android:drawable/screen_background_dark_transparent</item>
+    </style>
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.DayNight"/>
@@ -19,14 +25,6 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
 
-    <style name="FlexInput.Camera.Controller" parent="FlexInput">
-        <item name="android:layout_gravity">bottom|center_horizontal</item>
-        <item name="layout_anchorGravity">bottom|center_horizontal</item>
-        <item name="android:layout_marginBottom">@dimen/add_content_viewpager_bottom_margin</item>
-        <item name="android:layout_marginLeft">8dp</item>
-        <item name="android:layout_marginRight">8dp</item>
-    </style>
-
     <style name="FlexInput.Input" parent="FlexInput">
         <item name="android:background">?selectableItemBackgroundBorderless</item>
     </style>
@@ -40,7 +38,11 @@
         <item name="android:tint">@android:color/white</item>
     </style>
 
-    <style name="FlexInput.AddContent.TabLayout" parent="FlexInput.Main">
+    <style name="FlexInput.AddContent" parent="FlexInput">
+        <item name="android:background">?android:colorPrimary</item>
+    </style>
+
+    <style name="FlexInput.AddContent.Base.TabLayout" parent="FlexInput.AddContent">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/input_height</item>
         <item name="android:layout_margin">16dp</item>
@@ -48,6 +50,24 @@
         <item name="android:gravity">center_vertical</item>
         <item name="tabGravity">fill</item>
         <item name="tabMode">fixed</item>
+    </style>
+
+    <style name="FlexInput.AddContent.TabLayout" parent="FlexInput.AddContent.Base.TabLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/input_height</item>
+        <item name="android:layout_margin">16dp</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="tabGravity">fill</item>
+        <item name="tabMode">fixed</item>
+    </style>
+
+    <style name="FlexInput.Camera.Controller" parent="FlexInput">
+        <item name="android:layout_gravity">bottom|center_horizontal</item>
+        <item name="layout_anchorGravity">bottom|center_horizontal</item>
+        <item name="android:layout_marginBottom">@dimen/add_content_viewpager_bottom_margin</item>
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_marginRight">8dp</item>
     </style>
 
     <style name="FlexInput.Items" parent="AppTheme">

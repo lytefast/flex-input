@@ -11,21 +11,18 @@ import android.os.Parcelable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -38,6 +35,7 @@ import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
 import com.lytefast.flexinput.managers.FileManager;
 import com.lytefast.flexinput.managers.KeyboardManager;
 import com.lytefast.flexinput.model.Attachment;
+import com.lytefast.flexinput.utils.SelectionAggregator;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 
 import java.util.ArrayList;
@@ -59,11 +57,13 @@ import butterknife.Unbinder;
  * @author Sam Shih
  */
 public class FlexInputFragment extends Fragment
-    implements FlexInputCoordinator {
+    implements FlexInputCoordinator<Attachment> {
+
+  public static final String ADD_CONTENT_FRAG_TAG = "Add Content";
+  public static final String EXTRA_ATTACHMENTS = "Attachments";
 
   @BindView(R2.id.attachment_preview_container) View attachmentPreviewContainer;
   @BindView(R2.id.main_input_container) LinearLayout inputContainer;
-  @BindView(R2.id.add_content_container) View addContentContainer;
   @BindView(R2.id.emoji_container) View emojiContainer;
 
   @BindView(R2.id.attachment_preview_list) RecyclerView attachmentPreviewList;
@@ -71,9 +71,6 @@ public class FlexInputFragment extends Fragment
   @BindView(R2.id.text_input) AppCompatEditText textEt;
   @BindView(R2.id.emoji_btn) AppCompatImageButton emojiBtn;
   @BindView(R2.id.send_btn) AppCompatImageButton sendBtn;
-  @BindView(R2.id.add_content_pager) ViewPager addContentPager;
-  @BindView(R2.id.add_content_tabs) TabLayout addContentTabs;
-  View addContentActionButton;
 
   private Unbinder unbinder;
 
@@ -84,13 +81,15 @@ public class FlexInputFragment extends Fragment
   private KeyboardManager keyboardManager;
   private InputListener inputListener;
 
-  private FileManager fileManager;
-  private AttachmentPreviewAdapter attachmentPreviewAdapter;
+  protected FileManager fileManager;
+  protected AttachmentPreviewAdapter attachmentPreviewAdapter;
+  protected AddContentPagerAdapter.PageSupplier[] pageSuppliers;
 
   public FlexInputFragment() {}
 
 
-  //region Fragment Methods
+  //region Initialization Methods
+
   @Override
   public void onInflate(final Context context, final AttributeSet attrs, final Bundle savedInstanceState) {
     super.onInflate(context, attrs, savedInstanceState);
@@ -102,7 +101,29 @@ public class FlexInputFragment extends Fragment
       }
     };
     // Set this so we can capture SelectionCoordinators ASAP
-    this.attachmentPreviewAdapter = new AttachmentPreviewAdapter(getContext().getContentResolver());
+    this.attachmentPreviewAdapter = initDefaultAttachmentPreviewAdapter();
+  }
+
+  private AttachmentPreviewAdapter initDefaultAttachmentPreviewAdapter() {
+    AttachmentPreviewAdapter adapter = new AttachmentPreviewAdapter(getContext().getContentResolver());
+    adapter.getSelectionAggregator()
+        .addItemSelectionListener(new SelectionCoordinator.ItemSelectionListener() {
+          @Override
+          public void onItemSelected(final Object item) {
+            updateUi();
+          }
+
+          @Override
+          public void onItemUnselected(final Object item) {
+            updateUi();
+          }
+
+          private void updateUi() {
+            updateSendBtnEnableState(textEt.getText());
+            updateAttachmentPreviewContainer();
+          }
+        });
+    return adapter;
   }
 
   @Nullable
@@ -123,13 +144,10 @@ public class FlexInputFragment extends Fragment
     setAttachmentPreviewAdapter(new AttachmentPreviewAdapter(getContext().getContentResolver()));
 
     if (savedInstanceState != null ) {
-      ArrayList<Parcelable> savedAttachments = savedInstanceState.getParcelableArrayList("Attachments");
+      ArrayList<Parcelable> savedAttachments =
+          savedInstanceState.getParcelableArrayList(EXTRA_ATTACHMENTS);
       if (savedAttachments != null && savedAttachments.size() > 0) {
-        for (Parcelable p : savedAttachments) {
-          Attachment<?> attachment = (Attachment<?>) p;
-          Log.d("TEST", "attachment load: "+attachment);
-          attachmentPreviewAdapter.toggleItem(attachment);
-        }
+        attachmentPreviewAdapter.getSelectionAggregator().initFrom(savedAttachments);
       }
     }
     return root;
@@ -138,7 +156,8 @@ public class FlexInputFragment extends Fragment
   @Override
   public void onSaveInstanceState(final Bundle outState) {
     super.onSaveInstanceState(outState);
-    outState.putParcelableArrayList("Attachments", attachmentPreviewAdapter.getAttachments());
+    outState.putParcelableArrayList(
+        EXTRA_ATTACHMENTS, attachmentPreviewAdapter.getSelectionAggregator().getAttachments());
   }
 
   @Override
@@ -171,12 +190,6 @@ public class FlexInputFragment extends Fragment
         Drawable backgroundDrawable = a.getDrawable(R.styleable.FlexInput_previewBackground);
         backgroundDrawable.setCallback(getView());
         attachmentPreviewContainer.setBackground(backgroundDrawable);
-      }
-
-      if (a.hasValue(R.styleable.FlexInput_tabsBackground)) {
-        Drawable backgroundDrawable = a.getDrawable(R.styleable.FlexInput_tabsBackground);
-        backgroundDrawable.setCallback(getView());
-        addContentTabs.setBackground(backgroundDrawable);
       }
     } finally {
       a.recycle();
@@ -229,24 +242,8 @@ public class FlexInputFragment extends Fragment
    * @see AttachmentPreviewAdapter#AttachmentPreviewAdapter(ContentResolver) for a default implementation of attachment previews
    */
   public FlexInputFragment setAttachmentPreviewAdapter(@NonNull final AttachmentPreviewAdapter previewAdapter) {
-    previewAdapter
-        .initFrom(attachmentPreviewAdapter)
-        .setItemSelectionListener(new SelectionCoordinator.ItemSelectionListener() {
-          @Override
-          public void onItemSelected(final Object item) {
-            updateUi();
-          }
-
-          @Override
-          public void onItemUnselected(final Object item) {
-            updateUi();
-          }
-
-          private void updateUi() {
-            updateSendBtnEnableState(textEt.getText());
-            updateAttachmentPreviewContainer();
-          }
-        });
+    previewAdapter.getSelectionAggregator()
+        .initFrom(attachmentPreviewAdapter.getSelectionAggregator());
 
     this.attachmentPreviewAdapter = previewAdapter;
     this.attachmentPreviewList.setAdapter(attachmentPreviewAdapter);
@@ -265,62 +262,17 @@ public class FlexInputFragment extends Fragment
   }
 
   /**
-   * Initialize the add content pages. If no page suppliers are specified, the default set of pages is used.
+   * Set the add content pages. If no page suppliers are specified, the default set of pages is used.
    *
    * @param pageSuppliers ordered list of pages to be shown when the user tried to add content
    */
-  public FlexInputFragment initContentPages(AddContentPagerAdapter.PageSupplier... pageSuppliers) {
-    return initContentPages(new AddContentPagerAdapter(getChildFragmentManager(), pageSuppliers));
-  }
-
-  /**
-   * Exposed to allow a fully customizable {@link AddContentPagerAdapter}.
-   *
-   * @param pagerAdapter custom adapter to use to render the add content pages.
-   *
-   * @see #initContentPages(AddContentPagerAdapter.PageSupplier...) for default implementation
-   */
-  public FlexInputFragment initContentPages(final AddContentPagerAdapter pagerAdapter) {
-    addContentPager.setAdapter(pagerAdapter);
-    pagerAdapter.initTabs(getContext(), addContentTabs);
-    synchronizeTabAndPagerEvents();
+  public FlexInputFragment setContentPages(AddContentPagerAdapter.PageSupplier... pageSuppliers) {
+    this.pageSuppliers = pageSuppliers;
     return this;
   }
 
-  protected void synchronizeTabAndPagerEvents() {
-    addContentTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-      /**
-       * Special cases the first item (keyboard) by closing the pager and opening the keyboard on click.
-       */
-      @Override
-      public void onTabSelected(final TabLayout.Tab tab) {
-        int tabPosition = tab.getPosition();
-        if (tabPosition == 0) {
-          onAddToggle();
-          return;
-        }
-        addContentPager.setCurrentItem(tabPosition - 1);
-      }
-
-      @Override
-      public void onTabUnselected(final TabLayout.Tab tab) { }
-
-      @Override
-      public void onTabReselected(final TabLayout.Tab tab) { }
-    });
-
-    addContentPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-      @Override
-      public void onPageScrolled(final int position, final float positionOffset, final int positionOffsetPixels) { }
-
-      @Override
-      public void onPageSelected(final int position) {
-        addContentTabs.getTabAt(position + 1).select();
-      }
-
-      @Override
-      public void onPageScrollStateChanged(final int state) { }
-    });
+  public AddContentPagerAdapter.PageSupplier[] getContentPages() {
+    return pageSuppliers;
   }
 
   /**
@@ -354,15 +306,6 @@ public class FlexInputFragment extends Fragment
     return this;
   }
 
-  /**
-   * Set a clickable action button that is displayed on the add content screen when there are attachments.
-   * This can be use for quick sends directly from the action screen.
-   */
-  public FlexInputFragment setAddContentActionButton(@Nullable View actionButton) {
-    this.addContentActionButton = actionButton;
-    return this;
-  }
-
   public void requestFocus() {
     getView().post(new Runnable() {
       @Override
@@ -376,14 +319,10 @@ public class FlexInputFragment extends Fragment
 
   @OnClick(R2.id.send_btn)
   public void onSend() {
-    inputListener.onSend(textEt.getText(), attachmentPreviewAdapter.getAttachments());
+    inputListener.onSend(
+        textEt.getText(), attachmentPreviewAdapter.getSelectionAggregator().getAttachments());
     textEt.setText("");
     clearAttachments();
-
-    // reset to text input
-    if (addContentContainer.isShown()) {
-      onAddToggle();
-    }
   }
 
   @OnClick(R2.id.attachment_clear_btn)
@@ -439,27 +378,17 @@ public class FlexInputFragment extends Fragment
       showEmojiTray();
     }
 
-    addContentPager.setVisibility(View.GONE);
+//    addContentPager.setVisibility(View.GONE);
   }
 
   @OnClick(R2.id.add_btn)
   void onAddToggle() {
     hideEmojiTray();
-    if (addContentContainer.isShown()) {
-      addContentContainer.setVisibility(View.GONE);
-      addContentPager.setVisibility(View.GONE);  // set this to force destroy fragments
+    keyboardManager.requestHide();  // Make sure the keyboard is hidden
 
-      inputContainer.setVisibility(View.VISIBLE);
-      keyboardManager.requestDisplay();
-    } else {
-      addContentContainer.setVisibility(View.VISIBLE);
-      addContentPager.setVisibility(View.VISIBLE);
-      addContentTabs.getTabAt(1).select(); // TODO: remember last saved tab selection
-
-      inputContainer.setVisibility(View.GONE);
-      keyboardManager.requestHide();  // Make sure the keyboard is hidden
-    }
-
+    final AddContentDialogFragment frag = new AddContentDialogFragment();
+    frag.setTargetFragment(this, 0 /* result code unused */);
+    frag.show(getChildFragmentManager(), ADD_CONTENT_FRAG_TAG);
     updateAttachmentPreviewContainer();
   }
 
@@ -486,45 +415,37 @@ public class FlexInputFragment extends Fragment
     textEt.getText().append(data);
   }
 
-  public void handleAttachmentClick(Attachment item) {
-    attachmentPreviewAdapter.toggleItem(item);
-
-    updateSendBtnEnableState(textEt.getText());
-    updateAttachmentPreviewContainer();
-  }
-
   private void updateSendBtnEnableState(final Editable message) {
     sendBtn.setEnabled(message.length() > 0 || attachmentPreviewAdapter.getItemCount() > 0);
   }
 
   private void updateAttachmentPreviewContainer() {
-    if (attachmentPreviewAdapter.getItemCount() == 0) {
-      attachmentPreviewContainer.setVisibility(View.GONE);
-      if (addContentActionButton != null) {
-        addContentActionButton.setVisibility(View.GONE);
-      }
-      return;
-    }
-
-    attachmentPreviewContainer.setVisibility(addContentContainer.isShown() ? View.GONE : View.VISIBLE);
-    if (addContentActionButton != null) {
-      addContentActionButton.setVisibility(addContentContainer.isShown() ? View.VISIBLE : View.GONE);
-    }
+    attachmentPreviewContainer.setVisibility(
+        attachmentPreviewAdapter.getItemCount() > 0 ? View.VISIBLE : View.GONE);
   }
 
   // region FlexInputCoordinator methods
 
   @Override
-  public <T extends Attachment> void onPhotoTaken(final T photo) {
+  public void onPhotoTaken(final Attachment photo) {
     getActivity().runOnUiThread(new Runnable() {
       @Override
       public void run() {
-        onAddToggle();
-        handleAttachmentClick(photo);
-        // TODO invalidate photo picker
+        // Create a temporary SelectionCoordinator to add attachment
+        SelectionCoordinator<Attachment> coord = new SelectionCoordinator<>();
+        attachmentPreviewAdapter.getSelectionAggregator().registerSelectionCoordinator(coord);
+        coord.selectItem(photo, 0);
+        coord.close();
+
+        DialogFragment dialogFragment =
+            (DialogFragment) getChildFragmentManager().findFragmentByTag(ADD_CONTENT_FRAG_TAG);
+        if (dialogFragment != null) {
+          dialogFragment.dismiss();
+        }
       }
     });
   }
+
 
   @Override
   public FileManager getFileManager() {
@@ -532,8 +453,8 @@ public class FlexInputFragment extends Fragment
   }
 
   @Override
-  public <T extends Attachment> void addSelectionCoordinator(SelectionCoordinator<T> coordinator) {
-    attachmentPreviewAdapter.addChildSelectionCoordinator(coordinator);
+  public SelectionAggregator<Attachment> getSelectionAggregator() {
+    return attachmentPreviewAdapter.getSelectionAggregator();
   }
 
   // endregion

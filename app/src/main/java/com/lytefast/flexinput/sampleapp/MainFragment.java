@@ -4,7 +4,6 @@ package com.lytefast.flexinput.sampleapp;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.RecyclerView;
@@ -25,7 +24,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
 
 
@@ -37,7 +35,6 @@ import butterknife.Unbinder;
 public class MainFragment extends Fragment {
 
   @BindView(R.id.message_list) RecyclerView recyclerView;
-  @BindView(R.id.fab) FloatingActionButton quickSendFab;
   private Unbinder unbinder;
 
   private FlexInputFragment flexInput;
@@ -78,7 +75,7 @@ public class MainFragment extends Fragment {
     }
 
     flexInput
-        .initContentPages(/* You can add custom PageSuppliers here */)
+        .setContentPages(/* You can add custom PageSuppliers here */)
         .setInputListener(flexInputListener)
         .setFileManager(new SimpleFileManager("com.lytefast.flexinput.fileprovider", "FlexInput"))
         .setKeyboardManager(new KeyboardManager() {
@@ -101,9 +98,7 @@ public class MainFragment extends Fragment {
   private void optionalFeatures() {
     flexInput
         // Can be extended to provide custom previews (e.g. larger preview images, onclick) etc.
-        .setAttachmentPreviewAdapter(new AttachmentPreviewAdapter(getContext().getContentResolver()))
-        // Additional button shown on add content screen
-        .setAddContentActionButton(quickSendFab);
+        .setAttachmentPreviewAdapter(new AttachmentPreviewAdapter(getContext().getContentResolver()));
   }
 
   private void tryRiskyFeatures() {
@@ -120,11 +115,6 @@ public class MainFragment extends Fragment {
   public void onDestroyView() {
     unbinder.unbind();
     super.onDestroyView();
-  }
-
-  @OnClick(R.id.fab)
-  public void onSendClick() {
-    flexInput.onSend();
   }
 
   /**
