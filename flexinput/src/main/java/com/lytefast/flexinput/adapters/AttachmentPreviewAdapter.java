@@ -17,7 +17,6 @@ import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.model.Attachment;
 import com.lytefast.flexinput.model.Photo;
 import com.lytefast.flexinput.utils.SelectionAggregator;
-import com.lytefast.flexinput.utils.SelectionCoordinator;
 
 
 /**
@@ -26,7 +25,7 @@ import com.lytefast.flexinput.utils.SelectionCoordinator;
  *
  * @author Sam Shih
  */
-public class AttachmentPreviewAdapter<T extends Attachment<?>>
+public class AttachmentPreviewAdapter<T extends Attachment>
     extends RecyclerView.Adapter<AttachmentPreviewAdapter.ViewHolder> {
 
   public static final String TAG = AttachmentPreviewAdapter.class.getCanonicalName();

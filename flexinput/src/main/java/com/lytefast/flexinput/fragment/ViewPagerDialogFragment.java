@@ -17,8 +17,9 @@ import android.view.Window;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.adapters.AddContentPagerAdapter;
-import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
 import com.lytefast.flexinput.model.Attachment;
+import com.lytefast.flexinput.utils.SelectionAggregator;
+import com.lytefast.flexinput.utils.SelectionCoordinator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,6 +38,7 @@ public class ViewPagerDialogFragment extends AppCompatDialogFragment {
   @BindView(R2.id.content_tabs) TabLayout contentTabs;
   @BindView(R2.id.action_btn) FloatingActionButton actionButton;
   private Unbinder unbinder;
+  private SelectionAggregator<Attachment> selectionAggregator;
 
   @Override
   public Dialog onCreateDialog(final Bundle savedInstanceState) {
@@ -55,7 +57,7 @@ public class ViewPagerDialogFragment extends AppCompatDialogFragment {
     if (getParentFragment() instanceof FlexInputFragment) {
       final FlexInputFragment flexInputFragment = (FlexInputFragment) getParentFragment();
       initContentPages(
-          new AddContentPagerAdapter(getChildFragmentManager(), flexInputFragment.pageSuppliers));
+          new AddContentPagerAdapter(getChildFragmentManager(), flexInputFragment.getContentPages()));
 
       actionButton.setOnClickListener(new View.OnClickListener() {
         @Override
@@ -64,14 +66,25 @@ public class ViewPagerDialogFragment extends AppCompatDialogFragment {
           flexInputFragment.onSend();
         }
       });
-    }
 
+      this.selectionAggregator = flexInputFragment.getSelectionAggregator()
+          .addItemSelectionListener(itemSelectionListener);
+    }
     return root;
+  }
+
+  @Override
+  public void onResume() {
+    super.onResume();
+    updateActionButton();
   }
 
   @Override
   public void onDestroyView() {
     unbinder.unbind();
+    if (itemSelectionListener != null && selectionAggregator != null) {
+      selectionAggregator.removeItemSelectionListener(itemSelectionListener);
+    }
     super.onDestroyView();
   }
 
@@ -105,15 +118,18 @@ public class ViewPagerDialogFragment extends AppCompatDialogFragment {
       }
 
       @Override
-      public void onTabUnselected(final TabLayout.Tab tab) { }
+      public void onTabUnselected(final TabLayout.Tab tab) {
+      }
 
       @Override
-      public void onTabReselected(final TabLayout.Tab tab) { }
+      public void onTabReselected(final TabLayout.Tab tab) {
+      }
     });
 
     contentPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
       @Override
-      public void onPageScrolled(final int position, final float positionOffset, final int positionOffsetPixels) { }
+      public void onPageScrolled(final int position, final float positionOffset, final int positionOffsetPixels) {
+      }
 
       @Override
       public void onPageSelected(final int position) {
@@ -121,10 +137,35 @@ public class ViewPagerDialogFragment extends AppCompatDialogFragment {
       }
 
       @Override
-      public void onPageScrollStateChanged(final int state) { }
+      public void onPageScrollStateChanged(final int state) {
+      }
     });
     // set the default to the first real tab
     contentTabs.getTabAt(1).select();
   }
 
+  private SelectionCoordinator.ItemSelectionListener itemSelectionListener =
+      new SelectionCoordinator.ItemSelectionListener() {
+        @Override
+        public void onItemSelected(final Object item) {
+          updateActionButton();
+        }
+
+        @Override
+        public void onItemUnselected(final Object item) {
+          updateActionButton();
+        }
+      };
+
+  private void updateActionButton() {
+    if (actionButton == null) {
+      return;  // Fragment gone, nothing to do
+    }
+
+    if (selectionAggregator.getSize() > 0) {
+      actionButton.show();
+    } else {
+      actionButton.hide();
+    }
+  }
 }

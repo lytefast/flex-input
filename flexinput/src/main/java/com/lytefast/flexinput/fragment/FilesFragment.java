@@ -19,6 +19,7 @@ import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.adapters.EmptyListAdapter;
 import com.lytefast.flexinput.adapters.FileListAdapter;
 import com.lytefast.flexinput.model.Attachment;
+import com.lytefast.flexinput.utils.SelectionAggregator;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 
 import java.io.File;
@@ -58,7 +59,9 @@ public class FilesFragment extends PermissionsFragment {
     final Fragment targetFragment = getParentFragment().getTargetFragment();
     if (targetFragment instanceof FlexInputCoordinator) {
       FlexInputCoordinator flexInputCoordinator = (FlexInputCoordinator) targetFragment;
-      flexInputCoordinator.addSelectionCoordinator(selectionCoordinator);
+
+      SelectionAggregator selectionAgg = flexInputCoordinator.getSelectionAggregator();
+      selectionAgg.registerSelectionCoordinator(selectionCoordinator);
     }
   }
 

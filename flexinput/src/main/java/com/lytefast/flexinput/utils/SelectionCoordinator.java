@@ -165,6 +165,6 @@ public class SelectionCoordinator<T> {
      * Signals that no new notifications are required. This should be called when the
      * {@link SelectionCoordinator} goes out of scope to clean up references.
      */
-    public void unregister() {};
+    public void unregister() {}
   }
 }
