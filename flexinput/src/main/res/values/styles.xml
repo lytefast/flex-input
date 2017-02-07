@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <attr name="flexInputIconColor" format="color|reference" />
     <attr name="flexInputIconColorActivated" format="color|reference" />
@@ -42,25 +42,31 @@
         <item name="android:background">?android:colorPrimary</item>
     </style>
 
+    <style name="FlexInput.AddContent.Base.Container.TabLayout" parent="FlexInput.AddContent">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">bottom</item>
+        <item name="background">@android:color/transparent</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <!-- Provided to allow simple overrides -->
+    <style name="FlexInput.AddContent.Container.TabLayout"
+           parent="FlexInput.AddContent.Base.Container.TabLayout"/>
+
     <style name="FlexInput.AddContent.Base.TabLayout" parent="FlexInput.AddContent">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/input_height</item>
-        <item name="android:layout_margin">16dp</item>
-        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:elevation" tools:targetApi="lollipop">8dp</item>
         <item name="android:gravity">center_vertical</item>
         <item name="tabGravity">fill</item>
         <item name="tabMode">fixed</item>
     </style>
 
-    <style name="FlexInput.AddContent.TabLayout" parent="FlexInput.AddContent.Base.TabLayout">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/input_height</item>
-        <item name="android:layout_margin">16dp</item>
-        <item name="android:layout_alignParentBottom">true</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="tabGravity">fill</item>
-        <item name="tabMode">fixed</item>
-    </style>
+    <!-- Provided to allow simple overrides -->
+    <style name="FlexInput.AddContent.TabLayout" parent="FlexInput.AddContent.Base.TabLayout" />
 
     <style name="FlexInput.Camera.Controller" parent="FlexInput">
         <item name="android:layout_gravity">bottom|center_horizontal</item>
