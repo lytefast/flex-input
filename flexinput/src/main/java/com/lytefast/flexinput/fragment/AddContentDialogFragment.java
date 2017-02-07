@@ -32,7 +32,7 @@ import butterknife.Unbinder;
  *
  * @author Sam Shih
  */
-public class ViewPagerDialogFragment extends AppCompatDialogFragment {
+public class AddContentDialogFragment extends AppCompatDialogFragment {
 
   @BindView(R2.id.content_pager) ViewPager contentPager;
   @BindView(R2.id.content_tabs) TabLayout contentTabs;
@@ -51,7 +51,7 @@ public class ViewPagerDialogFragment extends AppCompatDialogFragment {
   public View onCreateView(final LayoutInflater inflater,
                            @Nullable final ViewGroup container,
                            @Nullable final Bundle savedInstanceState) {
-    View root = inflater.inflate(R.layout.dialog_view_pager_with_fab, container, false);
+    View root = inflater.inflate(R.layout.dialog_add_content_pager_with_fab, container, false);
     this.unbinder = ButterKnife.bind(this, root);
 
     if (getParentFragment() instanceof FlexInputFragment) {
@@ -95,7 +95,7 @@ public class ViewPagerDialogFragment extends AppCompatDialogFragment {
     }
   }
 
-  protected ViewPagerDialogFragment initContentPages(@NonNull final AddContentPagerAdapter pagerAdapter) {
+  protected AddContentDialogFragment initContentPages(@NonNull final AddContentPagerAdapter pagerAdapter) {
     pagerAdapter.initTabs(getContext(), contentTabs);
     contentPager.setAdapter(pagerAdapter);
     synchronizeTabAndPagerEvents();

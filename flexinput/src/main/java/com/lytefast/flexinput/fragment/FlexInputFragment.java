@@ -386,8 +386,8 @@ public class FlexInputFragment extends Fragment
     hideEmojiTray();
     keyboardManager.requestHide();  // Make sure the keyboard is hidden
 
-    final ViewPagerDialogFragment frag = new ViewPagerDialogFragment();
-    frag.setTargetFragment(this, 0);
+    final AddContentDialogFragment frag = new AddContentDialogFragment();
+    frag.setTargetFragment(this, 0 /* result code unused */);
     frag.show(getChildFragmentManager(), ADD_CONTENT_FRAG_TAG);
     updateAttachmentPreviewContainer();
   }
