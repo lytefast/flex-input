@@ -4,10 +4,11 @@
     <attr name="flexInputIconColorActivated" format="color|reference" />
     <attr name="flexInputIconColorDisabled" format="color|reference" />
     <attr name="flexInputColorHighlight" format="color|reference" />
+    <attr name="flexInputDialogBackground" format="color|reference" />
 
     <style name="FlexInput.DialogWhenLarge" parent="Theme.AppCompat.DayNight.DialogWhenLarge">
-        <item name="android:background">@android:color/transparent</item>
         <item name="android:colorBackground">@android:color/transparent</item>
+        <item name="flexInputDialogBackground">@android:drawable/screen_background_dark_transparent</item>
     </style>
 
     <!-- Base application theme. -->
