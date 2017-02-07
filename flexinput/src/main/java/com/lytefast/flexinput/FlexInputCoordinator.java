@@ -3,9 +3,6 @@ package com.lytefast.flexinput;
 import com.lytefast.flexinput.managers.FileManager;
 import com.lytefast.flexinput.model.Attachment;
 import com.lytefast.flexinput.utils.SelectionAggregator;
-import com.lytefast.flexinput.utils.SelectionCoordinator;
-
-import java.util.List;
 
 
 /**
@@ -24,5 +21,5 @@ public interface FlexInputCoordinator<T extends Attachment> {
    */
   SelectionAggregator<T> getSelectionAggregator();
 
-  void onPhotoTaken(T photo);
+  void addExternalAttachment(T attachment);
 }

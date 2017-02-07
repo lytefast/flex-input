@@ -427,14 +427,14 @@ public class FlexInputFragment extends Fragment
   // region FlexInputCoordinator methods
 
   @Override
-  public void onPhotoTaken(final Attachment photo) {
+  public void addExternalAttachment(final Attachment attachment) {
     getActivity().runOnUiThread(new Runnable() {
       @Override
       public void run() {
         // Create a temporary SelectionCoordinator to add attachment
         SelectionCoordinator<Attachment> coord = new SelectionCoordinator<>();
         attachmentPreviewAdapter.getSelectionAggregator().registerSelectionCoordinator(coord);
-        coord.selectItem(photo, 0);
+        coord.selectItem(attachment, 0);
         coord.close();
 
         DialogFragment dialogFragment =

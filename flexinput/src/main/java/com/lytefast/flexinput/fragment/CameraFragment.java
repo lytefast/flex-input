@@ -170,7 +170,7 @@ public class CameraFragment extends PermissionsFragment {
       }
       cameraView.start();
     } else if (photoFile != null) {
-      flexInputCoordinator.onPhotoTaken(FileUtils.toAttachment(photoFile));
+      flexInputCoordinator.addExternalAttachment(FileUtils.toAttachment(photoFile));
     }
   }
 
@@ -203,7 +203,7 @@ public class CameraFragment extends PermissionsFragment {
                 os.close();
 
                 addToMediaStore(file);
-                flexInputCoordinator.onPhotoTaken(FileUtils.toAttachment(file));
+                flexInputCoordinator.addExternalAttachment(FileUtils.toAttachment(file));
               } catch (IOException e) {
                 Log.w(TAG, "Cannot write to " + file, e);
               } finally {
