@@ -431,7 +431,6 @@ public class FlexInputFragment extends Fragment
     getActivity().runOnUiThread(new Runnable() {
       @Override
       public void run() {
-
         // Create a temporary SelectionCoordinator to add attachment
         SelectionCoordinator<Attachment> coord = new SelectionCoordinator<>();
         attachmentPreviewAdapter.getSelectionAggregator().registerSelectionCoordinator(coord);
@@ -443,7 +442,6 @@ public class FlexInputFragment extends Fragment
         if (dialogFragment != null) {
           dialogFragment.dismiss();
         }
-        // TODO invalidate photo picker
       }
     });
   }

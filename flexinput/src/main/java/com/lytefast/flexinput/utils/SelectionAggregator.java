@@ -11,8 +11,8 @@ import java.util.ArrayList;
 
 
 /**
- * {@link RecyclerView.Adapter} which, given a list of attachments understands how to display them.
- * This can be extended to implement custom previews.
+ * Managers a collection of {@link SelectionCoordinator}s, and aggregates the selections to produce
+ * a insert ordered list.
  *
  * @author Sam Shih
  */
