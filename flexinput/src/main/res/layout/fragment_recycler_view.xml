@@ -10,15 +10,9 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"
+        style="@style/FlexInput.AddContent.Page"
         android:name="com.lytefast.flexinput.RecyclerViewFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:orientation="vertical"
         app:layoutManager="LinearLayoutManager"
-        android:paddingBottom="@dimen/add_content_viewpager_bottom_margin"
-        android:clipToPadding="false"
         tools:context="com.lytefast.flexinput.fragment.PhotosFragment"
         tools:listitem="@layout/view_grid_image"/>
 </android.support.v4.widget.SwipeRefreshLayout>

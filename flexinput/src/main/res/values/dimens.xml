@@ -2,12 +2,13 @@
     <dimen name="margin">4dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="input_container_margin">4dp</dimen>
+    <dimen name="tab_container_margin">16dp</dimen>
 
     <dimen name="input_height">48dp</dimen>
     <dimen name="default_keyboard_height">280dp</dimen>
 
-    <dimen name="add_content_viewpager_bottom_margin">64dp</dimen>
-    <dimen name="grid_item_padding">2dp</dimen>
+    <dimen name="add_content_viewpager_bottom_margin">76dp</dimen>
+    <dimen name="grid_item_padding">4dp</dimen>
     <dimen name="file_icon_dimen">64dp</dimen>
     <dimen name="attachment_preview_dimen">48dp</dimen>
 

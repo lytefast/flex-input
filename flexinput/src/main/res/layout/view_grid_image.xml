@@ -3,21 +3,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/FlexInput.Items"
+    style="@style/FlexInput.Items.Photo"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:animateLayoutChanges="true"
     android:clickable="true"
-    android:padding="@dimen/grid_item_padding"
     tools:layout_width="120dp"
     tools:gravity="center_horizontal">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/content_iv"
-        style="FlexInput.Items.Photo"
+        style="FlexInput.Items.Photo.Image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/grid_item_padding"
         android:adjustViewBounds="true"
         app:roundedCornerRadius="4dp"
         tools:src="@drawable/ic_image_24dp"/>

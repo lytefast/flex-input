@@ -9,7 +9,7 @@
     <color name="flexInputIconColor">@color/colorPrimary</color>  <!-- colorButtonNormal -->
     <color name="flexInputIconColorActivated">@color/colorPrimaryDark</color>  <!-- colorControlActivated -->
     <color name="flexInputIconColorDisabled">#c089a1b7</color>  <!-- colorControlHighlight -->
-    <color name="flexInputColorHighlight">#dcca6c7f</color>
+    <color name="flexInputColorHighlight">#9ae933</color>
     <color name="flexInputDialogBackground">#A0FFFFFF</color>
 
     <color name="colorHint">#d0808080</color>
