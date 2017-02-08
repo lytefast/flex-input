@@ -1,19 +1,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
-              style="@style/FlexInput.Main"
+              style="@style/FlexInput.Main.Widget"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:orientation="vertical"
-              android:divider="?android:dividerHorizontal"
-              android:animateLayoutChanges="true"
-              android:showDividers="middle">
+              android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/attachment_preview_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/input_container_margin"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:visibility="gone"
@@ -23,9 +19,8 @@
             android:id="@+id/attachment_preview_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/input_container_margin"
-            android:layout_marginRight="@dimen/input_container_margin"
             android:layout_weight="1"
+            android:clipToPadding="false"
             android:orientation="horizontal"
             app:layoutManager="LinearLayoutManager"
             tools:context="com.lytefast.flexinput.fragment.AttachmentPreviewAdapter"
@@ -36,8 +31,7 @@
             style="@style/FlexInput.Input.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@id/attachment_preview_list"
-            android:layout_alignParentRight="true"
+            android:elevation="4dp"
             android:contentDescription="Clear attachments"
             android:src="@drawable/ic_clear_24dp"/>
     </LinearLayout>
@@ -52,11 +46,9 @@
 
         <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/add_btn"
-            style="@style/FlexInput.Input.Button"
+            style="@style/FlexInput.Input.Button.AddContent"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/add_content"
-            android:src="@drawable/ic_add_24dp"/>
+            android:layout_height="wrap_content"/>
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/text_input"
@@ -73,22 +65,17 @@
 
         <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/emoji_btn"
-            style="@style/FlexInput.Input.Button"
+            style="@style/FlexInput.Input.Button.Emoji"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/emoji_keyboard_toggle"
-            android:src="@drawable/ic_insert_emoticon_24dp"
             android:visibility="gone"
             tools:visibility="visible"/>
 
         <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/send_btn"
-            style="@style/FlexInput.Input.Button"
+            style="@style/FlexInput.Input.Button.Send"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/send_contents"
-            android:enabled="false"
-            android:src="@drawable/ic_send_24dp"/>
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 

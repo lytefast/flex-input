@@ -23,20 +23,42 @@
         <item name="flexInputColorHighlight">?colorControlHighlight</item>
     </style>
 
-    <style name="FlexInput.Main" parent="FlexInput">
+    <style name="FlexInput.Main">
         <item name="android:background">@android:color/transparent</item>
     </style>
 
-    <style name="FlexInput.Input" parent="FlexInput">
+    <style name="FlexInput.Main.Widget">
+        <item name="android:divider">?attr/dividerHorizontal</item>
+        <item name="android:animateLayoutChanges">true</item>
+        <item name="android:showDividers">middle</item>
+    </style>
+
+    <style name="FlexInput.Input">
         <item name="android:background">?selectableItemBackgroundBorderless</item>
     </style>
 
-    <style name="FlexInput.Input.Button" parent="FlexInput.Input">
+    <style name="FlexInput.Input.Button">
         <item name="android:tint">?flexInputIconColor</item>
         <item name="android:padding">8dp</item>
     </style>
 
-    <style name="FlexInput.Input.Button.Tab" parent="FlexInput.Input.Button">
+    <style name="FlexInput.Input.Button.AddContent">
+        <item name="android:src">@drawable/ic_add_24dp</item>
+        <item name="android:contentDescription">@string/add_content</item>
+    </style>
+
+    <style name="FlexInput.Input.Button.Emoji">
+        <item name="android:src">@drawable/ic_insert_emoticon_24dp</item>
+        <item name="android:contentDescription">@string/emoji_keyboard_toggle</item>
+    </style>
+
+    <style name="FlexInput.Input.Button.Send">
+        <item name="android:src">@drawable/ic_send_24dp</item>
+        <item name="android:contentDescription">@string/send_contents</item>
+        <item name="android:enabled">false</item>
+    </style>
+
+    <style name="FlexInput.Input.Button.Tab">
         <item name="android:tint">@android:color/white</item>
     </style>
 
@@ -51,6 +73,7 @@
         <item name="android:padding">@dimen/tab_container_margin</item>
         <item name="android:clickable">true</item>
         <item name="android:gravity">center</item>
+        <item name="android:clipToPadding">false</item>
     </style>
     <style name="FlexInput.AddContent.Container.TabLayout"
            parent="FlexInput.AddContent.Base.Container.TabLayout"/>
@@ -61,6 +84,7 @@
         <item name="android:layout_height">@dimen/input_height</item>
         <item name="android:elevation" tools:targetApi="lollipop">8dp</item>
         <item name="android:gravity">center_vertical</item>
+        <item name="tabIndicatorColor">?flexInputIconColorActivated</item>
         <item name="tabGravity">fill</item>
         <item name="tabMode">fixed</item>
     </style>
@@ -100,7 +124,7 @@
 
     <style name="FlexInput.Items" parent="FlexInput">
         <item name="android:background">@android:color/transparent</item>
-        <item name="android:animateLayoutChanges">true</item>
+        <item name="android:animateLayoutChanges">true</item>di
     </style>
 
     <style name="FlexInput.Items.Base.Photo.Image" parent="FlexInput.Items">
@@ -138,16 +162,28 @@
     </style>
     <style name="FlexInput.Items.File" parent="FlexInput.Items.Base.File"/>
 
-    <style name="FlexInput.Items.Selected.Icon" parent="FlexInput.Items">
+    <style name="FlexInput.Items.Base.File.Selection">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">@dimen/margin</item>
+        <item name="android:src">@drawable/file_item_selection_indicator_btn</item>
+    </style>
+    <style name="FlexInput.Items.File.Selection" parent="FlexInput.Items.Base.File.Selection"/>
+
+    <style name="FlexInput.Items.Base.Photo.Selection" parent="FlexInput.Items">
+        <item name="android:layout_width">@dimen/selection_indicator_icon_size</item>
+        <item name="android:layout_height">@dimen/selection_indicator_icon_size</item>
         <item name="android:layout_gravity">top|right|end</item>
         <item name="roundAsCircle">true</item>
         <item name="roundingBorderWidth">@dimen/margin</item>
         <item name="roundingBorderColor">?flexInputColorHighlight</item>
         <item name="roundWithOverlayColor">@android:color/transparent</item>
+        <item name="backgroundImage">?flexInputDialogBackground</item>
         <item name="placeholderImage">@drawable/ic_check_circle_24dp</item>
         <item name="placeholderImageScaleType">fitCenter</item>
         <item name="android:tint">?flexInputIconColorActivated</item>
     </style>
+    <style name="FlexInput.Items.Photo.Selection" parent="FlexInput.Items.Base.Photo.Selection"/>
 
     <style name="FlexInput.Items.File.Name" parent="FlexInput.Items">
         <item name="android:textSize">14sp</item>

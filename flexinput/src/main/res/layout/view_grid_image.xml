@@ -21,9 +21,7 @@
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/item_check_indicator"
-        style="@style/FlexInput.Items.Selected.Icon"
-        android:layout_width="@dimen/selection_indicator_icon_size"
-        android:layout_height="@dimen/selection_indicator_icon_size"
+        style="@style/FlexInput.Items.Photo.Selection"
         android:visibility="gone"
         tools:src="@drawable/ic_check_circle_24dp"
         tools:visibility="visible"/>

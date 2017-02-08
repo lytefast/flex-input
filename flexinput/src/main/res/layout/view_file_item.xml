@@ -33,13 +33,10 @@
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/selection_indicator"
-        android:padding="@dimen/margin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/FlexInput.Items.File.Selection"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_centerInParent="true"
-        android:src="@drawable/file_item_selection_indicator_btn"/>
+        android:layout_centerInParent="true"/>
 
     <TextView
         android:id="@+id/file_name_tv"
