@@ -1,41 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/FlexInput.Items"
+    style="@style/FlexInput.Items.File"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
     android:clickable="true">
 
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/thumb_iv"
-        android:layout_width="@dimen/file_icon_dimen"
-        android:layout_height="@dimen/file_icon_dimen"
-        android:layout_alignParentStart="true"
+    <!--RelativeLayout doesn't like centerVertical and alignBottom -->
+    <FrameLayout
+        android:id="@+id/content_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:scaleType="centerCrop"
-        app:placeholderImage="@drawable/ic_file_24dp"
-        app:placeholderImageScaleType="centerInside"/>
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true">
 
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/type_iv"
-        android:layout_width="@dimen/file_type_icon_dimen"
-        android:layout_height="@dimen/file_type_icon_dimen"
-        android:layout_margin="2dp"
-        android:layout_alignBottom="@id/thumb_iv"
-        android:layout_alignEnd="@id/thumb_iv"
-        android:layout_alignRight="@id/thumb_iv"
-        android:tint="?flexInputIconColor"
-        tools:src="@drawable/ic_file_24dp"/>
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/thumb_iv"
+            style="@style/FlexInput.Items.File.Image"
+            android:layout_gravity="center"/>
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/type_iv"
+            android:layout_width="@dimen/file_type_icon_dimen"
+            android:layout_height="@dimen/file_type_icon_dimen"
+            android:layout_gravity="bottom|end|right"
+            android:tint="?flexInputIconColor"
+            tools:src="@drawable/ic_file_24dp"/>
+    </FrameLayout>
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/selection_indicator"
         android:padding="@dimen/margin"
-        android:layout_marginRight="@dimen/text_margin"
-        android:layout_marginEnd="@dimen/text_margin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -48,8 +46,8 @@
         style="@style/FlexInput.Items.File.Name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/thumb_iv"
-        android:layout_toRightOf="@id/thumb_iv"
+        android:layout_toEndOf="@id/content_container"
+        android:layout_toRightOf="@id/content_container"
         android:layout_toLeftOf="@id/selection_indicator"
         android:layout_toStartOf="@id/selection_indicator"
         android:layout_marginLeft="@dimen/text_margin"

@@ -9,7 +9,8 @@
 
     <dimen name="add_content_viewpager_bottom_margin">76dp</dimen>
     <dimen name="grid_item_padding">4dp</dimen>
-    <dimen name="file_icon_dimen">64dp</dimen>
+    <dimen name="file_item_padding">10dp</dimen>
+    <dimen name="file_icon_dimen">56dp</dimen>
     <dimen name="attachment_preview_dimen">48dp</dimen>
 
     <dimen name="emoji_text_size">32dp</dimen>

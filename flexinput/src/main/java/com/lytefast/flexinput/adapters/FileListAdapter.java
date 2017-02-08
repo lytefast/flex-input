@@ -4,7 +4,6 @@ import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
 import android.content.ContentResolver;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -17,6 +16,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
@@ -144,19 +144,48 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
 
     private void bindThumbIvWithImage(final File file) {
       Cursor c = contentResolver.query(
-        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-        new String[]{MediaStore.Images.Media._ID},
-        MediaStore.Images.Media.DATA + "=?",
-        new String[]{file.getPath()},
-        null /* sortOrder */);
+          MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+          new String[]{MediaStore.Images.Media._ID, MediaStore.Images.Media.MINI_THUMB_MAGIC},
+          MediaStore.Images.Media.DATA + "=?",
+          new String[]{file.getPath()},
+          null /* sortOrder */);
+      try {
+        if (c == null || !c.moveToFirst()) {
+          return;
+        }
 
-      if (c == null || !c.moveToFirst()) {
-        return;
+        final long imageId = c.getLong(0);
+        final long thumbMagic = c.getLong(1);
+
+        if (thumbMagic == 0) {
+          // Force thumbnail generation
+          MediaStore.Images.Thumbnails.getThumbnail(
+              contentResolver, imageId, MediaStore.Images.Thumbnails.MINI_KIND, null).recycle();
+        }
+
+        c.close();
+        c = contentResolver.query(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
+            new String[]{MediaStore.Images.Thumbnails._ID},
+            MediaStore.Images.Thumbnails.IMAGE_ID + "=?",
+            new String[]{Long.toString(imageId)},
+            null);
+
+        if (c == null || !c.moveToFirst()) {
+          return;
+        }
+
+        final String thumbId = c.getString(0);
+        c.close();
+        thumbIv.setController(Fresco.newDraweeControllerBuilder()
+            .setOldController(thumbIv.getController())
+            .setUri(Uri.withAppendedPath(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, thumbId))
+            .setTapToRetryEnabled(true)
+            .build());
+      } finally {
+        if (c != null) {
+          c.close();
+        }
       }
-      final long imageId = c.getLong(0);
-      Bitmap thumbnail = MediaStore.Images.Thumbnails.getThumbnail(
-          contentResolver, imageId, MediaStore.Images.Thumbnails.MINI_KIND, null);
-      thumbIv.setImageBitmap(thumbnail);
     }
 
     void setSelected(boolean isSelected, boolean isAnimationRequested) {
@@ -209,7 +238,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
     String type = null;
     String fileName = file.getName();
     String extension = fileName.substring(fileName.lastIndexOf('.') + 1);
-    if (extension != null) {
+    if (!TextUtils.isEmpty(extension)) {
       type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
     }
     return type;

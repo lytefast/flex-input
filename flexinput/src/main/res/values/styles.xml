@@ -98,15 +98,10 @@
     </style>
     <style name="FlexInput.Camera.Controller" parent="FlexInput.Camera.Base.Controller"/>
 
-    <style name="FlexInput.Items" parent="AppTheme">
+    <style name="FlexInput.Items" parent="FlexInput">
         <item name="android:background">@android:color/transparent</item>
-    </style>
-
-    <style name="FlexInput.Items.Base.Photo" parent="FlexInput.Items">
-        <item name="android:padding">@dimen/grid_item_padding</item>
         <item name="android:animateLayoutChanges">true</item>
     </style>
-    <style name="FlexInput.Items.Photo" parent="FlexInput.Items.Base.Photo"/>
 
     <style name="FlexInput.Items.Base.Photo.Image" parent="FlexInput.Items">
         <item name="android:scaleType">fitCenter</item>
@@ -117,6 +112,31 @@
         <item name="placeholderImageScaleType">fitCenter</item>
     </style>
     <style name="FlexInput.Items.Photo.Image" parent="FlexInput.Items.Base.Photo.Image"/>
+
+    <style name="FlexInput.Items.Base.Photo" parent="FlexInput.Items">
+        <item name="android:padding">@dimen/grid_item_padding</item>
+    </style>
+    <style name="FlexInput.Items.Photo" parent="FlexInput.Items.Base.Photo"/>
+
+    <style name="FlexInput.Items.Base.File.Image" parent="FlexInput.Items">
+        <item name="android:layout_width">@dimen/file_icon_dimen</item>
+        <item name="android:layout_height">@dimen/file_icon_dimen</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="actualImageScaleType">centerCrop</item>
+        <item name="backgroundImage">?colorControlHighlight</item>
+        <item name="viewAspectRatio">1.0</item>
+        <item name="roundAsCircle">true</item>
+        <item name="fadeDuration">@android:integer/config_shortAnimTime</item>
+        <item name="placeholderImage">@drawable/ic_file_24dp</item>
+        <item name="placeholderImageScaleType">centerInside</item>
+    </style>
+    <style name="FlexInput.Items.File.Image" parent="FlexInput.Items.Base.File.Image"/>
+
+
+    <style name="FlexInput.Items.Base.File" parent="FlexInput.Items">
+        <item name="android:padding">@dimen/file_item_padding</item>
+    </style>
+    <style name="FlexInput.Items.File" parent="FlexInput.Items.Base.File"/>
 
     <style name="FlexInput.Items.Selected.Icon" parent="FlexInput.Items">
         <item name="android:layout_gravity">top|right|end</item>
