@@ -2,7 +2,6 @@ package com.lytefast.flexinput.fragment;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -191,15 +190,6 @@ public class FlexInputFragment extends Fragment
       }
     } finally {
       a.recycle();
-    }
-  }
-
-  @Override
-  public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    // Forward to child activities
-    for (Fragment childFrag : getChildFragmentManager().getFragments()) {
-      childFrag.onActivityResult(requestCode, resultCode, data);
     }
   }
 
@@ -406,7 +396,7 @@ public class FlexInputFragment extends Fragment
 
   @Override
   public void addExternalAttachment(final Attachment attachment) {
-    getActivity().runOnUiThread(new Runnable() {
+    attachmentPreviewList.post(new Runnable() {
       @Override
       public void run() {
         // Create a temporary SelectionCoordinator to add attachment
