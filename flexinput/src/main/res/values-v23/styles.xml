@@ -1,0 +1,8 @@
+<resources>
+
+    <style name="FlexInput.Input.Button" parent="FlexInput.Input">
+        <item name="android:tint">@color/button_color_selector_themed</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
+</resources>
