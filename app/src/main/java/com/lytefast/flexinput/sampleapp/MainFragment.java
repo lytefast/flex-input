@@ -81,8 +81,13 @@ public class MainFragment extends Fragment {
         .setKeyboardManager(new KeyboardManager() {
           @Override
           public void requestDisplay() {
-            flexInput.requestFocus();
-            imm.showSoftInput(flexInput.getView(), InputMethodManager.SHOW_IMPLICIT);
+            getActivity().runOnUiThread(new Runnable() {
+              @Override
+              public void run() {
+                flexInput.requestFocus();
+                imm.showSoftInput(flexInput.getView(), InputMethodManager.SHOW_IMPLICIT);
+              }
+            });
           }
 
           @Override

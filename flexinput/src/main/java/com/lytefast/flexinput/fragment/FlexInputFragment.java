@@ -132,8 +132,6 @@ public class FlexInputFragment extends Fragment
                            @Nullable final Bundle savedInstanceState) {
     LinearLayout root = (LinearLayout) inflater.inflate(R.layout.flex_input_widget, container, false);
     this.unbinder = ButterKnife.bind(this, root);
-    root.getLayoutTransition()
-        .setDuration(getResources().getInteger(android.R.integer.config_shortAnimTime));
 
     if (getChildFragmentManager().findFragmentById(R.id.emoji_container) != null) {
       this.emojiBtn.setVisibility(View.VISIBLE);
@@ -333,27 +331,9 @@ public class FlexInputFragment extends Fragment
     updateSendBtnEnableState(textEt.getText());
   }
 
-  @OnLongClick(R2.id.add_btn)
-  boolean tooltipHandlerAddContent() {
-    Toast.makeText(getContext(), R.string.add_content, Toast.LENGTH_SHORT).show();
-    return true;
-  }
-
-  @OnLongClick(R2.id.attachment_clear_btn)
-  boolean tooltipHandlerAttachmentClear() {
-    Toast.makeText(getContext(), R.string.clear_attachments, Toast.LENGTH_SHORT).show();
-    return true;
-  }
-
-  @OnLongClick(R2.id.emoji_btn)
-  boolean tooltipHandlerEmoji() {
-    Toast.makeText(getContext(), R.string.emoji_keyboard_toggle, Toast.LENGTH_SHORT).show();
-    return true;
-  }
-
-  @OnLongClick(R2.id.send_btn)
-  boolean tooltipHandlerSend() {
-    Toast.makeText(getContext(), R.string.send_contents, Toast.LENGTH_SHORT).show();
+  @OnLongClick({R2.id.add_btn, R2.id.attachment_clear_btn, R2.id.emoji_btn, R2.id.send_btn})
+  boolean tooltipButton(View view) {
+    Toast.makeText(getContext(), view.getContentDescription(), Toast.LENGTH_SHORT).show();
     return true;
   }
 
@@ -377,8 +357,6 @@ public class FlexInputFragment extends Fragment
     } else {
       showEmojiTray();
     }
-
-//    addContentPager.setVisibility(View.GONE);
   }
 
   @OnClick(R2.id.add_btn)
