@@ -13,8 +13,8 @@
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/content_iv"
         style="FlexInput.Items.Photo.Image"
-        android:layout_width="@dimen/photo_grid_item_size"
-        android:layout_height="@dimen/photo_grid_item_size"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         app:roundedCornerRadius="4dp"
         tools:src="@drawable/ic_image_24dp"/>
