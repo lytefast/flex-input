@@ -2,6 +2,7 @@ package com.lytefast.flexinput.fragment;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -12,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.RecyclerView;
@@ -295,7 +297,11 @@ public class FlexInputFragment extends Fragment
   }
 
   public void requestFocus() {
-    getView().post(new Runnable() {
+    FragmentActivity activity = getActivity();
+    if (activity == null) {
+      return;
+    }
+    activity.runOnUiThread(new Runnable() {
       @Override
       public void run() {
         textEt.requestFocus();
@@ -357,6 +363,14 @@ public class FlexInputFragment extends Fragment
     final AddContentDialogFragment frag = new AddContentDialogFragment();
     frag.setTargetFragment(this, 0 /* result code unused */);
     frag.show(getChildFragmentManager(), ADD_CONTENT_FRAG_TAG);
+    getChildFragmentManager().executePendingTransactions();
+
+    frag.getDialog().setOnDismissListener(new DialogInterface.OnDismissListener() {
+      @Override
+      public void onDismiss(final DialogInterface dialog) {
+        keyboardManager.requestDisplay();
+      }
+    });
     updateAttachmentPreviewContainer();
   }
 
