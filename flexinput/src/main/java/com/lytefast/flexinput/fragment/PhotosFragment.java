@@ -49,8 +49,8 @@ public class PhotosFragment extends PermissionsFragment {
   }
 
   @Override
-  public void onCreate(@Nullable final Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                           Bundle savedInstanceState) {
     final Fragment targetFragment = getParentFragment().getTargetFragment();
     if (targetFragment instanceof FlexInputCoordinator) {
       FlexInputCoordinator flexInputCoordinator = (FlexInputCoordinator) targetFragment;
@@ -58,11 +58,7 @@ public class PhotosFragment extends PermissionsFragment {
       SelectionAggregator selectionAgg = flexInputCoordinator.getSelectionAggregator();
       selectionAgg.registerSelectionCoordinator(selectionCoordinator);
     }
-  }
 
-  @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                           Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_recycler_view, container, false);
     unbinder = ButterKnife.bind(this, view);
 

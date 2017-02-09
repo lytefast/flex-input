@@ -361,7 +361,6 @@ public class FlexInputFragment extends Fragment
     keyboardManager.requestHide();  // Make sure the keyboard is hidden
 
     final AddContentDialogFragment frag = new AddContentDialogFragment();
-    frag.setTargetFragment(this, 0 /* result code unused */);
     frag.show(getChildFragmentManager(), ADD_CONTENT_FRAG_TAG);
     getChildFragmentManager().executePendingTransactions();
 
