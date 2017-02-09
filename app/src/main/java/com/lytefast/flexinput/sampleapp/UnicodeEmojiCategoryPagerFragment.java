@@ -119,7 +119,7 @@ public class UnicodeEmojiCategoryPagerFragment extends EmojiCategoryPagerFragmen
       case "flags":
         return R.drawable.ic_assistant_photo_black_24dp;
       default:
-        return R.drawable.ic_audiotrack_light;
+        return R.drawable.ic_mood_black_24dp;
     }
   }
 }

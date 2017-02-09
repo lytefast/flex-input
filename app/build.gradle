@@ -16,7 +16,7 @@ android {
     buildTypes {
         debugProguard {
             initWith debug
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt')
             proguardFiles(
                 './proguard/proguard-facebook-fresco.pro',
@@ -24,7 +24,7 @@ android {
                 './proguard/proguard-support-v7-appcompat.pro')
         }
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt')
             proguardFiles(
                 './proguard/proguard-facebook-fresco.pro',
@@ -42,7 +42,6 @@ dependencies {
     compile "com.android.support:design:$supportLibraryVersion"
     compile "com.android.support:recyclerview-v7:$supportLibraryVersion"
     compile "com.android.support:support-v4:$supportLibraryVersion"
-    compile 'com.google.android.gms:play-services:10.0.1'
 
     compile 'com.jakewharton:butterknife:8.4.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
