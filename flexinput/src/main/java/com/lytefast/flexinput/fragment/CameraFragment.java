@@ -16,6 +16,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -103,7 +104,26 @@ public class CameraFragment extends PermissionsFragment {
     }
     cameraActionContainer.setVisibility(View.VISIBLE);
     permissionsContainer.setVisibility(View.GONE);
-    cameraView.start();
+    tryStartCamera();
+  }
+
+  /**
+   * Some cameras don't properly set the {@link android.hardware.Camera.CameraInfo#facing} value.
+   * So here, if we fail, just try getting the first front facing camera.
+   */
+  private void tryStartCamera() {
+    try {
+      cameraView.start();
+    } catch (Exception e) {
+      Log.w(TAG, "Camera could not be loaded, try front facing camera", e);
+
+      try {
+        cameraView.setFacing(CameraView.FACING_FRONT);
+        cameraView.start();
+      } catch (Exception ex) {
+        Log.e(TAG, "Camera could not be loaded", e);
+      }
+    }
   }
 
   @Override
