@@ -8,13 +8,17 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatDialog;
 import android.support.v7.app.AppCompatDialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
@@ -40,14 +44,58 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
   @BindView(R2.id.content_tabs) TabLayout contentTabs;
   @BindView(R2.id.action_btn) FloatingActionButton actionButton;
   private Unbinder unbinder;
+
   private SelectionAggregator<Attachment> selectionAggregator;
 
 
   @Override
   public Dialog onCreateDialog(final Bundle savedInstanceState) {
-    AppCompatDialog dialog = new AppCompatDialog(getContext(), R.style.FlexInput_DialogWhenLarge);
+    AppCompatDialog dialog = new AppCompatDialog(getContext(), R.style.FlexInput_DialogWhenLarge) {
+      @Override
+      public void cancel() {
+        super.cancel();
+        AddContentDialogFragment.this.dismiss();
+      }
+    };
+
     dialog.supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+    dialog.getWindow()
+        .setWindowAnimations(android.support.design.R.style.Animation_AppCompat_Dialog);
+
     return dialog;
+  }
+
+  @Override
+  public int show(final FragmentTransaction transaction, final String tag) {
+    transaction.setCustomAnimations(
+        android.support.design.R.anim.abc_grow_fade_in_from_bottom,
+        android.support.design.R.anim.abc_shrink_fade_out_from_bottom);
+    final int commitId = super.show(transaction, tag);
+    return commitId;
+  }
+
+  @Override
+  public void onStart() {
+    super.onStart();
+    animateIn();
+  }
+
+  @Override
+  public void dismiss() {
+    animateOut().setAnimationListener(new Animation.AnimationListener() {
+      @Override
+      public void onAnimationStart(final Animation animation) {
+      }
+
+      @Override
+      public void onAnimationEnd(final Animation animation) {
+        AddContentDialogFragment.super.dismiss();
+      }
+
+      @Override
+      public void onAnimationRepeat(final Animation animation) {
+      }
+    });
   }
 
   @Override
@@ -111,7 +159,7 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
   @OnClick(R2.id.content_root)
   void onContentRootClick() {
     if (isCancelable()) {  // TODO check setCanceledOnTouchOutside
-      getDialog().cancel();
+      dismiss();
     }
   }
 
@@ -176,6 +224,33 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
           updateActionButton();
         }
       };
+
+
+  //region Animation methods
+
+  private Animation animateOut() {
+    Animation animation = AnimationUtils.loadAnimation(
+        getContext(), android.support.design.R.anim.abc_slide_out_bottom);
+    animation.setDuration(getResources()
+        .getInteger(android.support.design.R.integer.bottom_sheet_slide_duration));
+
+    contentTabs.startAnimation(animation);
+    contentPager.startAnimation(animation);
+    return animation;
+  }
+
+  private Animation animateIn() {
+    Animation animation = AnimationUtils.loadAnimation(
+        getContext(), android.support.design.R.anim.abc_slide_in_bottom);
+    animation.setDuration(getResources()
+        .getInteger(android.support.design.R.integer.bottom_sheet_slide_duration));
+
+    contentTabs.startAnimation(animation);
+    contentPager.startAnimation(animation);
+    return animation;
+  }
+
+  //endregion
 
   private void updateActionButton() {
     if (actionButton == null) {

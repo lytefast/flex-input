@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.RecyclerView;
@@ -360,8 +361,10 @@ public class FlexInputFragment extends Fragment
     hideEmojiTray();
     keyboardManager.requestHide();  // Make sure the keyboard is hidden
 
+
+    FragmentTransaction ft = getChildFragmentManager().beginTransaction();
     final AddContentDialogFragment frag = new AddContentDialogFragment();
-    frag.show(getChildFragmentManager(), ADD_CONTENT_FRAG_TAG);
+    frag.show(ft, ADD_CONTENT_FRAG_TAG);
     getChildFragmentManager().executePendingTransactions();
 
     frag.getDialog().setOnDismissListener(new DialogInterface.OnDismissListener() {
