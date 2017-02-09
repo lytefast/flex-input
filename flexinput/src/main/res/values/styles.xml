@@ -125,7 +125,7 @@
 
     <style name="FlexInput.Items" parent="FlexInput">
         <item name="android:background">@android:color/transparent</item>
-        <item name="android:animateLayoutChanges">true</item>di
+        <item name="android:animateLayoutChanges">true</item>
     </style>
 
     <style name="FlexInput.Items.Base.Photo.Image" parent="FlexInput.Items">
