@@ -42,6 +42,7 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
   private Unbinder unbinder;
   private SelectionAggregator<Attachment> selectionAggregator;
 
+
   @Override
   public Dialog onCreateDialog(final Bundle savedInstanceState) {
     AppCompatDialog dialog = new AppCompatDialog(getContext(), R.style.FlexInput_DialogWhenLarge);
@@ -56,8 +57,10 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
     View root = inflater.inflate(R.layout.dialog_add_content_pager_with_fab, container, false);
     this.unbinder = ButterKnife.bind(this, root);
 
-    if (getParentFragment() instanceof FlexInputFragment) {
-      final FlexInputFragment flexInputFragment = (FlexInputFragment) getParentFragment();
+    Fragment parentFragment = getParentFragment();
+    if (parentFragment instanceof FlexInputFragment) {
+      final FlexInputFragment flexInputFragment = (FlexInputFragment) parentFragment;
+      setTargetFragment(flexInputFragment, 0 /* result code unused */);
       initContentPages(
           new AddContentPagerAdapter(getChildFragmentManager(), flexInputFragment.getContentPages()));
 
@@ -88,6 +91,12 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
       selectionAggregator.removeItemSelectionListener(itemSelectionListener);
     }
     super.onDestroyView();
+  }
+
+  @Override
+  public void onSaveInstanceState(final Bundle outState) {
+    setTargetFragment(null, -1);
+    super.onSaveInstanceState(outState);
   }
 
   @Override
