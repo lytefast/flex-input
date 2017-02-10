@@ -77,18 +77,14 @@ public class CameraFragment extends PermissionsFragment {
   private File photoFile;
 
 
+  @Nullable
   @Override
-  public void onCreate(@Nullable final Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+  public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable final Bundle savedInstanceState) {
     final Fragment targetFragment = getParentFragment().getTargetFragment();
     if (targetFragment instanceof FlexInputCoordinator) {
       this.flexInputCoordinator = (FlexInputCoordinator) targetFragment;
     }
-  }
 
-  @Nullable
-  @Override
-  public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable final Bundle savedInstanceState) {
     View rootView = inflater.inflate(R.layout.fragment_camera, container, false);
     unbinder = ButterKnife.bind(this, rootView);
 
