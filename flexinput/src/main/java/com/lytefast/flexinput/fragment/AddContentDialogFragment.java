@@ -48,18 +48,10 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
 
   @Override
   public Dialog onCreateDialog(final Bundle savedInstanceState) {
-    AppCompatDialog dialog = new AppCompatDialog(getContext(), R.style.FlexInput_DialogWhenLarge) {
-      @Override
-      public void cancel() {
-        super.cancel();
-        AddContentDialogFragment.this.dismiss();
-      }
-    };
-
+    AppCompatDialog dialog = new AppCompatDialog(getContext(), R.style.FlexInput_DialogWhenLarge);
     dialog.supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
     dialog.getWindow()
         .setWindowAnimations(android.support.design.R.style.Animation_AppCompat_Dialog);
-
     return dialog;
   }
 
@@ -80,24 +72,6 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
   }
 
   @Override
-  public void dismiss() {
-    animateOut().setAnimationListener(new Animation.AnimationListener() {
-      @Override
-      public void onAnimationStart(final Animation animation) {
-      }
-
-      @Override
-      public void onAnimationEnd(final Animation animation) {
-        AddContentDialogFragment.super.dismiss();
-      }
-
-      @Override
-      public void onAnimationRepeat(final Animation animation) {
-      }
-    });
-  }
-
-  @Override
   public View onCreateView(final LayoutInflater inflater,
                            @Nullable final ViewGroup container,
                            @Nullable final Bundle savedInstanceState) {
@@ -114,7 +88,7 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
       actionButton.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(final View v) {
-          dismiss();
+          dismissWithAnimation();
           flexInputFragment.onSend();
         }
       });
@@ -146,10 +120,27 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
     super.onSaveInstanceState(outState);
   }
 
+  public void dismissWithAnimation() {
+    animateOut().setAnimationListener(new Animation.AnimationListener() {
+      @Override
+      public void onAnimationStart(final Animation animation) {
+      }
+
+      @Override
+      public void onAnimationEnd(final Animation animation) {
+        dismiss();
+      }
+
+      @Override
+      public void onAnimationRepeat(final Animation animation) {
+      }
+    });
+  }
+
   @OnClick(R2.id.content_root)
   void onContentRootClick() {
     if (isCancelable()) {  // TODO check setCanceledOnTouchOutside
-      dismiss();
+      dismissWithAnimation();
     }
   }
 
@@ -169,7 +160,7 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
       public void onTabSelected(final TabLayout.Tab tab) {
         int tabPosition = tab.getPosition();
         if (tabPosition == 0) {
-          dismiss();
+          dismissWithAnimation();
           return;
         }
         contentPager.setCurrentItem(tabPosition - 1);

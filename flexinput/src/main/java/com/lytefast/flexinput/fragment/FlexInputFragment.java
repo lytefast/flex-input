@@ -362,7 +362,6 @@ public class FlexInputFragment extends Fragment
     hideEmojiTray();
     keyboardManager.requestHide();  // Make sure the keyboard is hidden
 
-
     FragmentTransaction ft = getChildFragmentManager().beginTransaction();
     final AddContentDialogFragment frag = new AddContentDialogFragment();
     frag.show(ft, ADD_CONTENT_FRAG_TAG);
@@ -371,6 +370,7 @@ public class FlexInputFragment extends Fragment
     frag.getDialog().setOnDismissListener(new DialogInterface.OnDismissListener() {
       @Override
       public void onDismiss(final DialogInterface dialog) {
+        frag.dismiss();
         if (!FlexInputFragment.this.isAdded() || FlexInputFragment.this.isHidden()) {
           return;  // Nothing to do
         }
