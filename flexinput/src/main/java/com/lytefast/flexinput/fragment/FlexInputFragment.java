@@ -21,6 +21,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -371,9 +372,9 @@ public class FlexInputFragment extends Fragment
       @Override
       public void onDismiss(final DialogInterface dialog) {
         keyboardManager.requestDisplay();
+        updateAttachmentPreviewContainer();
       }
     });
-    updateAttachmentPreviewContainer();
   }
 
   @OnTextChanged(value = R2.id.text_input, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
@@ -412,20 +413,21 @@ public class FlexInputFragment extends Fragment
 
   @Override
   public void addExternalAttachment(final Attachment attachment) {
+    final DialogFragment dialogFragment =
+        (DialogFragment) getChildFragmentManager().findFragmentByTag(ADD_CONTENT_FRAG_TAG);
+
     attachmentPreviewList.post(new Runnable() {
       @Override
       public void run() {
+        if (dialogFragment != null) {
+          dialogFragment.dismiss();
+        }
+
         // Create a temporary SelectionCoordinator to add attachment
         SelectionCoordinator<Attachment> coord = new SelectionCoordinator<>();
         attachmentPreviewAdapter.getSelectionAggregator().registerSelectionCoordinator(coord);
         coord.selectItem(attachment, 0);
         coord.close();
-
-        DialogFragment dialogFragment =
-            (DialogFragment) getChildFragmentManager().findFragmentByTag(ADD_CONTENT_FRAG_TAG);
-        if (dialogFragment != null) {
-          dialogFragment.dismiss();
-        }
       }
     });
   }

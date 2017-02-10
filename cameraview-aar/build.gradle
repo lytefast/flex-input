@@ -1,2 +1,2 @@
 configurations.maybeCreate("default")
-artifacts.add("default", file('cameraview-@a9d1eb9.aar'))
+artifacts.add("default", file('cameraview-patched.aar'))
