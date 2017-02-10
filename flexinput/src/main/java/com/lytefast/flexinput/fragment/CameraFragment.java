@@ -45,8 +45,10 @@ import butterknife.Unbinder;
  * @author Sam Shih
  */
 public class CameraFragment extends PermissionsFragment {
-  private static final String[] REQUIRED_PERMISSIONS =
-      {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
+  private static final String[] REQUIRED_PERMISSIONS = {
+      Manifest.permission.WRITE_EXTERNAL_STORAGE,
+      Manifest.permission.READ_EXTERNAL_STORAGE,
+      Manifest.permission.CAMERA};
 
   private static final String TAG = CameraFragment.class.getCanonicalName();
 
@@ -152,7 +154,7 @@ public class CameraFragment extends PermissionsFragment {
 
     if (takePictureIntent.resolveActivity(getContext().getPackageManager()) != null) {
       grantWriteAccessToURI(getContext(), takePictureIntent, photoUri);
-      getParentFragment().startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+      startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
       // TODO need to handle the result: 1) save thumbnail, 2) call #addToMediaStore
     }
   }

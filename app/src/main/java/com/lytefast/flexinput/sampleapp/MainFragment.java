@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -81,7 +82,11 @@ public class MainFragment extends Fragment {
         .setKeyboardManager(new KeyboardManager() {
           @Override
           public void requestDisplay() {
-            getActivity().runOnUiThread(new Runnable() {
+            FragmentActivity activity = getActivity();
+            if (activity == null) {
+              return;
+            }
+            activity.runOnUiThread(new Runnable() {
               @Override
               public void run() {
                 flexInput.requestFocus();
