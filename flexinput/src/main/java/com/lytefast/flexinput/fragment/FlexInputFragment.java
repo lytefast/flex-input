@@ -371,6 +371,9 @@ public class FlexInputFragment extends Fragment
     frag.getDialog().setOnDismissListener(new DialogInterface.OnDismissListener() {
       @Override
       public void onDismiss(final DialogInterface dialog) {
+        if (!FlexInputFragment.this.isAdded() || FlexInputFragment.this.isHidden()) {
+          return;  // Nothing to do
+        }
         keyboardManager.requestDisplay();
         updateAttachmentPreviewContainer();
       }

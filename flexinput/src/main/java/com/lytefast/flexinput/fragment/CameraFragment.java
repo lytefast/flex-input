@@ -11,14 +11,16 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.cameraview.CameraView;
@@ -51,12 +53,18 @@ public class CameraFragment extends PermissionsFragment {
       Manifest.permission.READ_EXTERNAL_STORAGE,
       Manifest.permission.CAMERA};
 
+  @CameraView.Flash
+  private static final int[] FLASH_STATE_CYCLE_LIST = {
+      CameraView.FLASH_AUTO,
+      CameraView.FLASH_ON,
+      CameraView.FLASH_OFF};
+
   private static final String TAG = CameraFragment.class.getCanonicalName();
 
   public static final int REQUEST_IMAGE_CAPTURE = 4567;
 
   @BindView(R2.id.camera_view) CameraView cameraView;
-  @BindView(R2.id.camera_action_container) View cameraActionContainer;
+  @BindView(R2.id.camera_container) View cameraContainer;
   @BindView(R2.id.permissions_container) View permissionsContainer;
   private Unbinder unbinder;
 
@@ -87,7 +95,6 @@ public class CameraFragment extends PermissionsFragment {
     if (isBlacklistedDevice()) {
       ButterKnife.findById(rootView, R.id.launch_camera_btn).setVisibility(View.GONE);
     }
-
     cameraView.addCallback(cameraCallback);
     return rootView;
   }
@@ -98,11 +105,11 @@ public class CameraFragment extends PermissionsFragment {
 
     if (!getContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)
         || !hasPermissions(REQUIRED_PERMISSIONS)) {
-      cameraActionContainer.setVisibility(View.GONE);
+      cameraContainer.setVisibility(View.GONE);
       permissionsContainer.setVisibility(View.VISIBLE);
       return;  // No camera detected. just chill
     }
-    cameraActionContainer.setVisibility(View.VISIBLE);
+    cameraContainer.setVisibility(View.VISIBLE);
     permissionsContainer.setVisibility(View.GONE);
     tryStartCamera();
   }
@@ -124,6 +131,9 @@ public class CameraFragment extends PermissionsFragment {
         Log.e(TAG, "Camera could not be loaded", e);
       }
     }
+
+    ImageView flashBtn = ButterKnife.findById(cameraContainer, R.id.camera_flash_btn);
+    setFlash(flashBtn, CameraView.FLASH_AUTO);
   }
 
   @Override
@@ -155,6 +165,21 @@ public class CameraFragment extends PermissionsFragment {
       public void denied() {
       }
     }, REQUIRED_PERMISSIONS);
+  }
+
+  @OnClick(R2.id.camera_flash_btn)
+  void onCameraFlashClick(ImageView flashBtn) {
+    final int currentFlashState = cameraView.getFlash();
+    int currentStateIndex = -1;
+    for (int i = 0; i < FLASH_STATE_CYCLE_LIST.length; i++) {
+      if (currentFlashState == FLASH_STATE_CYCLE_LIST[i]) {
+        currentStateIndex = i;
+        break;
+      }
+    }
+
+    final int newStateIndex = (currentStateIndex + 1) % FLASH_STATE_CYCLE_LIST.length;
+    setFlash(flashBtn, FLASH_STATE_CYCLE_LIST[newStateIndex]);
   }
 
   @OnClick(R2.id.take_photo_btn)
@@ -241,6 +266,33 @@ public class CameraFragment extends PermissionsFragment {
           });
         }
   };
+
+  private void setFlash(final ImageView btn, @CameraView.Flash final int newFlashState) {
+    if (cameraView.getFlash() == newFlashState) {
+      return;
+    }
+
+    @DrawableRes final int flashImage;
+    @StringRes final int flashMsg;
+    switch(newFlashState) {
+      case CameraView.FLASH_ON:
+        flashMsg = R.string.flash_on;
+        flashImage = R.drawable.ic_flash_on_24dp;
+        break;
+      case CameraView.FLASH_OFF:
+        flashMsg = R.string.flash_off;
+        flashImage = R.drawable.ic_flash_off_24dp;
+        break;
+      default:
+        flashMsg = R.string.flash_auto;
+        flashImage = R.drawable.ic_flash_auto_24dp;
+        break;
+    }
+
+    cameraView.setFlash(newFlashState);
+    Toast.makeText(getContext(), flashMsg, Toast.LENGTH_SHORT).show();
+    btn.setImageResource(flashImage);
+  }
 
   private void addToMediaStore(final File photo) {
     Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(photo));

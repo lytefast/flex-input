@@ -6,38 +6,39 @@
     android:layout_height="match_parent"
     tools:background="@android:color/black">
 
-    <com.google.android.cameraview.CameraView
-        android:id="@+id/camera_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"/>
-
     <RelativeLayout
-        android:id="@+id/camera_action_container"
-        style="@style/FlexInput.Camera.Controller"
+        android:id="@+id/camera_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/launch_camera_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:src="@drawable/ic_launch_24dp"
-            android:tint="@android:color/white"/>
+        android:layout_height="match_parent">
+        <com.google.android.cameraview.CameraView
+            android:id="@+id/camera_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"/>
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/camera_flash_btn"
+            style="@style/FlexInput.Input.Button.Camera.Flash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <android.support.v7.widget.AppCompatImageView
+            style="@style/FlexInput.Input.Button.Camera.Capture"
             android:id="@+id/take_photo_btn"
             android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_centerInParent="true"
-            android:src="@drawable/ic_take_photo" />
+            android:layout_height="56dp"/>
+
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/launch_camera_btn"
+            style="@style/FlexInput.Input.Button.Camera.Launcher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
     </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/permissions_container"
-        style="@style/FlexInput.Camera.Controller"
+        style="@style/FlexInput.AddContent.Permissions"
         android:orientation="vertical"
         android:gravity="center"
         android:layout_width="match_parent"
