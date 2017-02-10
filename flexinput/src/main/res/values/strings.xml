@@ -15,4 +15,8 @@
     <string name="camera_permission_denied_msg">Camera permissions required</string>
     <string name="camera_intent_result_error">Camera result invalid</string>
     <string name="files_permission_reason_msg">Storage permissions needed to show files</string>
+
+    <string name="flash_auto">Auto Flash</string>
+    <string name="flash_on">Flash on</string>
+    <string name="flash_off">Flash off</string>
 </resources>

@@ -103,6 +103,14 @@
     </style>
     <style name="FlexInput.AddContent.Page" parent="FlexInput.AddContent.Base.Page"/>
 
+    <style name="FlexInput.AddContent.Permissions" parent="FlexInput.AddContent">
+        <item name="android:layout_gravity">bottom|center_horizontal</item>
+        <item name="layout_anchorGravity">bottom|center_horizontal</item>
+        <item name="android:layout_marginBottom">@dimen/add_content_viewpager_bottom_margin</item>
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_marginRight">8dp</item>
+    </style>
+
     <!-- Provided to allow simple overrides -->
     <style name="FlexInput.AddContent.Base.FloatingActionButton" parent="FlexInput.AddContent">
         <item name="android:layout_width">wrap_content</item>
@@ -114,14 +122,33 @@
     </style>
     <style name="FlexInput.AddContent.FloatingActionButton" parent="FlexInput.AddContent.Base.FloatingActionButton"/>
 
-    <style name="FlexInput.Camera.Base.Controller" parent="FlexInput">
-        <item name="android:layout_gravity">bottom|center_horizontal</item>
-        <item name="layout_anchorGravity">bottom|center_horizontal</item>
+    <style name="FlexInput.Input.Button.Camera.Capture" parent="FlexInput.Input.Button">
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_centerHorizontal">true</item>
         <item name="android:layout_marginBottom">@dimen/add_content_viewpager_bottom_margin</item>
-        <item name="android:layout_marginLeft">8dp</item>
-        <item name="android:layout_marginRight">8dp</item>
+        <item name="android:src">@drawable/ic_take_photo</item>
+        <item name="android:tint">@null</item>
     </style>
-    <style name="FlexInput.Camera.Controller" parent="FlexInput.Camera.Base.Controller"/>
+
+    <style name="FlexInput.Input.Button.Camera.Launcher" parent="FlexInput.Input.Button">
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_alignParentEnd" tools:targetApi="jelly_bean_mr1">true</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_marginBottom">@dimen/add_content_viewpager_bottom_margin</item>
+        <item name="android:layout_marginEnd" tools:targetApi="jelly_bean_mr1">@dimen/margin</item>
+        <item name="android:layout_marginRight">@dimen/margin</item>
+        <item name="android:src">@drawable/ic_launch_24dp</item>
+        <item name="android:tint">@android:color/white</item>
+    </style>
+
+    <style name="FlexInput.Input.Button.Camera.Flash" parent="FlexInput.Input.Button">
+        <item name="android:layout_alignParentTop">true</item>
+        <item name="android:layout_alignParentStart" tools:targetApi="jelly_bean_mr1">true</item>
+        <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:layout_margin">@dimen/margin</item>
+        <item name="android:src">@drawable/ic_flash_auto_24dp</item>
+        <item name="android:tint">@android:color/white</item>
+    </style>
 
     <style name="FlexInput.Items" parent="FlexInput">
         <item name="android:background">@android:color/transparent</item>
