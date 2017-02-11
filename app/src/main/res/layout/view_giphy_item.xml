@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:padding="4dp"
+              android:gravity="center"
+              android:layout_width="100dp"
+              android:layout_height="100dp">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/gif_iv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:placeholderImage="@drawable/ic_image_24dp"/>
+
+</LinearLayout>

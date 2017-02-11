@@ -1,8 +1,9 @@
-package com.lytefast.flexinput.sampleapp;
+package com.lytefast.flexinput.sampleapp.fragment;
 
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -15,12 +16,22 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
 import com.lytefast.flexinput.InputListener;
+import com.lytefast.flexinput.adapters.AddContentPagerAdapter;
 import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
+import com.lytefast.flexinput.fragment.CameraFragment;
+import com.lytefast.flexinput.fragment.FilesFragment;
 import com.lytefast.flexinput.fragment.FlexInputFragment;
+import com.lytefast.flexinput.fragment.PhotosFragment;
 import com.lytefast.flexinput.managers.KeyboardManager;
 import com.lytefast.flexinput.managers.SimpleFileManager;
 import com.lytefast.flexinput.model.Attachment;
+import com.lytefast.flexinput.sampleapp.MessageAdapter;
+import com.lytefast.flexinput.sampleapp.R;
+import com.lytefast.flexinput.sampleapp.UnicodeEmojiCategoryPagerFragment;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -109,6 +120,29 @@ public class MainFragment extends Fragment {
     flexInput
         // Can be extended to provide custom previews (e.g. larger preview images, onclick) etc.
         .setAttachmentPreviewAdapter(new AttachmentPreviewAdapter(getContext().getContentResolver()));
+
+    AddContentPagerAdapter.PageSupplier[] newPages = addPagesToDefault(
+        new AddContentPagerAdapter.PageSupplier(R.drawable.ic_gif_24dp, R.string.attachment_gifs) {
+          @Override
+          public Fragment createFragment() {
+            return new GiphyFragment();
+          }
+        });
+    flexInput.setContentPages(newPages);
+  }
+
+  @NonNull
+  private AddContentPagerAdapter.PageSupplier[] addPagesToDefault(final AddContentPagerAdapter.PageSupplier... newPages) {
+    List<AddContentPagerAdapter.PageSupplier> pages = new ArrayList<>();
+    pages.addAll(Arrays.asList(AddContentPagerAdapter.createDefaultPages()));
+
+    for (AddContentPagerAdapter.PageSupplier page : newPages) {
+      pages.add(pages.size() - 1, page);  // Add before camera
+    }
+
+    AddContentPagerAdapter.PageSupplier[] allPages = new AddContentPagerAdapter.PageSupplier[pages.size()];
+    pages.toArray(allPages);
+    return allPages;
   }
 
   private void tryRiskyFeatures() {

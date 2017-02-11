@@ -20,7 +20,7 @@ public class PermissionsFragment extends Fragment {
   private static final int PERMISSIONS_REQUEST_CODE = 2525;
 
 
-  interface PermissionsResultCallback {
+  public interface PermissionsResultCallback {
     void granted();
     void denied();
   }
