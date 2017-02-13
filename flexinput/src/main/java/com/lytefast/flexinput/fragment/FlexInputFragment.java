@@ -276,6 +276,7 @@ public class FlexInputFragment extends Fragment
    */
   public FlexInputFragment setEditTextComponent(final AppCompatEditText customEditText) {
     customEditText.setId(R.id.text_input);
+    customEditText.setFocusableInTouchMode(true);
 
     inputContainer.post(new Runnable() {
       @Override
