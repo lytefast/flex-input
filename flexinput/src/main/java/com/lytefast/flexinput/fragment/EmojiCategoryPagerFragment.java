@@ -35,24 +35,27 @@ import butterknife.Unbinder;
  *
  * @author Sam Shih
  */
-
 public abstract class EmojiCategoryPagerFragment extends Fragment {
 
-  @BindView(R2.id.page_tabs) TabLayout pageTabs;
-  @BindView(R2.id.view_pager) ViewPager viewPager;
+  @BindView(R2.id.page_tabs) protected TabLayout pageTabs;
+  @BindView(R2.id.view_pager) protected ViewPager viewPager;
   private Unbinder unbinder;
 
   @Nullable
   @Override
   public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container,
                            @Nullable final Bundle savedInstanceState) {
-    View rootView = inflater.inflate(R.layout.fragment_paged_grid, container, false);
+    View rootView = inflateView(inflater, container);
     unbinder = ButterKnife.bind(this, rootView);
 
     pageTabs.setupWithViewPager(viewPager);
 
     initFrom(buildEmojiCategoryData());
     return rootView;
+  }
+
+  protected View inflateView(final LayoutInflater inflater, final @Nullable ViewGroup container) {
+    return inflater.inflate(R.layout.fragment_paged_grid, container, false);
   }
 
   /**
@@ -82,7 +85,7 @@ public abstract class EmojiCategoryPagerFragment extends Fragment {
     setIcons(emojiCategories);
   }
 
-  private void setIcons(final List<Emoji.EmojiCategory> emojiCategories) {
+  protected void setIcons(final List<Emoji.EmojiCategory> emojiCategories) {
     ColorStateList iconColors =
         AppCompatResources.getColorStateList(getContext(), R.color.tab_color_selector);
 
