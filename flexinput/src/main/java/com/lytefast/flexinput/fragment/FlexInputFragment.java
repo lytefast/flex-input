@@ -21,7 +21,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -88,8 +87,10 @@ public class FlexInputFragment extends Fragment
   protected AttachmentPreviewAdapter attachmentPreviewAdapter;
   protected AddContentPagerAdapter.PageSupplier[] pageSuppliers;
 
-  public FlexInputFragment() {}
+  private boolean isEnabled = true;
 
+
+  public FlexInputFragment() {}
 
   //region Initialization Methods
 
@@ -199,7 +200,7 @@ public class FlexInputFragment extends Fragment
 
   //endregion
 
-  //region Functional Setters
+  //region Functional Getters/Setters
   /**
    * Set the custom emoji {@link Fragment} for the input.
    *
@@ -246,12 +247,12 @@ public class FlexInputFragment extends Fragment
     this.fileManager = fileManager;
     return this;
   }
-  //endregion
 
   public FlexInputFragment setKeyboardManager(KeyboardManager keyboardManager) {
     this.keyboardManager = keyboardManager;
     return this;
   }
+
 
   /**
    * Set the add content pages. If no page suppliers are specified, the default set of pages is used.
@@ -298,6 +299,26 @@ public class FlexInputFragment extends Fragment
     });
     return this;
   }
+
+  public FlexInputFragment setEnabled(final boolean isEnabled) {
+    this.isEnabled = isEnabled;
+
+    for (int i = 0; i < inputContainer.getChildCount(); i++) {
+      View child = inputContainer.getChildAt(i);
+      child.setEnabled(isEnabled);
+    }
+
+    if (isEnabled) {
+      updateSendBtnEnableState(textEt.getText());
+    }
+    return this;
+  }
+
+  public boolean isEnabled() {
+    return this.isEnabled;
+  }
+
+  //endregion
 
   public void requestFocus() {
     FragmentActivity activity = getActivity();
@@ -405,7 +426,8 @@ public class FlexInputFragment extends Fragment
   }
 
   private void updateSendBtnEnableState(final Editable message) {
-    sendBtn.setEnabled(message.length() > 0 || attachmentPreviewAdapter.getItemCount() > 0);
+    sendBtn.setEnabled(isEnabled
+        && (message.length() > 0 || attachmentPreviewAdapter.getItemCount() > 0));
   }
 
   private void updateAttachmentPreviewContainer() {
