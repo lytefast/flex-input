@@ -385,14 +385,16 @@ public class FlexInputFragment extends Fragment
     keyboardManager.requestHide();  // Make sure the keyboard is hidden
 
     FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-    final AddContentDialogFragment frag = new AddContentDialogFragment();
-    frag.show(ft, ADD_CONTENT_FRAG_TAG);
+    final AddContentDialogFragment dialogFrag = new AddContentDialogFragment();
+    dialogFrag.show(ft, ADD_CONTENT_FRAG_TAG);
     getChildFragmentManager().executePendingTransactions();
 
-    frag.getDialog().setOnDismissListener(new DialogInterface.OnDismissListener() {
+    dialogFrag.getDialog().setOnDismissListener(new DialogInterface.OnDismissListener() {
       @Override
       public void onDismiss(final DialogInterface dialog) {
-        frag.dismiss();
+        if (dialogFrag.isAdded() && !dialogFrag.isDetached()) {
+          dialogFrag.dismiss();
+        }
         if (!FlexInputFragment.this.isAdded() || FlexInputFragment.this.isHidden()) {
           return;  // Nothing to do
         }
@@ -445,7 +447,7 @@ public class FlexInputFragment extends Fragment
     attachmentPreviewList.post(new Runnable() {
       @Override
       public void run() {
-        if (dialogFragment != null) {
+        if (dialogFragment != null && dialogFragment.isAdded() && !dialogFragment.isDetached()) {
           dialogFragment.dismiss();
         }
 
