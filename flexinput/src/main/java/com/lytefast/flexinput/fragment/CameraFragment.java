@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.DrawableRes;
@@ -88,9 +87,6 @@ public class CameraFragment extends PermissionsFragment {
     View rootView = inflater.inflate(R.layout.fragment_camera, container, false);
     unbinder = ButterKnife.bind(this, rootView);
 
-    if (isBlacklistedDevice()) {
-      ButterKnife.findById(rootView, R.id.launch_camera_btn).setVisibility(View.GONE);
-    }
     cameraView.addCallback(cameraCallback);
     return rootView;
   }
@@ -315,9 +311,5 @@ public class CameraFragment extends PermissionsFragment {
 
       context.grantUriPermission(packageName, uri, mode);
     }
-  }
-
-  private boolean isBlacklistedDevice() {
-    return Build.MODEL.equalsIgnoreCase("Pixel") && Build.MANUFACTURER.equalsIgnoreCase("Google");
   }
 }
