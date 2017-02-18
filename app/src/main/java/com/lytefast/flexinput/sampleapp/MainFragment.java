@@ -132,13 +132,14 @@ public class MainFragment extends Fragment {
    */
   private final InputListener flexInputListener = new InputListener() {
     @Override
-    public void onSend(final Editable data, List<? extends Attachment> attachments) {
+    public boolean onSend(final Editable data, List<? extends Attachment> attachments) {
       msgAdapter.addMessage(data);
 
       for (int i = 0; i < attachments.size(); i++) {
         msgAdapter.addMessage(Editable.Factory.getInstance().newEditable(
             String.format("[%d] Attachment - %s", i, attachments.get(i).getDisplayName())));
       }
+      return true;
     }
   };
 }

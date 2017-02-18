@@ -16,6 +16,8 @@ import java.util.List;
 public interface InputListener {
   /**
    * User has chosen to send the current contents of the {@link FlexInputFragment}
+   *
+   * @return True if the attaachment and data should be cleared. False to keep
    */
-  void onSend(Editable data, List<? extends Attachment> attachments);
+  boolean onSend(Editable data, List<? extends Attachment> attachments);
 }

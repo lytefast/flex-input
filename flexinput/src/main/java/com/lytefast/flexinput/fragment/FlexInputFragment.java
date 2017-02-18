@@ -337,14 +337,17 @@ public class FlexInputFragment extends Fragment
 
   @OnClick(R2.id.send_btn)
   public void onSend() {
-    inputListener.onSend(
+    boolean shouldClean = inputListener.onSend(
         textEt.getText(), attachmentPreviewAdapter.getSelectionAggregator().getAttachments());
-    textEt.setText("");
-    clearAttachments();
+
+    if (shouldClean) {
+      textEt.setText("");
+      clearAttachments();
+    }
   }
 
   @OnClick(R2.id.attachment_clear_btn)
-  void clearAttachments() {
+  public void clearAttachments() {
     attachmentPreviewAdapter.clear();
     attachmentPreviewContainer.setVisibility(View.GONE);
 
