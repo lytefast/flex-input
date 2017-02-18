@@ -4,6 +4,7 @@ import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -159,8 +160,12 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
 
         if (thumbMagic == 0) {
           // Force thumbnail generation
-          MediaStore.Images.Thumbnails.getThumbnail(
-              contentResolver, imageId, MediaStore.Images.Thumbnails.MINI_KIND, null).recycle();
+          final Bitmap genThumb = MediaStore.Images.Thumbnails.getThumbnail(
+              contentResolver, imageId, MediaStore.Images.Thumbnails.MINI_KIND, null);
+          if (genThumb != null) {
+            // this can occur if the image is gone, or there isn't enough memory to process
+            genThumb.recycle();
+          }
         }
 
         c.close();
