@@ -63,6 +63,15 @@
         <item name="android:tint">@android:color/white</item>
     </style>
 
+    <style name="FlexInput.Emoji.Base.Page" parent="FlexInput.Main">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:padding">4dp</item>
+        <item name="android:clipToPadding">false</item>
+    </style>
+    <style name="FlexInput.Emoji.Page" parent="FlexInput.Emoji.Base.Page"/>
+
     <style name="FlexInput.AddContent" parent="FlexInput.Main"/>
 
     <!-- Provided to allow simple overrides -->

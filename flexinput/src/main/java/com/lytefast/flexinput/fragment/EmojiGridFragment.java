@@ -18,8 +18,6 @@ import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.model.Emoji;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 
 /**
@@ -32,7 +30,6 @@ public class EmojiGridFragment extends Fragment {
   public static final String EMOJI_CATEGORY = "emoji_category";
 
   @BindView(R2.id.list) RecyclerView emojiGrid;
-  private Unbinder unbinder;
 
   private Emoji.EmojiCategory emojiCategory;
   private FlexInputFragment flexInputFrag;
@@ -50,9 +47,7 @@ public class EmojiGridFragment extends Fragment {
   @Override
   public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container,
                            @Nullable final Bundle savedInstanceState) {
-
-    View rootView = inflater.inflate(R.layout.fragment_recycler_view, container, false);
-    unbinder = ButterKnife.bind(this, rootView);
+    emojiGrid = new RecyclerView(inflater.getContext(), null, R.style.FlexInput_Emoji_Page);
 
     final int numFittedColumns = calculateNumOfColumns(getResources());
     emojiGrid.setLayoutManager(new GridLayoutManager(getContext(), numFittedColumns));
@@ -62,13 +57,7 @@ public class EmojiGridFragment extends Fragment {
       emojiCategory = savedInstanceState.getParcelable(EMOJI_CATEGORY);
     }
 
-    return rootView;
-  }
-
-  @Override
-  public void onDestroyView() {
-    unbinder.unbind();
-    super.onDestroyView();
+    return emojiGrid;
   }
 
   @Override
