@@ -87,16 +87,16 @@ public class AddContentPagerAdapter extends FragmentPagerAdapter {
 
   public static PageSupplier[] createDefaultPages() {
     return new PageSupplier[]{
-        new PageSupplier(R.drawable.ic_file_24dp, R.string.attachment_files) {
-          @Override
-          public Fragment createFragment() {
-            return new FilesFragment();
-          }
-        },
         new PageSupplier(R.drawable.ic_image_24dp, R.string.attachment_photos) {
           @Override
           public Fragment createFragment() {
             return new PhotosFragment();
+          }
+        },
+        new PageSupplier(R.drawable.ic_file_24dp, R.string.attachment_files) {
+          @Override
+          public Fragment createFragment() {
+            return new FilesFragment();
           }
         },
         new PageSupplier(R.drawable.ic_add_a_photo_24dp, R.string.attachment_camera) {
