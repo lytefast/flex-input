@@ -92,7 +92,7 @@ public class FlexInputFragment extends Fragment
 
   public FlexInputFragment() {}
 
-  //region Initialization Methods
+  //region Lifecycle Methods
 
   @Override
   public void onInflate(final Context context, final AttributeSet attrs, final Bundle savedInstanceState) {
@@ -160,6 +160,13 @@ public class FlexInputFragment extends Fragment
     super.onSaveInstanceState(outState);
     outState.putParcelableArrayList(
         EXTRA_ATTACHMENTS, attachmentPreviewAdapter.getSelectionAggregator().getAttachments());
+  }
+
+  @Override
+  public void onPause() {
+    hideEmojiTray();
+    keyboardManager.requestHide();
+    super.onPause();
   }
 
   @Override
@@ -365,7 +372,6 @@ public class FlexInputFragment extends Fragment
     switch (motionEvent.getAction()) {
       case MotionEvent.ACTION_UP:
         hideEmojiTray();
-        keyboardManager.requestDisplay();
         break;
     }
 
@@ -373,7 +379,7 @@ public class FlexInputFragment extends Fragment
   }
 
   @OnClick(R2.id.emoji_btn)
-  void onEmojiToggle() {
+  public void onEmojiToggle() {
     if (emojiContainer.getVisibility() == View.VISIBLE) {
       hideEmojiTray();
       keyboardManager.requestDisplay();
@@ -414,9 +420,14 @@ public class FlexInputFragment extends Fragment
 
   // endregion
 
-  private void hideEmojiTray() {
+  public boolean hideEmojiTray() {
+    boolean isVisible = emojiContainer.isShown();
+    if (!isVisible) {
+      return false;
+    }
     emojiContainer.setVisibility(View.GONE);
     emojiBtn.setImageResource(R.drawable.ic_insert_emoticon_24dp);
+    return true;
   }
 
   private void showEmojiTray() {

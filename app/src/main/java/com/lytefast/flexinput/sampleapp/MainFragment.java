@@ -122,6 +122,12 @@ public class MainFragment extends Fragment {
   }
 
   @Override
+  public void onResume() {
+    super.onResume();
+    flexInput.requestFocus();
+  }
+
+  @Override
   public void onDestroyView() {
     unbinder.unbind();
     super.onDestroyView();
