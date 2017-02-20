@@ -62,7 +62,8 @@ public class FlexInputFragment extends Fragment
     implements FlexInputCoordinator<Attachment> {
 
   public static final String ADD_CONTENT_FRAG_TAG = "Add Content";
-  public static final String EXTRA_ATTACHMENTS = "Attachments";
+  public static final String EXTRA_ATTACHMENTS = "FlexInput.ATTACHMENTS";
+  public static final String EXTRA_TEXT = "FlexInput.TEXT";
 
   @BindView(R2.id.attachment_preview_container) View attachmentPreviewContainer;
   @BindView(R2.id.main_input_container) LinearLayout inputContainer;
@@ -151,8 +152,18 @@ public class FlexInputFragment extends Fragment
       if (savedAttachments != null && savedAttachments.size() > 0) {
         attachmentPreviewAdapter.getSelectionAggregator().initFrom(savedAttachments);
       }
+
+      String text = savedInstanceState.getString(EXTRA_TEXT);
+      setText(text);
     }
     return root;
+  }
+
+  public void setText(String text) {
+    textEt.setText(text);
+    if (!TextUtils.isEmpty(text)) {
+      textEt.setSelection(text.length());
+    }
   }
 
   @Override
@@ -160,6 +171,7 @@ public class FlexInputFragment extends Fragment
     super.onSaveInstanceState(outState);
     outState.putParcelableArrayList(
         EXTRA_ATTACHMENTS, attachmentPreviewAdapter.getSelectionAggregator().getAttachments());
+    outState.putString(EXTRA_TEXT, textEt.getText().toString());
   }
 
   @Override
@@ -285,6 +297,7 @@ public class FlexInputFragment extends Fragment
   public FlexInputFragment setEditTextComponent(final AppCompatEditText customEditText) {
     customEditText.setId(R.id.text_input);
     customEditText.setFocusableInTouchMode(true);
+    final Editable prevText = textEt.getText();
 
     inputContainer.post(new Runnable() {
       @Override
@@ -300,6 +313,8 @@ public class FlexInputFragment extends Fragment
         // Rebind Butterknife to make sure hooks work
         unbinder.unbind();
         unbinder = ButterKnife.bind(FlexInputFragment.this, getView());
+
+        setText(prevText.toString());
 
         updateSendBtnEnableState(customEditText.getText());
       }
