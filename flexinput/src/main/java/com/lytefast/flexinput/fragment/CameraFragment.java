@@ -111,6 +111,7 @@ public class CameraFragment extends PermissionsFragment {
    * So here, if we fail, just try getting the first front facing camera.
    */
   private void tryStartCamera() {
+    cameraView.stop();
     try {
       cameraView.start();
     } catch (Exception e) {
@@ -207,7 +208,6 @@ public class CameraFragment extends PermissionsFragment {
       if (photoFile != null) {
         photoFile.delete();  // cleanup
       }
-      cameraView.start();
     } else if (photoFile != null) {
       flexInputCoordinator.addExternalAttachment(FileUtils.toAttachment(photoFile));
     }
