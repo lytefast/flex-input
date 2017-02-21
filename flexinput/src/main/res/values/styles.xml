@@ -34,6 +34,13 @@
         <item name="android:showDividers">middle</item>
     </style>
 
+    <style name="FlexInput.Input.Widget">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/input_height</item>
+        <item name="android:layout_margin">@dimen/input_container_margin</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
     <style name="FlexInput.Input">
         <item name="android:background">?selectableItemBackgroundBorderless</item>
     </style>

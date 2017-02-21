@@ -38,11 +38,8 @@
 
     <LinearLayout
         android:id="@+id/main_input_container"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/input_height"
-        android:orientation="horizontal"
-        android:layout_margin="@dimen/input_container_margin"
-        android:gravity="center_vertical">
+        style="@style/FlexInput.Input.Widget"
+        android:orientation="horizontal">
 
         <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/add_btn"
