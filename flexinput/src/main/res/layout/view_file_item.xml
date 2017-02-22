@@ -54,8 +54,8 @@
         android:maxLines="1"/>
 
     <TextView
-        android:id="@+id/file_path_tv"
-        style="@style/FlexInput.Items.File.Path"
+        android:id="@+id/file_subtitle_tv"
+        style="@style/FlexInput.Items.File.Subtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/file_name_tv"

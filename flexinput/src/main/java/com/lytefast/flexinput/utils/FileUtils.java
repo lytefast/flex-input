@@ -25,4 +25,18 @@ public class FileUtils {
     return Uri.parse("file://" + f.getAbsolutePath());
   }
 
+  public static String getFileSize(final File file) {
+    final long sizeInKb = file.length() / 1024;
+    if (sizeInKb < 1024) {
+      return sizeInKb + "KB";
+    }
+
+    final long sizeInMb = sizeInKb / 1024;
+    if (sizeInMb < 1024) {
+      return sizeInMb + "MB";
+    }
+
+    final long sizeInGb = sizeInMb / 1024;
+    return sizeInGb + "GB";
+  }
 }

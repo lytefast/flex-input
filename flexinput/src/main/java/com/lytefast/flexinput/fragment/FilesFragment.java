@@ -3,10 +3,8 @@ package com.lytefast.flexinput.fragment;
 import android.Manifest;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,10 +64,6 @@ public class FilesFragment extends PermissionsFragment {
 
     View view = inflater.inflate(R.layout.fragment_recycler_view, container, false);
     unbinder = ButterKnife.bind(this, view);
-
-    DividerItemDecoration bottomPadding =
-        new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
-    recyclerView.addItemDecoration(bottomPadding);
 
     if (hasPermissions(REQUIRED_PERMISSION)) {
       adapter = new FileListAdapter(getContext().getContentResolver(), selectionCoordinator);

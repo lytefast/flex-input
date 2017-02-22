@@ -95,7 +95,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
     @BindView(R2.id.thumb_iv) SimpleDraweeView thumbIv;
     @BindView(R2.id.type_iv) ImageView typeIv;
     @BindView(R2.id.file_name_tv) TextView fileNameTv;
-    @BindView(R2.id.file_path_tv) TextView filePathTV;
+    @BindView(R2.id.file_subtitle_tv) TextView fileSubtitleTv;
 
     private Attachment<File> attachmentFile = null;
 
@@ -123,7 +123,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
 
       final File file = fileAttachment.getData();
       fileNameTv.setText(file.getName());
-      filePathTV.setText(file.getPath());
+      fileSubtitleTv.setText(FileUtils.getFileSize(file));
 
       // Set defaults
       thumbIv.setImageURI((Uri) null);

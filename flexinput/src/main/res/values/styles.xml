@@ -233,7 +233,7 @@
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="FlexInput.Items.File.Path" parent="FlexInput.Items">
+    <style name="FlexInput.Items.File.Subtitle" parent="FlexInput.Items">
         <item name="android:textSize">10sp</item>
     </style>
 
