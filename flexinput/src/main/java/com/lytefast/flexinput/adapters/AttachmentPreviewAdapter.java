@@ -28,8 +28,6 @@ import com.lytefast.flexinput.utils.SelectionAggregator;
 public class AttachmentPreviewAdapter<T extends Attachment>
     extends RecyclerView.Adapter<AttachmentPreviewAdapter.ViewHolder> {
 
-  public static final String TAG = AttachmentPreviewAdapter.class.getCanonicalName();
-
   private final ContentResolver contentResolver;
 
   protected final SelectionAggregator<T> selectionAggregator;

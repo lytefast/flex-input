@@ -109,17 +109,8 @@ public class SelectionAggregator<T extends Attachment> {
    * @return True if the item was added. False otherwise.
    */
   public boolean toggleItemInternal(final T item) {
-    final int oldIndex = attachments.indexOf(item);
-
-    final boolean wasRemoved = attachments.remove(item);
-
-    if (wasRemoved) {
-      adapter.notifyItemRemoved(oldIndex);
-
-      for (SelectionCoordinator.ItemSelectionListener l : itemSelectionListeners) {
-        l.onItemUnselected(item);
-      }
-    } else {
+    final boolean wasRemoved = removeItem(item);
+    if (!wasRemoved) {
       attachments.add(item);
       final int position = attachments.size() - 1;
       adapter.notifyItemInserted(position);
@@ -129,6 +120,19 @@ public class SelectionAggregator<T extends Attachment> {
       }
     }
 
+    return wasRemoved;
+  }
+
+  private boolean removeItem(final T item) {
+    final int oldIndex = attachments.indexOf(item);
+    final boolean wasRemoved = attachments.remove(item);
+    if (wasRemoved) {
+      adapter.notifyItemRemoved(oldIndex);
+    }
+
+    for (SelectionCoordinator.ItemSelectionListener l : itemSelectionListeners) {
+      l.onItemUnselected(item);
+    }
     return wasRemoved;
   }
 
@@ -144,6 +148,7 @@ public class SelectionAggregator<T extends Attachment> {
     for (SelectionCoordinator<T> coordinator : childSelectionCoordinators) {
       coordinator.unselectItem(item);
     }
+    removeItem(item);
   }
 
   /**
