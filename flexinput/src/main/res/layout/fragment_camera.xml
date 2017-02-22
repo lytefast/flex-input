@@ -36,26 +36,10 @@
 
     </RelativeLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/permissions_container"
         style="@style/FlexInput.AddContent.Permissions"
-        android:orientation="vertical"
-        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone">
-        <TextView
-            style="@style/TextAppearance.AppCompat.Title"
-            android:gravity="center"
-            android:clickable="false"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/camera_permission_denied_msg"/>
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/permissions_req_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/request_permission_msg"/>
-    </LinearLayout>
+        android:visibility="gone"/>
 </android.support.design.widget.CoordinatorLayout>

@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -64,7 +65,7 @@ public class CameraFragment extends PermissionsFragment {
 
   @BindView(R2.id.camera_view) CameraView cameraView;
   @BindView(R2.id.camera_container) View cameraContainer;
-  @BindView(R2.id.permissions_container) View permissionsContainer;
+  @BindView(R2.id.permissions_container) FrameLayout permissionsContainer;
   private Unbinder unbinder;
 
   private FlexInputCoordinator flexInputCoordinator;
@@ -99,11 +100,26 @@ public class CameraFragment extends PermissionsFragment {
         || !hasPermissions(REQUIRED_PERMISSIONS)) {
       cameraContainer.setVisibility(View.GONE);
       permissionsContainer.setVisibility(View.VISIBLE);
+
+      initPermissionsView(permissionsContainer);
+
       return;  // No camera detected. just chill
     }
     cameraContainer.setVisibility(View.VISIBLE);
     permissionsContainer.setVisibility(View.GONE);
     tryStartCamera();
+  }
+
+  protected void initPermissionsView(final FrameLayout permissionsContainer) {
+    View view = LayoutInflater.from(permissionsContainer.getContext())
+        .inflate(R.layout.view_camera_permissions, permissionsContainer, true);
+    View reqBtn = ButterKnife.findById(view, R.id.permissions_req_btn);
+    reqBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(final View v) {
+        requestPermissionClick();
+      }
+    });
   }
 
   /**
@@ -141,8 +157,7 @@ public class CameraFragment extends PermissionsFragment {
     super.onDestroyView();
   }
 
-  @OnClick(R2.id.permissions_req_btn)
-  void requestPermissionClick() {
+  protected void requestPermissionClick() {
     requestPermissions(new PermissionsResultCallback() {
       @Override
       public void granted() {
