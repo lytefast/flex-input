@@ -1,6 +1,8 @@
 package com.lytefast.flexinput.fragment;
 
+import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Toast;
 
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
@@ -38,6 +41,7 @@ import butterknife.Unbinder;
  */
 public class AddContentDialogFragment extends AppCompatDialogFragment {
 
+  public static final int REQUEST_FILES = 5968;
   @BindView(R2.id.content_pager) ViewPager contentPager;
   @BindView(R2.id.content_tabs) TabLayout contentTabs;
   @BindView(R2.id.action_btn) FloatingActionButton actionButton;
@@ -205,6 +209,28 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
         }
       };
 
+  @OnClick(R2.id.launch_btn)
+  public void launchFileChooser() {
+    Intent intent = new Intent();
+    intent.setAction(Intent.ACTION_GET_CONTENT);
+    intent.setType("*/*");
+    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+    startActivityForResult(intent, REQUEST_FILES);
+  }
+
+  @Override
+  public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (REQUEST_FILES != requestCode) {
+      return;
+    }
+    if (Activity.RESULT_OK != resultCode || data.getClipData().getItemCount() == 0) {
+      Toast.makeText(getContext(), "No files selected", Toast.LENGTH_SHORT).show();
+      return;
+    }
+//    ((FlexInputCoordinator<Attachment<File>>) getTargetFragment())
+//        .addExternalAttachment(FileUtils.toAttachment(photoFile));
+  }
 
   //region Animation methods
 
