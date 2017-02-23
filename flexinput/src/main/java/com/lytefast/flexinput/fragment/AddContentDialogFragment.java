@@ -114,12 +114,6 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
     super.onDestroyView();
   }
 
-  @Override
-  public void onSaveInstanceState(final Bundle outState) {
-    setTargetFragment(null, -1);
-    super.onSaveInstanceState(outState);
-  }
-
   public void dismissWithAnimation() {
     animateOut().setAnimationListener(new Animation.AnimationListener() {
       @Override
