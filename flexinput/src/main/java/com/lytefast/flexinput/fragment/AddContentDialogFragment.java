@@ -232,8 +232,8 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
         .setType("*/*")
         .putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
 
-    Intent chooserIntent = Intent.createChooser(sysBrowserIntent, "Choose an app")
-        .putExtra(Intent.EXTRA_INITIAL_INTENTS, new Parcelable[]{imagePickerIntent});
+    Intent chooserIntent = Intent.createChooser(imagePickerIntent, "")
+        .putExtra(Intent.EXTRA_INITIAL_INTENTS, new Parcelable[]{sysBrowserIntent});
     startActivityForResult(chooserIntent, REQUEST_FILES);
   }
 
