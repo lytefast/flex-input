@@ -2,8 +2,14 @@ package com.lytefast.flexinput.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ClipData;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -21,6 +27,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
+import com.lytefast.flexinput.FlexInputCoordinator;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.adapters.AddContentPagerAdapter;
@@ -211,11 +218,23 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
 
   @OnClick(R2.id.launch_btn)
   public void launchFileChooser() {
-    Intent intent = new Intent();
-    intent.setAction(Intent.ACTION_GET_CONTENT);
-    intent.setType("*/*");
-    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-    startActivityForResult(intent, REQUEST_FILES);
+    final Intent imagePickerIntent = new Intent(Intent.ACTION_PICK)
+        .setType("image/*")
+        .addCategory(Intent.CATEGORY_OPENABLE)
+        .putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+
+    final Intent sysBrowserIntent = new Intent(
+        (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
+            ? Intent.ACTION_GET_CONTENT : Intent.ACTION_OPEN_DOCUMENT
+    );
+    sysBrowserIntent
+        .addCategory(Intent.CATEGORY_OPENABLE)
+        .setType("*/*")
+        .putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+
+    Intent chooserIntent = Intent.createChooser(sysBrowserIntent, "Choose an app")
+        .putExtra(Intent.EXTRA_INITIAL_INTENTS, new Parcelable[]{imagePickerIntent});
+    startActivityForResult(chooserIntent, REQUEST_FILES);
   }
 
   @Override
@@ -224,12 +243,33 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
     if (REQUEST_FILES != requestCode) {
       return;
     }
-    if (Activity.RESULT_OK != resultCode || data.getClipData().getItemCount() == 0) {
-      Toast.makeText(getContext(), "No files selected", Toast.LENGTH_SHORT).show();
+
+    if (Activity.RESULT_OK != resultCode) {
+      Toast.makeText(getContext(), "Error loading files", Toast.LENGTH_SHORT).show();
       return;
     }
-//    ((FlexInputCoordinator<Attachment<File>>) getTargetFragment())
-//        .addExternalAttachment(FileUtils.toAttachment(photoFile));
+
+    ClipData clipData = data.getClipData();
+
+    FlexInputCoordinator<Attachment> flexInputCoordinator = (FlexInputCoordinator<Attachment>) getTargetFragment();
+    if (clipData == null) {
+      Uri uri = data.getData();
+      flexInputCoordinator.addExternalAttachment(toAttachment(uri));
+    } else {
+      for (int i = 0; i < clipData.getItemCount(); i++) {
+        ClipData.Item item = clipData.getItemAt(i);
+        flexInputCoordinator.addExternalAttachment(toAttachment(item.getUri()));
+      }
+    }
+  }
+
+  @NonNull
+  private Attachment toAttachment(final Uri uri) {
+      Cursor returnCursor =
+          getContext().getContentResolver().query(uri, null, null, null, null);
+      int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+      returnCursor.moveToFirst();
+    return new Attachment(uri.hashCode(), uri, returnCursor.getString(nameIndex), null);
   }
 
   //region Animation methods
