@@ -37,4 +37,19 @@
         style="@style/FlexInput.AddContent.FloatingActionButton"
         app:layout_anchor="@id/content_pager"/>
 
+    <Space
+        android:id="@+id/fab_spacer"
+        android:layout_width="wrap_content"
+        android:layout_height="4dp"
+        android:layout_gravity="top|end|right"
+        app:layout_anchorGravity="top|end|right"
+        app:layout_anchor="@id/action_btn"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/launch_btn"
+        style="@style/FlexInput.AddContent.FloatingActionButton.Launcher"
+        android:layout_gravity="top|end|right"
+        app:layout_anchorGravity="top|end|right"
+        app:layout_anchor="@id/fab_spacer"/>
+
 </android.support.design.widget.CoordinatorLayout>

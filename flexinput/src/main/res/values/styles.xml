@@ -134,9 +134,17 @@
         <item name="android:src">@drawable/ic_send_24dp</item>
         <item name="android:elevation" tools:targetApi="lollipop">8dp</item>
         <item name="layout_anchorGravity">top|right|end</item>
-        <item name="android:layout_margin">10dp</item>
+        <item name="android:tint">@android:color/white</item>
+        <item name="android:tintMode" tools:targetApi="lollipop">src_atop</item>
+        <item name="android:layout_marginRight">16dp</item>
     </style>
     <style name="FlexInput.AddContent.FloatingActionButton" parent="FlexInput.AddContent.Base.FloatingActionButton"/>
+
+    <style name="FlexInput.AddContent.FloatingActionButton.Launcher" parent="FlexInput.AddContent.Base.FloatingActionButton">
+        <item name="android:src">@drawable/ic_launch_24dp</item>
+        <item name="fabSize">mini</item>
+        <item name="backgroundTint">@android:color/darker_gray</item>
+    </style>
 
     <style name="FlexInput.Input.Button.Camera.Capture" parent="FlexInput.Input.Button">
         <item name="android:layout_alignParentBottom">true</item>

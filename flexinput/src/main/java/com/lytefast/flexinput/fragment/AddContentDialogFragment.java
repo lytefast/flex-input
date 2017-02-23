@@ -67,7 +67,6 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
   @Override
   public void onStart() {
     super.onStart();
-    updateActionButton();
     animateIn();
   }
 
@@ -96,13 +95,19 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
       this.selectionAggregator = flexInputFragment.getSelectionAggregator()
           .addItemSelectionListener(itemSelectionListener);
     }
+
     return root;
   }
 
   @Override
   public void onResume() {
     super.onResume();
-    updateActionButton();
+    actionButton.post(new Runnable() {
+      @Override
+      public void run() {
+        updateActionButton();
+      }
+    });
   }
 
   @Override
