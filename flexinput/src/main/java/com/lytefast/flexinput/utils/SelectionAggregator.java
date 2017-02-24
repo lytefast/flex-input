@@ -111,16 +111,23 @@ public class SelectionAggregator<T extends Attachment> {
   public boolean toggleItemInternal(final T item) {
     final boolean wasRemoved = removeItem(item);
     if (!wasRemoved) {
-      attachments.add(item);
-      final int position = attachments.size() - 1;
-      adapter.notifyItemInserted(position);
+      addItem(item);
+    }
+    return wasRemoved;
+  }
 
-      for (SelectionCoordinator.ItemSelectionListener l : itemSelectionListeners) {
-        l.onItemSelected(item);
-      }
+  private void addItem(final T item) {
+    if (attachments.contains(item)) {
+      return;
     }
 
-    return wasRemoved;
+    attachments.add(item);
+    final int position = attachments.size() - 1;
+    adapter.notifyItemInserted(position);
+
+    for (SelectionCoordinator.ItemSelectionListener l : itemSelectionListeners) {
+      l.onItemSelected(item);
+    }
   }
 
   private boolean removeItem(final T item) {
@@ -171,12 +178,12 @@ public class SelectionAggregator<T extends Attachment> {
     selectionCoordinator.setItemSelectionListener(new SelectionCoordinator.ItemSelectionListener<T>() {
       @Override
       public void onItemSelected(T item) {
-        toggleItemInternal(item);
+        addItem(item);
       }
 
       @Override
       public void onItemUnselected(T item) {
-        toggleItemInternal(item);
+        removeItem(item);
       }
 
       @Override
