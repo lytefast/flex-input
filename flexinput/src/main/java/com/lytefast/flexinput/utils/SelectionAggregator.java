@@ -169,7 +169,7 @@ public class SelectionAggregator<T extends Attachment> {
     try {
       selectionCoordinator.restoreSelections(attachments);
     } catch (SelectionCoordinator.RestorationException e) {
-      Log.w(TAG, "selections could not be synced", e);
+      Log.d(TAG, "selections could not be synced", e);
     }
   }
 

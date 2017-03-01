@@ -36,7 +36,7 @@ public class FilesFragment extends PermissionsFragment {
 
   private static final String REQUIRED_PERMISSION = Manifest.permission.READ_EXTERNAL_STORAGE;
 
-  private final SelectionCoordinator<Attachment<File>> selectionCoordinator = new SelectionCoordinator<>();
+  private SelectionCoordinator<Attachment<File>> selectionCoordinator;
 
   @BindView(R2.id.swipeRefreshLayout) SwipeRefreshLayout swipeRefreshLayout;
   @BindView(R2.id.list) RecyclerView recyclerView;
@@ -54,6 +54,8 @@ public class FilesFragment extends PermissionsFragment {
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
                            Bundle savedInstanceState) {
+    this.selectionCoordinator = new SelectionCoordinator<>();
+
     final Fragment targetFragment = getParentFragment().getTargetFragment();
     if (targetFragment instanceof FlexInputCoordinator) {
       FlexInputCoordinator flexInputCoordinator = (FlexInputCoordinator) targetFragment;

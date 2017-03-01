@@ -2,7 +2,6 @@ package com.lytefast.flexinput.fragment;
 
 import android.Manifest;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -35,7 +34,7 @@ public class PhotosFragment extends PermissionsFragment {
 
   private static final String REQUIRED_PERMISSION = Manifest.permission.READ_EXTERNAL_STORAGE;
 
-  private final SelectionCoordinator<Photo> selectionCoordinator = new SelectionCoordinator<>();
+  private SelectionCoordinator<Photo> selectionCoordinator;
 
   @BindView(R2.id.swipeRefreshLayout) SwipeRefreshLayout swipeRefreshLayout;
   @BindView(R2.id.list) RecyclerView recyclerView;
@@ -51,6 +50,8 @@ public class PhotosFragment extends PermissionsFragment {
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
                            Bundle savedInstanceState) {
+    this.selectionCoordinator = new SelectionCoordinator<>();
+
     final Fragment targetFragment = getParentFragment().getTargetFragment();
     if (targetFragment instanceof FlexInputCoordinator) {
       FlexInputCoordinator flexInputCoordinator = (FlexInputCoordinator) targetFragment;
