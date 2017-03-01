@@ -76,6 +76,11 @@ public class CameraFragment extends PermissionsFragment {
    */
   private File photoFile;
 
+  @Override
+  public void onCreate(@Nullable final Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setRetainInstance(true);
+  }
 
   @Nullable
   @Override
@@ -218,14 +223,28 @@ public class CameraFragment extends PermissionsFragment {
     if (REQUEST_IMAGE_CAPTURE != requestCode) {
       return;
     }
-    if (Activity.RESULT_OK != resultCode) {
+    if (Activity.RESULT_CANCELED == resultCode) {
+      // Do nothing
+    } else if (Activity.RESULT_OK != resultCode) {
       Toast.makeText(getContext(), R.string.camera_intent_result_error, Toast.LENGTH_SHORT).show();
       if (photoFile != null) {
         photoFile.delete();  // cleanup
       }
     } else if (photoFile != null) {
       flexInputCoordinator.addExternalAttachment(FileUtils.toAttachment(photoFile));
+      return;
     }
+
+    // Delayed restart since we are coming back from camera, and for some reason the API
+    // isn't fast enough to acknowledge the other activity closed the camera.
+    cameraView.postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        if (cameraView != null) {
+          tryStartCamera();
+        }
+      }
+    }, 750);
   }
 
   private final CameraView.Callback cameraCallback = new CameraView.Callback() {
