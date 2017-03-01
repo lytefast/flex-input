@@ -61,8 +61,11 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
   public Dialog onCreateDialog(final Bundle savedInstanceState) {
     AppCompatDialog dialog = new AppCompatDialog(getContext(), R.style.FlexInput_DialogWhenLarge);
     dialog.supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-    dialog.getWindow()
-        .setWindowAnimations(android.support.design.R.style.Animation_AppCompat_Dialog);
+
+    Window window = dialog.getWindow();
+    window.setWindowAnimations(android.support.design.R.style.Animation_AppCompat_Dialog);
+    window.setBackgroundDrawableResource(android.R.color.transparent);
+
     return dialog;
   }
 
