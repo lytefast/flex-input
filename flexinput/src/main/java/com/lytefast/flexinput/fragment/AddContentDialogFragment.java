@@ -3,7 +3,9 @@ package com.lytefast.flexinput.fragment;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ClipData;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -34,6 +36,8 @@ import com.lytefast.flexinput.adapters.AddContentPagerAdapter;
 import com.lytefast.flexinput.model.Attachment;
 import com.lytefast.flexinput.utils.SelectionAggregator;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -231,11 +235,38 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
         new Intent(fileBrowserAction)
             .setType("*/*")
             .addCategory(Intent.CATEGORY_OPENABLE)
+            .addCategory(Intent.CATEGORY_DEFAULT)
             .putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
 
-    Intent chooserIntent = Intent.createChooser(imagePickerIntent, "")
-        .putExtra(Intent.EXTRA_INITIAL_INTENTS, new Parcelable[]{sysBrowserIntent});
+    Intent chooserIntent = Intent.createChooser(sysBrowserIntent, "")
+        .putExtra(Intent.EXTRA_INITIAL_INTENTS, new Parcelable[] {imagePickerIntent, getGoogleDriveIntent(), });
     startActivityForResult(chooserIntent, REQUEST_FILES);
+  }
+
+  /**
+   * HACK: sigh. If you want to open up google drive file picker without pulling in the
+   * google play drive libraries, this is the only way. For some reason gDrive doesn't
+   * register as a when you try to perform a normal Intent.ACTION_PICK with any sort of filters.
+   *
+   * @return Intent to open google drive file picker. Empty Intent otherwise.
+   */
+  protected Intent getGoogleDriveIntent() {
+    List<ResolveInfo> resolveInfos = getContext().getPackageManager()
+        .queryIntentActivities(
+            new Intent(Intent.ACTION_PICK)
+                .addCategory(Intent.CATEGORY_DEFAULT),
+            0);
+
+    for (ResolveInfo resolveInfo : resolveInfos) {
+      final ComponentName componentName = new ComponentName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name);
+
+      if (resolveInfo.activityInfo.name.equals("com.google.android.apps.docs.app.PickActivity")) {
+        return new Intent(Intent.ACTION_PICK)
+            .setComponent(componentName)
+            .setPackage(resolveInfo.activityInfo.packageName);
+      }
+    }
+    return new Intent();
   }
 
   @Override
