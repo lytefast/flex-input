@@ -223,17 +223,15 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
   public void launchFileChooser() {
     final Intent imagePickerIntent = new Intent(Intent.ACTION_PICK)
         .setType("image/*")
-        .addCategory(Intent.CATEGORY_OPENABLE)
         .putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
 
-    final Intent sysBrowserIntent = new Intent(
-        (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
-            ? Intent.ACTION_GET_CONTENT : Intent.ACTION_OPEN_DOCUMENT
-    );
-    sysBrowserIntent
-        .addCategory(Intent.CATEGORY_OPENABLE)
-        .setType("*/*")
-        .putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+    final String fileBrowserAction = (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
+        ? Intent.ACTION_GET_CONTENT : Intent.ACTION_OPEN_DOCUMENT;
+    final Intent sysBrowserIntent =
+        new Intent(fileBrowserAction)
+            .setType("*/*")
+            .addCategory(Intent.CATEGORY_OPENABLE)
+            .putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
 
     Intent chooserIntent = Intent.createChooser(imagePickerIntent, "")
         .putExtra(Intent.EXTRA_INITIAL_INTENTS, new Parcelable[]{sysBrowserIntent});
