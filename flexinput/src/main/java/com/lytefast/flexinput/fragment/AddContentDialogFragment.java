@@ -275,7 +275,7 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
   @Override
   public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-    if (REQUEST_FILES != requestCode) {
+    if (REQUEST_FILES != requestCode || Activity.RESULT_CANCELED == resultCode) {
       return;
     }
 
@@ -311,7 +311,7 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
 
   private Animation animateOut() {
     Animation animation = AnimationUtils.loadAnimation(
-        getContext(), android.support.design.R.anim.abc_slide_out_bottom);
+        getContext(), android.support.design.R.anim.design_bottom_sheet_slide_out);
     animation.setDuration(getResources()
         .getInteger(android.support.design.R.integer.bottom_sheet_slide_duration));
 
@@ -322,7 +322,7 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
 
   private Animation animateIn() {
     Animation animation = AnimationUtils.loadAnimation(
-        getContext(), android.support.design.R.anim.abc_slide_in_bottom);
+        getContext(), android.support.design.R.anim.design_bottom_sheet_slide_in);
     animation.setDuration(getResources()
         .getInteger(android.support.design.R.integer.bottom_sheet_slide_duration));
 
