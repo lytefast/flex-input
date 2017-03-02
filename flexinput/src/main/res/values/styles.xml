@@ -5,6 +5,7 @@
     <attr name="flexInputIconColorDisabled" format="color|reference"/>
     <attr name="flexInputColorHighlight" format="color|reference"/>
     <attr name="flexInputDialogBackground" format="color|reference"/>
+    <attr name="flexInputAddContentLauncherTitle" format="reference"/>
 
     <style name="FlexInput.DialogWhenLarge" parent="Theme.AppCompat.DayNight.DialogWhenLarge">
         <item name="android:windowTranslucentStatus" tools:targetApi="kitkat">true</item>
@@ -12,6 +13,7 @@
         <item name="flexInputDialogBackground">
             @android:drawable/screen_background_dark_transparent
         </item>
+        <item name="flexInputAddContentLauncherTitle">@string/choose_an_application</item>
     </style>
 
     <!-- Base application theme. -->

@@ -4,6 +4,7 @@
     <style name="FlexInput.DialogWhenLarge" parent="Theme.AppCompat.DayNight.DialogWhenLarge">
         <item name="android:colorBackground">@android:color/transparent</item>
         <item name="flexInputDialogBackground">@color/flexInputDialogBackground</item>
+        <item name="flexInputAddContentLauncherTitle">@string/pick_an_app</item>
     </style>
 
     <!-- Base application theme. -->

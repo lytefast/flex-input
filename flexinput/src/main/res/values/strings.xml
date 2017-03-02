@@ -10,6 +10,7 @@
     <string name="attachment_camera">Camera</string>
     <string name="attachments_keyboard">Show keyboard</string>
 
+    <string name="choose_an_application">Choose an application</string>
     <string name="request_permission_msg">Enable permission</string>
     <string name="storage_permission_denied_msg">Storage permissions required</string>
     <string name="camera_permission_denied_msg">Camera permissions required</string>

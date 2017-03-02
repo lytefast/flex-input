@@ -6,6 +6,7 @@ import android.content.ClipData;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -21,6 +22,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatDialog;
 import android.support.v7.app.AppCompatDialogFragment;
+import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -238,7 +241,7 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
             .addCategory(Intent.CATEGORY_DEFAULT)
             .putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
 
-    Intent chooserIntent = Intent.createChooser(sysBrowserIntent, "")
+    Intent chooserIntent = Intent.createChooser(sysBrowserIntent, getLauncherString())
         .putExtra(Intent.EXTRA_INITIAL_INTENTS, new Parcelable[] {imagePickerIntent, getGoogleDriveIntent(), });
     startActivityForResult(chooserIntent, REQUEST_FILES);
   }
@@ -340,5 +343,19 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
     } else {
       actionButton.hide();
     }
+  }
+
+  private CharSequence getLauncherString() {
+    final CharSequence customString;
+
+    final TypedValue value = new TypedValue();
+    final Resources.Theme dialogTheme = getDialog().getContext().getTheme();
+    if (!dialogTheme.resolveAttribute(R.attr.flexInputAddContentLauncherTitle, value, true)) {
+      customString = null;
+    } else {
+      customString = value.string;
+    }
+    return TextUtils.isEmpty(customString)
+        ?  getString(R.string.choose_an_application): customString;
   }
 }
