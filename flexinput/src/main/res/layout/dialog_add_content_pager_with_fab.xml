@@ -35,9 +35,9 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/action_btn"
-        android:visibility="gone"
         style="@style/FlexInput.AddContent.FloatingActionButton"
-        app:layout_anchor="@id/content_pager"/>
+        app:layout_anchor="@id/content_pager"
+        android:visibility="gone"/>
 
     <ImageView
         android:id="@+id/launch_btn"
