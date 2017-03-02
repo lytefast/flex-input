@@ -120,14 +120,28 @@
         <item name="android:clipToPadding">false</item>
     </style>
 
-    <style name="FlexInput.AddContent.Base.Button" parent="FlexInput.AddContent.Base.FloatingActionButton">
-        <item name="android:src">@drawable/ic_launch_24dp</item>
-        <item name="android:padding">16dp</item>
-        <item name="android:layout_gravity">top|start|left</item>
-        <item name="layout_anchorGravity">top|start|left</item>
-        <item name="backgroundTint">@android:color/transparent</item>
+    <style name="FlexInput.AddContent.Button" parent="FlexInput.AddContent">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:elevation" tools:targetApi="lollipop">8dp</item>
+        <item name="android:tint">@android:color/white</item>
+        <item name="android:tintMode" tools:targetApi="lollipop">src_atop</item>
     </style>
 
+    <style name="FlexInput.AddContent.Button.Base.Send" parent="FlexInput.AddContent.Button">
+        <item name="android:src">@drawable/ic_send_24dp</item>
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="layout_anchorGravity">top|right|end</item>
+    </style>
+    <style name="FlexInput.AddContent.Button.Send" parent="FlexInput.AddContent.Button.Base.Send" />
+
+    <style name="FlexInput.AddContent.Button.Launcher">
+        <item name="android:padding">16dp</item>
+        <item name="android:src">@drawable/ic_launch_24dp</item>
+        <item name="android:layout_gravity">top|start|left</item>
+        <item name="layout_anchorGravity">top|start|left</item>
+        <item name="android:background">?selectableItemBackgroundBorderless</item>
+    </style>
     <style name="FlexInput.AddContent.Page" parent="FlexInput.AddContent.Base.Page"/>
 
     <style name="FlexInput.AddContent.Permissions" parent="FlexInput.AddContent">
@@ -137,19 +151,6 @@
         <item name="android:layout_marginLeft">8dp</item>
         <item name="android:layout_marginRight">8dp</item>
     </style>
-
-    <!-- Provided to allow simple overrides -->
-    <style name="FlexInput.AddContent.Base.FloatingActionButton" parent="FlexInput.AddContent">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:src">@drawable/ic_send_24dp</item>
-        <item name="android:elevation" tools:targetApi="lollipop">8dp</item>
-        <item name="layout_anchorGravity">top|right|end</item>
-        <item name="android:tint">@android:color/white</item>
-        <item name="android:tintMode" tools:targetApi="lollipop">src_atop</item>
-        <item name="android:layout_marginRight">16dp</item>
-    </style>
-    <style name="FlexInput.AddContent.FloatingActionButton" parent="FlexInput.AddContent.Base.FloatingActionButton"/>
 
     <style name="FlexInput.Input.Button.Camera.Capture" parent="FlexInput.Input.Button">
         <item name="android:layout_alignParentBottom">true</item>

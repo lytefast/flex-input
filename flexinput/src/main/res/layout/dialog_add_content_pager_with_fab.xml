@@ -35,13 +35,13 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/action_btn"
-        style="@style/FlexInput.AddContent.FloatingActionButton"
+        style="@style/FlexInput.AddContent.Button.Send"
         app:layout_anchor="@id/content_pager"
         android:visibility="gone"/>
 
     <ImageView
         android:id="@+id/launch_btn"
-        style="@style/FlexInput.AddContent.Base.Button"
+        style="@style/FlexInput.AddContent.Button.Launcher"
         app:layout_anchor="@id/content_pager"/>
 
 </android.support.design.widget.CoordinatorLayout>
