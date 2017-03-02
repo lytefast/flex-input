@@ -144,8 +144,11 @@
 
     <style name="FlexInput.AddContent.FloatingActionButton.Launcher" parent="FlexInput.AddContent.Base.FloatingActionButton">
         <item name="android:src">@drawable/ic_launch_24dp</item>
+        <item name="android:padding">16dp</item>
         <item name="fabSize">mini</item>
-        <item name="backgroundTint">@android:color/darker_gray</item>
+        <item name="android:layout_gravity">top|start|left</item>
+        <item name="layout_anchorGravity">top|start|left</item>
+        <item name="backgroundTint">@android:color/transparent</item>
     </style>
 
     <style name="FlexInput.Input.Button.Camera.Capture" parent="FlexInput.Input.Button">
