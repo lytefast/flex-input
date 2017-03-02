@@ -44,7 +44,7 @@
     <!--</style>-->
 
 
-    <style name="FlexInput.AddContent.FloatingActionButton" parent="FlexInput.AddContent.Base.FloatingActionButton">
+    <style name="FlexInput.AddContent.Button.Send" parent="FlexInput.AddContent.Button.Base.Send">
         <item name="backgroundTint">#38F</item>
     </style>
 

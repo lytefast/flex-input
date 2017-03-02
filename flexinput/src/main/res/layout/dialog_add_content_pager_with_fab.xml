@@ -16,8 +16,9 @@
         android:layout_height="@dimen/default_keyboard_height"
         android:layout_gravity="bottom"/>
 
-    <FrameLayout style="@style/FlexInput.AddContent.Container.TabLayout"
-                 android:background="@android:color/transparent">
+    <FrameLayout
+        style="@style/FlexInput.AddContent.Container.TabLayout"
+        android:background="@android:color/transparent">
         <android.support.design.widget.TabLayout
             android:id="@+id/content_tabs"
             style="@style/FlexInput.AddContent.TabLayout"
@@ -34,22 +35,13 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/action_btn"
-        style="@style/FlexInput.AddContent.FloatingActionButton"
-        app:layout_anchor="@id/content_pager"/>
+        style="@style/FlexInput.AddContent.Button.Send"
+        app:layout_anchor="@id/content_pager"
+        android:visibility="gone"/>
 
-    <Space
-        android:id="@+id/fab_spacer"
-        android:layout_width="wrap_content"
-        android:layout_height="4dp"
-        android:layout_gravity="top|end|right"
-        app:layout_anchorGravity="top|end|right"
-        app:layout_anchor="@id/action_btn"/>
-
-    <android.support.design.widget.FloatingActionButton
+    <ImageView
         android:id="@+id/launch_btn"
-        style="@style/FlexInput.AddContent.FloatingActionButton.Launcher"
-        android:layout_gravity="top|end|right"
-        app:layout_anchorGravity="top|end|right"
-        app:layout_anchor="@id/fab_spacer"/>
+        style="@style/FlexInput.AddContent.Button.Launcher"
+        app:layout_anchor="@id/content_pager"/>
 
 </android.support.design.widget.CoordinatorLayout>
