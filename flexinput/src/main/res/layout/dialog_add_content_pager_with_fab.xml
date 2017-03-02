@@ -41,7 +41,7 @@
 
     <ImageView
         android:id="@+id/launch_btn"
-        style="@style/FlexInput.AddContent.FloatingActionButton.Launcher"
+        style="@style/FlexInput.AddContent.Base.Button"
         app:layout_anchor="@id/content_pager"/>
 
 </android.support.design.widget.CoordinatorLayout>
