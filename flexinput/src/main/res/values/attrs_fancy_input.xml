@@ -2,7 +2,6 @@
     <declare-styleable name="FlexInput">
         <attr name="hint" format="string"/>
         <attr name="hintColor" format="color"/>
-        <attr name="inputBackground" format="color|reference"/>
         <attr name="previewBackground" format="color|reference"/>
     </declare-styleable>
 </resources>

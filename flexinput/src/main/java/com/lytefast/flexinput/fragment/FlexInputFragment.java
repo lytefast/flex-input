@@ -201,12 +201,6 @@ public class FlexInputFragment extends Fragment
         textEt.setHintTextColor(hintColor);
       }
 
-      if (a.hasValue(R.styleable.FlexInput_inputBackground)) {
-        Drawable backgroundDrawable = a.getDrawable(R.styleable.FlexInput_inputBackground);
-        backgroundDrawable.setCallback(getView());
-        inputContainer.setBackground(backgroundDrawable);
-      }
-
       if (a.hasValue(R.styleable.FlexInput_previewBackground)) {
         Drawable backgroundDrawable = a.getDrawable(R.styleable.FlexInput_previewBackground);
         backgroundDrawable.setCallback(getView());

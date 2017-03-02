@@ -27,6 +27,10 @@
         <item name="android:background">#40000000</item>
     </style>
 
+    <style name="FlexInput.Input.Widget" parent="FlexInput.Input.Base.Widget">
+        <item name="android:background">@drawable/rect_rounded_highlight_alpha_20</item>
+    </style>
+
     <style name="FlexInput.AddContent.TabLayout" parent="FlexInput.AddContent.Base.TabLayout">
         <item name="android:background">@drawable/content_tab_background</item>
     </style>
