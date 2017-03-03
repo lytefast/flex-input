@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -13,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import com.lytefast.flexinput.InputListener;
 import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
@@ -81,18 +81,11 @@ public class MainFragment extends Fragment {
         .setFileManager(new SimpleFileManager("com.lytefast.flexinput.fileprovider", "FlexInput"))
         .setKeyboardManager(new KeyboardManager() {
           @Override
-          public void requestDisplay() {
-            FragmentActivity activity = getActivity();
-            if (activity == null) {
+          public void requestDisplay(final EditText textEt) {
+            if (textEt == null) {
               return;
             }
-            activity.runOnUiThread(new Runnable() {
-              @Override
-              public void run() {
-                flexInput.requestFocus();
-                imm.showSoftInput(flexInput.getView(), InputMethodManager.SHOW_IMPLICIT);
-              }
-            });
+            imm.showSoftInput(textEt, InputMethodManager.SHOW_IMPLICIT);
           }
 
           @Override
