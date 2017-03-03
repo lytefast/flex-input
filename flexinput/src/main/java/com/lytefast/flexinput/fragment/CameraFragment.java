@@ -94,6 +94,8 @@ public class CameraFragment extends PermissionsFragment {
     unbinder = ButterKnife.bind(this, rootView);
 
     cameraView.addCallback(cameraCallback);
+
+    tryStartCamera();
     return rootView;
   }
 
@@ -112,7 +114,17 @@ public class CameraFragment extends PermissionsFragment {
     }
     cameraContainer.setVisibility(View.VISIBLE);
     permissionsContainer.setVisibility(View.GONE);
-    tryStartCamera();
+
+    // Delayed restart since we are coming back from camera, and for some reason the API
+    // isn't fast enough to acknowledge the other activity closed the camera.
+    cameraView.postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        if (cameraView != null) {
+          tryStartCamera();
+        }
+      }
+    }, 350);
   }
 
   protected void initPermissionsView(final FrameLayout permissionsContainer) {
@@ -234,17 +246,6 @@ public class CameraFragment extends PermissionsFragment {
       flexInputCoordinator.addExternalAttachment(FileUtils.toAttachment(photoFile));
       return;
     }
-
-    // Delayed restart since we are coming back from camera, and for some reason the API
-    // isn't fast enough to acknowledge the other activity closed the camera.
-    cameraView.postDelayed(new Runnable() {
-      @Override
-      public void run() {
-        if (cameraView != null) {
-          tryStartCamera();
-        }
-      }
-    }, 750);
   }
 
   private final CameraView.Callback cameraCallback = new CameraView.Callback() {
