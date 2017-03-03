@@ -30,6 +30,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.lytefast.flexinput.FlexInputCoordinator;
@@ -59,6 +60,7 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
   @BindView(R2.id.content_pager) ViewPager contentPager;
   @BindView(R2.id.content_tabs) TabLayout contentTabs;
   @BindView(R2.id.action_btn) FloatingActionButton actionButton;
+  @BindView(R2.id.launch_btn) ImageView launchButton;
   private Unbinder unbinder;
 
   private SelectionAggregator<Attachment> selectionAggregator;
@@ -314,9 +316,13 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
         getContext(), android.support.design.R.anim.design_bottom_sheet_slide_out);
     animation.setDuration(getResources()
         .getInteger(android.support.design.R.integer.bottom_sheet_slide_duration));
+    animation.setInterpolator(getContext(), android.R.anim.accelerate_decelerate_interpolator);
 
+    actionButton.hide();
     contentTabs.startAnimation(animation);
     contentPager.startAnimation(animation);
+    launchButton.startAnimation(animation);
+
     return animation;
   }
 
@@ -325,9 +331,11 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
         getContext(), android.support.design.R.anim.design_bottom_sheet_slide_in);
     animation.setDuration(getResources()
         .getInteger(android.support.design.R.integer.bottom_sheet_slide_duration));
+    animation.setInterpolator(getContext(), android.R.anim.accelerate_decelerate_interpolator);
 
     contentTabs.startAnimation(animation);
     contentPager.startAnimation(animation);
+    launchButton.startAnimation(animation);
     return animation;
   }
 
