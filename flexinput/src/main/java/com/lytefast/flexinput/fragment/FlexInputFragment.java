@@ -13,7 +13,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageButton;
@@ -290,6 +289,7 @@ public class FlexInputFragment extends Fragment
    */
   public FlexInputFragment setEditTextComponent(final AppCompatEditText customEditText) {
     customEditText.setId(R.id.text_input);
+    customEditText.setFocusable(true);
     customEditText.setFocusableInTouchMode(true);
     final Editable prevText = textEt.getText();
 
@@ -337,14 +337,15 @@ public class FlexInputFragment extends Fragment
   //endregion
 
   public void requestFocus() {
-    FragmentActivity activity = getActivity();
-    if (activity == null) {
+    textEt.requestFocus();
+    if (emojiContainer.getVisibility() == View.VISIBLE) {
       return;
     }
-    activity.runOnUiThread(new Runnable() {
+
+    textEt.post(new Runnable() {
       @Override
       public void run() {
-        textEt.requestFocus();
+        keyboardManager.requestDisplay(textEt);
       }
     });
   }
@@ -391,7 +392,7 @@ public class FlexInputFragment extends Fragment
   public void onEmojiToggle() {
     if (emojiContainer.getVisibility() == View.VISIBLE) {
       hideEmojiTray();
-      keyboardManager.requestDisplay();
+      keyboardManager.requestDisplay(textEt);
     } else {
       showEmojiTray();
     }
@@ -416,7 +417,7 @@ public class FlexInputFragment extends Fragment
         if (!FlexInputFragment.this.isAdded() || FlexInputFragment.this.isHidden()) {
           return;  // Nothing to do
         }
-        keyboardManager.requestDisplay();
+        requestFocus();
         updateAttachmentPreviewContainer();
       }
     });
