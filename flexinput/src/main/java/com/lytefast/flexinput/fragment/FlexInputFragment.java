@@ -296,6 +296,9 @@ public class FlexInputFragment extends Fragment
     inputContainer.post(new Runnable() {
       @Override
       public void run() {
+        if (inputContainer == null) {
+          return;  // This can happen if the user just exits immediately or the fragment resets.
+        }
         final int editTextIndex = inputContainer.indexOfChild(textEt);
         inputContainer.removeView(textEt);
         inputContainer.addView(customEditText, editTextIndex);

@@ -209,7 +209,9 @@ public class CameraFragment extends PermissionsFragment {
 
   @OnClick(R2.id.take_photo_btn)
   void onTakePhotoClick() {
-    cameraView.takePicture();
+    if (cameraView.isCameraOpened()) {
+      cameraView.takePicture();
+    }
   }
 
   @OnClick(R2.id.launch_camera_btn)

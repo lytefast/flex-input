@@ -222,7 +222,11 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
   private static List<Attachment<File>> flattenFileList(File parentDir) {
     List<Attachment<File>> flattenedFileList = new ArrayList<>();
     Queue<File> files = new LinkedList<>();
-    files.addAll(Arrays.asList(parentDir.listFiles()));
+    final File[] fileList = parentDir.listFiles();
+    if (fileList == null) {
+      return flattenedFileList;
+    }
+    files.addAll(Arrays.asList(fileList));
     while (!files.isEmpty()) {
       File file = files.remove();
       if (file.isHidden()) {
