@@ -20,6 +20,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -59,6 +60,8 @@ import butterknife.Unbinder;
  */
 public class FlexInputFragment extends Fragment
     implements FlexInputCoordinator<Attachment> {
+
+  private static final String TAG = FlexInputFragment.class.getName();
 
   public static final String ADD_CONTENT_FRAG_TAG = "Add Content";
   public static final String EXTRA_ATTACHMENTS = "FlexInput.ATTACHMENTS";
@@ -474,8 +477,13 @@ public class FlexInputFragment extends Fragment
     attachmentPreviewList.post(new Runnable() {
       @Override
       public void run() {
-        if (dialogFragment != null && dialogFragment.isAdded() && !dialogFragment.isDetached()) {
-          dialogFragment.dismiss();
+        if (dialogFragment != null && dialogFragment.isAdded()
+            && !dialogFragment.isRemoving() && !dialogFragment.isDetached()) {
+          try {
+            dialogFragment.dismiss();
+          } catch (IllegalStateException ignored) {
+            Log.w(TAG, "could not dismiss add content dialog", ignored);
+          }
         }
 
         // Create a temporary SelectionCoordinator to add attachment
