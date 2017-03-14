@@ -6,6 +6,7 @@ import android.content.ContentResolver;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -76,16 +77,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
   }
 
   public void load(File root) {
-    this.files = flattenFileList(root);
-
-    Collections.sort(files, new Comparator<Attachment<File>>() {
-      @Override
-      public int compare(final Attachment<File> o1, final Attachment<File> o2) {
-        // Sort by newest first
-        return Long.valueOf(o2.getData().lastModified()).compareTo(o1.getData().lastModified());
-      }
-    });
-    notifyDataSetChanged();
+    new FileLoaderTask().execute(root);
   }
 
   protected class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -219,29 +211,6 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
     }
   }
 
-  private static List<Attachment<File>> flattenFileList(File parentDir) {
-    List<Attachment<File>> flattenedFileList = new ArrayList<>();
-    Queue<File> files = new LinkedList<>();
-    final File[] fileList = parentDir.listFiles();
-    if (fileList == null) {
-      return flattenedFileList;
-    }
-    files.addAll(Arrays.asList(fileList));
-    while (!files.isEmpty()) {
-      File file = files.remove();
-      if (file.isHidden()) {
-        continue;
-      }
-
-      if (file.isDirectory()) {
-        files.addAll(Arrays.asList(file.listFiles()));
-      } else {
-        flattenedFileList.add(FileUtils.toAttachment(file));
-      }
-    }
-    return flattenedFileList;
-  }
-
   @Nullable
   private static String getMimeType(File file) {
     String type = null;
@@ -251,5 +220,51 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
       type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
     }
     return type;
+  }
+
+  private class FileLoaderTask extends AsyncTask<File, Boolean, List<Attachment<File>>> {
+
+    @Override
+    protected List<Attachment<File>> doInBackground(final File... rootFiles) {
+      List<Attachment<File>> files = flattenFileList(rootFiles[0]);
+
+      Collections.sort(files, new Comparator<Attachment<File>>() {
+        @Override
+        public int compare(final Attachment<File> o1, final Attachment<File> o2) {
+          // Sort by newest first
+          return Long.valueOf(o2.getData().lastModified()).compareTo(o1.getData().lastModified());
+        }
+      });
+      return files;
+    }
+
+    @Override
+    protected void onPostExecute(final List<Attachment<File>> files) {
+      FileListAdapter.this.files = files;
+      notifyDataSetChanged();
+    }
+
+    private List<Attachment<File>> flattenFileList(File parentDir) {
+      List<Attachment<File>> flattenedFileList = new ArrayList<>();
+      Queue<File> files = new LinkedList<>();
+      final File[] fileList = parentDir.listFiles();
+      if (fileList == null) {
+        return flattenedFileList;
+      }
+      files.addAll(Arrays.asList(fileList));
+      while (!files.isEmpty()) {
+        File file = files.remove();
+        if (file.isHidden()) {
+          continue;
+        }
+
+        if (file.isDirectory()) {
+          files.addAll(Arrays.asList(file.listFiles()));
+        } else {
+          flattenedFileList.add(FileUtils.toAttachment(file));
+        }
+      }
+      return flattenedFileList;
+    }
   }
 }

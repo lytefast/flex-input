@@ -2,6 +2,7 @@ package com.lytefast.flexinput.adapters;
 
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
+import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
@@ -63,6 +64,9 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
 
   @Override
   public int getItemCount() {
+    if (cursor == null) {
+      return 0;
+    }
     return cursor.getCount();
   }
 
@@ -77,23 +81,29 @@ public class PhotoCursorAdapter extends RecyclerView.Adapter<PhotoCursorAdapter.
     super.onDetachedFromRecyclerView(recyclerView);
   }
 
-   // TODO consider moving this to a background thread
   @Nullable
-  public Cursor loadPhotos() {
-    this.cursor = contentResolver.query(
+  public void loadPhotos() {
+    final AsyncQueryHandler asyncQueryHandler = new AsyncQueryHandler(contentResolver) {
+      @Override
+      protected void onQueryComplete(final int token, final Object cookie, final Cursor cursor) {
+        if (cursor == null) {
+          return;
+        }
+        PhotoCursorAdapter.this.colId = cursor.getColumnIndex(MediaStore.Images.Media._ID);
+        PhotoCursorAdapter.this.colData = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
+        PhotoCursorAdapter.this.colName = cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME);
+
+        PhotoCursorAdapter.this.cursor = cursor;
+        notifyDataSetChanged();
+      }
+    };
+    asyncQueryHandler.startQuery(1, this,
         MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
         new String[]{
             MediaStore.Images.Media._ID,
             MediaStore.Images.Media.DATA,
             MediaStore.Images.Media.DISPLAY_NAME},
         null, null, MediaStore.Images.Media.DATE_ADDED + " DESC");
-
-    this.colId = cursor.getColumnIndex(MediaStore.Images.Media._ID);
-    this.colData = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-    this.colName = cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME);
-
-    notifyDataSetChanged();
-    return cursor;
   }
 
   private Photo getPhoto(int position) {
