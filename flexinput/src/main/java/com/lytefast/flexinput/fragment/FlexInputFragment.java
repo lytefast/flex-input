@@ -126,8 +126,17 @@ public class FlexInputFragment extends Fragment
           }
 
           private void updateUi() {
-            updateSendBtnEnableState(textEt.getText());
-            updateAttachmentPreviewContainer();
+            getView().post(new Runnable() {
+              @Override
+              public void run() {
+                if (textEt != null) {
+                  updateSendBtnEnableState(textEt.getText());
+                }
+                if (attachmentPreviewContainer != null) {
+                  updateAttachmentPreviewContainer();
+                }
+              }
+            });
           }
         });
     return adapter;
