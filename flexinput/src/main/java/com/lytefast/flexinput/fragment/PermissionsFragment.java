@@ -40,6 +40,10 @@ public class PermissionsFragment extends Fragment {
 
   @Override
   public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
+    if (permissionRequestCallback == null) {
+      return;
+    }
+
     if (requestCode != PERMISSIONS_REQUEST_CODE) {
       permissionRequestCallback = null;
       return;
