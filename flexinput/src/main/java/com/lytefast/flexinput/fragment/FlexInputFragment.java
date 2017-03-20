@@ -126,7 +126,11 @@ public class FlexInputFragment extends Fragment
           }
 
           private void updateUi() {
-            getView().post(new Runnable() {
+            final View rootView = getView();
+            if (rootView == null) {
+              return;
+            }
+            rootView.post(new Runnable() {
               @Override
               public void run() {
                 if (textEt != null) {
@@ -156,7 +160,11 @@ public class FlexInputFragment extends Fragment
     this.initializeUiAttributes.run();
     this.initializeUiAttributes = null;
     setAttachmentPreviewAdapter(new AttachmentPreviewAdapter(getContext().getContentResolver()));
+    return root;
+  }
 
+  @Override
+  public void onViewCreated(final View view, @Nullable final Bundle savedInstanceState) {
     if (savedInstanceState != null ) {
       ArrayList<Parcelable> savedAttachments =
           savedInstanceState.getParcelableArrayList(EXTRA_ATTACHMENTS);
@@ -167,7 +175,6 @@ public class FlexInputFragment extends Fragment
       String text = savedInstanceState.getString(EXTRA_TEXT);
       setText(text);
     }
-    return root;
   }
 
   public void setText(String text) {
