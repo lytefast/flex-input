@@ -144,8 +144,10 @@ public class CameraFragment extends PermissionsFragment {
    * So here, if we fail, just try getting the first front facing camera.
    */
   private void tryStartCamera() {
-    cameraView.stop();
     try {
+      if (cameraView.isCameraOpened()) {
+        cameraView.stop();
+      }
       cameraView.start();
     } catch (Exception e) {
       Log.w(TAG, "Camera could not be loaded, try front facing camera", e);
