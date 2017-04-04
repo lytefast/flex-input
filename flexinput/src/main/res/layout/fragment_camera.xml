@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,8 +14,12 @@
         <com.google.android.cameraview.CameraView
             android:id="@+id/camera_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"/>
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:adjustViewBounds="true"
+            app:autoFocus="true"
+            app:facing="back"
+            app:flash="auto"/>
 
         <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/camera_flash_btn"
@@ -33,7 +38,6 @@
             style="@style/FlexInput.Input.Button.Camera.Launcher"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
-
     </RelativeLayout>
 
     <FrameLayout
