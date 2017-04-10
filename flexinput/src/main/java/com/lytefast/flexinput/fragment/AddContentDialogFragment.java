@@ -68,7 +68,13 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
 
   @Override
   public Dialog onCreateDialog(final Bundle savedInstanceState) {
-    AppCompatDialog dialog = new AppCompatDialog(getContext(), R.style.FlexInput_DialogWhenLarge);
+    AppCompatDialog dialog = new AppCompatDialog(getContext(), R.style.FlexInput_DialogWhenLarge) {
+      @Override
+      public void show() {
+        super.show();
+        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+      }
+    };
     dialog.supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
 
     Window window = dialog.getWindow();
