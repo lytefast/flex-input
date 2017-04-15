@@ -1,12 +1,13 @@
 package com.lytefast.flexinput.model;
 
+import android.content.ContentResolver;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.provider.MediaStore;
 import android.support.annotation.CallSuper;
 
 import com.facebook.common.util.HashCodeUtil;
+import com.lytefast.flexinput.utils.FileUtils;
 
 
 /**
@@ -93,5 +94,10 @@ public class Attachment<T> implements Parcelable {
     dest.writeParcelable(uri, flags);
     dest.writeString(displayName);
 //    dest.writeParcelable(data, flags);
+  }
+
+  public static Attachment fromUri(ContentResolver resolver, final Uri uri) {
+    final String fileName = FileUtils.getFileNameFromUri(resolver, uri);
+    return new Attachment(uri.hashCode(), uri, fileName, null);
   }
 }

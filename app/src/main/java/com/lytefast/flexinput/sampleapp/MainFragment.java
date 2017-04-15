@@ -2,6 +2,8 @@ package com.lytefast.flexinput.sampleapp;
 
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -96,6 +98,20 @@ public class MainFragment extends Fragment {
 
     optionalFeatures();
     tryRiskyFeatures();
+
+    consumeSendIntent(getActivity().getIntent());
+  }
+
+  private void consumeSendIntent(final Intent intent) {
+    if (intent.getAction() != Intent.ACTION_SEND) {
+      return;
+    }
+
+    Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+    if (uri != null) {
+      flexInput.addExternalAttachment(Attachment.fromUri(getContext().getContentResolver(), uri));
+      intent.removeExtra(Intent.EXTRA_STREAM);
+    }
   }
 
   private void optionalFeatures() {
