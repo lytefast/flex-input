@@ -109,7 +109,6 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
     Fragment parentFragment = getParentFragment();
     if (parentFragment instanceof FlexInputFragment) {
       final FlexInputFragment flexInputFragment = (FlexInputFragment) parentFragment;
-      setTargetFragment(flexInputFragment, 0 /* result code unused */);
       initContentPages(
           new AddContentPagerAdapter(getChildFragmentManager(), flexInputFragment.getContentPages()));
 
@@ -137,12 +136,6 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
         updateActionButton();
       }
     });
-  }
-
-  @Override
-  public void onSaveInstanceState(Bundle outState) {
-    super.onSaveInstanceState(outState);
-    setTargetFragment(null, 0 /* result code unused */);
   }
 
   @Override
@@ -300,7 +293,7 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
 
     ClipData clipData = data.getClipData();
 
-    FlexInputCoordinator<Attachment> flexInputCoordinator = (FlexInputCoordinator<Attachment>) getTargetFragment();
+    FlexInputCoordinator<Attachment> flexInputCoordinator = (FlexInputCoordinator<Attachment>) getParentFragment();
     if (clipData == null) {
       Uri uri = data.getData();
       flexInputCoordinator.addExternalAttachment(toAttachment(uri));

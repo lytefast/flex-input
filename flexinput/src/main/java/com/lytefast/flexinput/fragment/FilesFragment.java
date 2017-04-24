@@ -56,7 +56,8 @@ public class FilesFragment extends PermissionsFragment {
                            Bundle savedInstanceState) {
     this.selectionCoordinator = new SelectionCoordinator<>();
 
-    final Fragment targetFragment = getParentFragment().getTargetFragment();
+    Fragment targetFragment = getParentFragment();
+    targetFragment = targetFragment != null ? targetFragment.getParentFragment() : null;
     if (targetFragment instanceof FlexInputCoordinator) {
       FlexInputCoordinator flexInputCoordinator = (FlexInputCoordinator) targetFragment;
 

@@ -85,7 +85,8 @@ public class CameraFragment extends PermissionsFragment {
   @Nullable
   @Override
   public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable final Bundle savedInstanceState) {
-    final Fragment targetFragment = getParentFragment().getTargetFragment();
+    Fragment targetFragment = getParentFragment();
+    targetFragment = targetFragment != null ? targetFragment.getParentFragment() : null;
     if (targetFragment instanceof FlexInputCoordinator) {
       this.flexInputCoordinator = (FlexInputCoordinator) targetFragment;
     }
