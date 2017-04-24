@@ -140,6 +140,12 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
   }
 
   @Override
+  public void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    setTargetFragment(null, 0 /* result code unused */);
+  }
+
+  @Override
   public void onDestroyView() {
     unbinder.unbind();
     if (itemSelectionListener != null && selectionAggregator != null) {
