@@ -129,6 +129,13 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
   }
 
   @Override
+  public void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+
+    setTargetFragment(null, 0 /* result code unused */);
+  }
+
+  @Override
   public void onResume() {
     super.onResume();
     actionButton.post(new Runnable() {
