@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -41,6 +40,7 @@ import com.lytefast.flexinput.utils.FileUtils;
 import com.lytefast.flexinput.utils.SelectionAggregator;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -239,44 +239,38 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
         .setType("image/*")
         .putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
 
-    final String fileBrowserAction = (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
-        ? Intent.ACTION_GET_CONTENT : Intent.ACTION_OPEN_DOCUMENT;
-    final Intent sysBrowserIntent =
-        new Intent(fileBrowserAction)
-            .setType("*/*")
-            .addCategory(Intent.CATEGORY_OPENABLE)
-            .addCategory(Intent.CATEGORY_DEFAULT)
-            .putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+    final List<Intent> allIntents = getAllIntents();
+    final Parcelable[] intentArray = new Parcelable[allIntents.size()];
+    allIntents.toArray(intentArray);
 
-    Intent chooserIntent = Intent.createChooser(sysBrowserIntent, getLauncherString())
-        .putExtra(Intent.EXTRA_INITIAL_INTENTS, new Parcelable[] {imagePickerIntent, getGoogleDriveIntent(), });
+    Intent chooserIntent = Intent.createChooser(imagePickerIntent, getLauncherString())
+        .putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
     startActivityForResult(chooserIntent, REQUEST_FILES);
   }
 
-  /**
-   * HACK: sigh. If you want to open up google drive file picker without pulling in the
-   * google play drive libraries, this is the only way. For some reason gDrive doesn't
-   * register as a when you try to perform a normal Intent.ACTION_PICK with any sort of filters.
-   *
-   * @return Intent to open google drive file picker. Empty Intent otherwise.
-   */
-  protected Intent getGoogleDriveIntent() {
+  protected List<Intent> getAllIntents() {
+    final String[] mimetypes = {"text/*", "image/*", "video/*"};
     List<ResolveInfo> resolveInfos = getContext().getPackageManager()
         .queryIntentActivities(
-            new Intent(Intent.ACTION_PICK)
-                .addCategory(Intent.CATEGORY_DEFAULT),
+            new Intent(Intent.ACTION_GET_CONTENT)
+                .setType("application/*")
+                .putExtra(Intent.EXTRA_MIME_TYPES, mimetypes)
+                .addCategory(Intent.CATEGORY_OPENABLE)
+                .addCategory(Intent.CATEGORY_DEFAULT)
+                .putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true),
             0);
 
+    List<Intent> intents = new ArrayList<>();
     for (ResolveInfo resolveInfo : resolveInfos) {
       final ComponentName componentName = new ComponentName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name);
-
-      if (resolveInfo.activityInfo.name.equals("com.google.android.apps.docs.app.PickActivity")) {
-        return new Intent(Intent.ACTION_PICK)
+        intents.add(new Intent(Intent.ACTION_GET_CONTENT)
+            .putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            .addCategory(Intent.CATEGORY_DEFAULT)
+            .addCategory(Intent.CATEGORY_OPENABLE)
             .setComponent(componentName)
-            .setPackage(resolveInfo.activityInfo.packageName);
-      }
+            .setPackage(resolveInfo.activityInfo.packageName));
     }
-    return new Intent();
+    return intents;
   }
 
   @Override
