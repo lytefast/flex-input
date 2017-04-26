@@ -4,15 +4,14 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -38,6 +37,7 @@ import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.adapters.AddContentPagerAdapter;
 import com.lytefast.flexinput.model.Attachment;
+import com.lytefast.flexinput.utils.FileUtils;
 import com.lytefast.flexinput.utils.SelectionAggregator;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 
@@ -307,11 +307,9 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
 
   @NonNull
   private Attachment toAttachment(final Uri uri) {
-      Cursor returnCursor =
-          getContext().getContentResolver().query(uri, null, null, null, null);
-      int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-      returnCursor.moveToFirst();
-    return new Attachment(uri.hashCode(), uri, returnCursor.getString(nameIndex), null);
+    final ContentResolver contentResolver = getContext().getContentResolver();
+    return new Attachment(
+        uri.hashCode(), uri, FileUtils.getFileNameFromUri(contentResolver, uri), null);
   }
 
   //region Animation methods
