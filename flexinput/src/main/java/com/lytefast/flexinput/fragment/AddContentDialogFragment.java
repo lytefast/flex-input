@@ -270,7 +270,40 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
             .setComponent(componentName)
             .setPackage(resolveInfo.activityInfo.packageName));
     }
+    final Intent googleDriveIntent = getGoogleDriveIntent();
+    if (googleDriveIntent != null) {
+      intents.add(googleDriveIntent);
+    }
     return intents;
+  }
+
+  /**
+   * HACK: sigh. If you want to open up google drive file picker without pulling in the
+   * google play drive libraries, this is the only way. For some reason gDrive doesn't
+   * register as a when you try to perform a normal Intent.ACTION_PICK with any sort of filters.
+   * It could be that google wants people to rely on the DocumentsProvider and system file picker.
+   * However the system file picker doesn't auto handle virutal files so this is a workaround.
+   *
+   * @return Intent to open google drive file picker. Null if not found.
+   */
+  @Nullable
+  private Intent getGoogleDriveIntent() {
+    List<ResolveInfo> resolveInfos = getContext().getPackageManager()
+        .queryIntentActivities(
+            new Intent(Intent.ACTION_PICK)
+                .putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true),
+            0);
+
+    for (ResolveInfo resolveInfo : resolveInfos) {
+      final ComponentName componentName = new ComponentName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name);
+
+      if (resolveInfo.activityInfo.name.equals("com.google.android.apps.docs.app.PickActivity")) {
+        return new Intent(Intent.ACTION_PICK)
+            .setComponent(componentName)
+            .setPackage(resolveInfo.activityInfo.packageName);
+      }
+    }
+    return null;
   }
 
   @Override
