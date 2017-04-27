@@ -36,10 +36,13 @@ public class FileUtils {
         return file.getName();
       case ContentResolver.SCHEME_CONTENT:
         Cursor returnCursor =
-            contentResolver.query(uri, new String[]{OpenableColumns.DISPLAY_NAME}, null, null, null);
+            contentResolver.query(uri, null, null, null, null);
         try {
           if (returnCursor != null && returnCursor.moveToFirst()) {
-            return returnCursor.getString(0);
+            final int columnIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+            if (columnIndex >= 0) {
+              return returnCursor.getString(columnIndex);
+            }
           }
         } finally {
           if (returnCursor != null) {
