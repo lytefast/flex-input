@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -41,6 +40,7 @@ import com.lytefast.flexinput.utils.FileUtils;
 import com.lytefast.flexinput.utils.SelectionAggregator;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -239,32 +239,59 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
         .setType("image/*")
         .putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
 
-    final String fileBrowserAction = (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
-        ? Intent.ACTION_GET_CONTENT : Intent.ACTION_OPEN_DOCUMENT;
-    final Intent sysBrowserIntent =
-        new Intent(fileBrowserAction)
-            .setType("*/*")
-            .addCategory(Intent.CATEGORY_OPENABLE)
-            .addCategory(Intent.CATEGORY_DEFAULT)
-            .putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+    final List<Intent> allIntents = getAllIntents();
+    final Parcelable[] intentArray = new Parcelable[allIntents.size()];
+    allIntents.toArray(intentArray);
 
-    Intent chooserIntent = Intent.createChooser(sysBrowserIntent, getLauncherString())
-        .putExtra(Intent.EXTRA_INITIAL_INTENTS, new Parcelable[] {imagePickerIntent, getGoogleDriveIntent(), });
+    Intent chooserIntent = Intent.createChooser(imagePickerIntent, getLauncherString())
+        .putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
     startActivityForResult(chooserIntent, REQUEST_FILES);
+  }
+
+  protected List<Intent> getAllIntents() {
+    final String[] mimetypes = {"text/*", "image/*", "video/*"};
+    List<ResolveInfo> resolveInfos = getContext().getPackageManager()
+        .queryIntentActivities(
+            new Intent(Intent.ACTION_GET_CONTENT)
+                .setType("application/*")
+                .putExtra(Intent.EXTRA_MIME_TYPES, mimetypes)
+                .addCategory(Intent.CATEGORY_OPENABLE)
+                .addCategory(Intent.CATEGORY_DEFAULT)
+                .putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true),
+            0);
+
+    List<Intent> intents = new ArrayList<>();
+    for (ResolveInfo resolveInfo : resolveInfos) {
+      final ComponentName componentName = new ComponentName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name);
+        intents.add(new Intent(Intent.ACTION_GET_CONTENT)
+            .putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            .addCategory(Intent.CATEGORY_DEFAULT)
+            .addCategory(Intent.CATEGORY_OPENABLE)
+            .setComponent(componentName)
+            .setPackage(resolveInfo.activityInfo.packageName));
+    }
+    final Intent googleDriveIntent = getGoogleDriveIntent();
+    if (googleDriveIntent != null) {
+      intents.add(googleDriveIntent);
+    }
+    return intents;
   }
 
   /**
    * HACK: sigh. If you want to open up google drive file picker without pulling in the
    * google play drive libraries, this is the only way. For some reason gDrive doesn't
    * register as a when you try to perform a normal Intent.ACTION_PICK with any sort of filters.
+   * It could be that google wants people to rely on the DocumentsProvider and system file picker.
+   * However the system file picker doesn't auto handle virutal files so this is a workaround.
    *
-   * @return Intent to open google drive file picker. Empty Intent otherwise.
+   * @return Intent to open google drive file picker. Null if not found.
    */
-  protected Intent getGoogleDriveIntent() {
+  @Nullable
+  private Intent getGoogleDriveIntent() {
     List<ResolveInfo> resolveInfos = getContext().getPackageManager()
         .queryIntentActivities(
             new Intent(Intent.ACTION_PICK)
-                .addCategory(Intent.CATEGORY_DEFAULT),
+                .putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true),
             0);
 
     for (ResolveInfo resolveInfo : resolveInfos) {
@@ -276,7 +303,7 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
             .setPackage(resolveInfo.activityInfo.packageName);
       }
     }
-    return new Intent();
+    return null;
   }
 
   @Override
