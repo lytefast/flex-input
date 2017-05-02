@@ -3,8 +3,8 @@ package com.lytefast.flexinput.model;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 
@@ -30,8 +30,14 @@ public class Photo extends Attachment<String> {
 
     if (cursor == null || !cursor.moveToFirst()) {
       // Generate thumbnail for next time
-      MediaStore.Images.Thumbnails.getThumbnail(
-          contentResolver, id, MediaStore.Images.Thumbnails.MINI_KIND, null);
+      new AsyncTask<Uri, Integer, Void>() {
+        @Override
+        protected Void doInBackground(final Uri... params) {
+          MediaStore.Images.Thumbnails.getThumbnail(
+              contentResolver, id, MediaStore.Images.Thumbnails.MINI_KIND, null);
+          return null;
+        }
+      }.execute(uri);
       return uri;  // Slow due to photo size and manipulation but better than nothing
     }
     try {
