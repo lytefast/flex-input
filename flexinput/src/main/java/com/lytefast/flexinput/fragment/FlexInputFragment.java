@@ -311,13 +311,19 @@ public class FlexInputFragment extends Fragment
     customEditText.setId(R.id.text_input);
     customEditText.setFocusable(true);
     customEditText.setFocusableInTouchMode(true);
-    final Editable prevText = textEt.getText();
 
     inputContainer.post(new Runnable() {
       @Override
       public void run() {
         if (inputContainer == null) {
           return;  // This can happen if the user just exits immediately or the fragment resets.
+        }
+
+        Log.d(TAG, "Replacing EditText component");
+        if (customEditText.getText().length() == 0) {
+          final Editable prevText = textEt.getText();
+          customEditText.setText(prevText);
+          Log.d(TAG, "Replacing EditText component: text copied");
         }
         final int editTextIndex = inputContainer.indexOfChild(textEt);
         inputContainer.removeView(textEt);
@@ -330,8 +336,6 @@ public class FlexInputFragment extends Fragment
         // Rebind Butterknife to make sure hooks work
         unbinder.unbind();
         unbinder = ButterKnife.bind(FlexInputFragment.this, getView());
-
-        setText(prevText.toString());
 
         updateSendBtnEnableState(customEditText.getText());
       }
