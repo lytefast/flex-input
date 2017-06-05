@@ -19,7 +19,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "0.8.0"
+        versionName "0.8.5"
 
         consumerProguardFiles 'proguard-rules.pro'
 
