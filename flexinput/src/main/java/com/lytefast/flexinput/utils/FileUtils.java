@@ -29,7 +29,8 @@ public class FileUtils {
   }
 
   @NonNull
-  public static String getFileNameFromUri(ContentResolver contentResolver, @NonNull final Uri uri) {
+  public static String getFileNameFromUri(ContentResolver contentResolver, @NonNull final Uri uri)
+      throws IllegalArgumentException {
     switch (uri.getScheme()) {
       case ContentResolver.SCHEME_FILE:
         File file = new File(uri.getPath());
