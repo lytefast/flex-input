@@ -19,11 +19,11 @@ allprojects {
 }
 
 ext {
-    buildToolsVersion = '25.0.2'
+    buildToolsVersion = '26.0.1'
     compileSdkVersion = 25
     minSdkVersion = 16
     targetSdkVersion = 25
-    supportLibraryVersion = '25.3.1'
+    supportLibraryVersion = '26.0.+'
 }
 
 task clean(type: Delete) {
