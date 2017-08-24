@@ -11,16 +11,25 @@
         android:id="@+id/camera_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <com.google.android.cameraview.CameraView
-            android:id="@+id/camera_view"
+
+        <ScrollView
+            android:id="@+id/camera_view_cropper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:adjustViewBounds="true"
-            app:autoFocus="true"
-            app:facing="back"
-            app:flash="auto"/>
+            android:fillViewport="true"
+            android:scrollbars="none">
+
+            <com.google.android.cameraview.CameraView
+                android:id="@+id/camera_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:gravity="center"
+                app:autoFocus="true"
+                app:facing="back"
+                app:flash="auto"/>
+        </ScrollView>
 
         <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/camera_flash_btn"

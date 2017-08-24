@@ -17,10 +17,12 @@ import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.google.android.cameraview.CameraView;
@@ -63,8 +65,9 @@ public class CameraFragment extends PermissionsFragment {
 
   public static final int REQUEST_IMAGE_CAPTURE = 4567;
 
-  @BindView(R2.id.camera_view) CameraView cameraView;
   @BindView(R2.id.camera_container) View cameraContainer;
+  @BindView(R2.id.camera_view_cropper) ScrollView cameraViewCropper;
+  @BindView(R2.id.camera_view) CameraView cameraView;
   @BindView(R2.id.permissions_container) FrameLayout permissionsContainer;
   private Unbinder unbinder;
 
@@ -93,6 +96,13 @@ public class CameraFragment extends PermissionsFragment {
 
     View rootView = inflater.inflate(R.layout.fragment_camera, container, false);
     unbinder = ButterKnife.bind(this, rootView);
+
+    cameraViewCropper.setOnTouchListener(new View.OnTouchListener() {
+      @Override
+      public boolean onTouch(final View v, final MotionEvent event) {
+        return true;  // disable user scroll
+      }
+    });
 
     cameraView.addCallback(cameraCallback);
 
