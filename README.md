@@ -1,15 +1,16 @@
 # flex-input
 Android text/emoji/media input field
 
+<img src="/images/keyboard.png" width="240">
+  
 <details>
  <summary>Image Examples</summary>
+  ![Keybard Entry with attachment preview](/images/keyboard.png?raw=true "Keybard Entry with attachment preview")
+  ![Emoji Entry](/images/emojiPicker.png?raw=true "Emoji Entry")
 
-  ![Alt text](/images/keyboard.png?raw=true "Keybard Entry with attachment preview")
-  ![Alt text](/images/emojiPicker.png?raw=true "Emoji Entry")
-
-  ![Alt text](/images/tabFiles.png?raw=true "Files tab")
-  ![Alt text](/images/tabPhotos.png?raw=true "Photos tab")
-  ![Alt text](/images/tabCamera.png?raw=true "Camera tab")
+  ![Files tab](/images/tabFiles.png?raw=true "Files tab")
+  ![Photos tab](/images/tabPhotos.png?raw=true "Photos tab")
+  ![Camera tab](/images/tabCamera.png?raw=true "Camera tab")
 </details>
 
 # Dependencies
@@ -20,8 +21,7 @@ Android text/emoji/media input field
 - [Fresco](http://frescolib.org/)
 
 # Work in Progress
-- [ ] Implement allowing custom emojis (non-unicode)
-- [ ] Handle permission requests and denials
+- [x] Handle permission requests and denials
 
 # Usage
 For more details refer to the sample app included in this project.
