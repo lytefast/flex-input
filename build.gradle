@@ -15,15 +15,21 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+
+        maven {
+            // Used for core google dependencies.
+            url "https://maven.google.com"
+        }
     }
 }
 
 ext {
     buildToolsVersion = '26.0.1'
-    compileSdkVersion = 25
+    compileSdkVersion = 26
     minSdkVersion = 16
-    targetSdkVersion = 25
+    targetSdkVersion = 26
     supportLibraryVersion = '26.0.+'
+    supportLibraryConstraintVersion = '1.1.0-beta1'
 }
 
 task clean(type: Delete) {
