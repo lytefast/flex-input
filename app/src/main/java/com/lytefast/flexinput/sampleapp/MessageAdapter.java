@@ -1,11 +1,17 @@
 package com.lytefast.flexinput.sampleapp;
 
+import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.lytefast.flexinput.model.Attachment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +26,7 @@ import butterknife.ButterKnife;
  */
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
-  List<Editable> msgList = new ArrayList<>();
+  List<Data> msgList = new ArrayList<>();
 
   @Override
   public ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
@@ -31,7 +37,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
   @Override
   public void onBindViewHolder(final ViewHolder holder, final int position) {
-    holder.bind(msgList.get(position));
+    holder.bind(msgList.get(position), position);
   }
 
   @Override
@@ -39,22 +45,41 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     return msgList.size();
   }
 
-  public void addMessage(Editable msg) {
+  public void addMessage(Data msg) {
     msgList.add(msg);
     notifyItemInserted(msgList.size() - 1);
   }
 
+  public static class Data {
+    final Editable editable;
+    @Nullable final Attachment attachment;
+
+    public Data(Editable editable, Attachment attachment) {
+      this.editable = editable;
+      this.attachment = attachment;
+    }
+  }
+
   static class ViewHolder extends RecyclerView.ViewHolder {
-    @BindView(R.id.message_tv)
-    TextView messageTv;
+    @BindView(R.id.index_tv) TextView indexTv;
+    @BindView(R.id.message_tv) TextView messageTv;
+    @BindView(R.id.attachment_iv) SimpleDraweeView imageView;
 
     public ViewHolder(final View itemView) {
       super(itemView);
       ButterKnife.bind(this, itemView);
     }
 
-    public void bind(Editable data) {
-      messageTv.setText(data);
+    public void bind(Data data, int index) {
+      indexTv.setText(String.valueOf(index));
+      messageTv.setText(data.editable);
+      if (data.attachment != null) {
+        imageView.setVisibility(View.VISIBLE);
+        Uri uri = data.attachment.getUri();
+        imageView.setImageURI(uri);
+      } else {
+        imageView.setVisibility(View.GONE);
+      }
     }
   }
 }
