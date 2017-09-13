@@ -5,7 +5,8 @@ Android text/emoji/media input field
   
 <details>
  <summary>Image Examples</summary>
-  ![Keybard Entry with attachment preview](/images/keyboard.png?raw=true "Keybard Entry with attachment preview")
+
+  ![Keyboard Entry with attachment preview](/images/keyboard.png?raw=true "Keyboard Entry with attachment preview")
   ![Emoji Entry](/images/emojiPicker.png?raw=true "Emoji Entry")
 
   ![Files tab](/images/tabFiles.png?raw=true "Files tab")
