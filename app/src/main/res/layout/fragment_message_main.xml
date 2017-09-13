@@ -24,20 +24,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
+            android:layout_weight="1"
             app:layoutManager="LinearLayoutManager"/>
 
-    </LinearLayout>
+        <fragment
+            android:id="@+id/flex_input"
+            android:name="com.lytefast.flexinput.fragment.FlexInputFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            app:hint="@string/msg_hint"
+            app:hintColor="@color/colorHint"
+            app:previewBackground="@drawable/rect_rounded_highlight_alpha_20"/>
 
-    <fragment
-        android:id="@+id/flex_input"
-        android:name="com.lytefast.flexinput.fragment.FlexInputFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        app:hint="@string/msg_hint"
-        app:hintColor="@color/colorHint"
-        app:previewBackground="@drawable/rect_rounded_highlight_alpha_20"/>
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>
