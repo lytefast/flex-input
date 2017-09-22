@@ -336,7 +336,7 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
   private Attachment toAttachment(final Uri uri) {
     final ContentResolver contentResolver = getContext().getContentResolver();
     return new Attachment(
-        uri.hashCode(), uri, FileUtils.getFileNameFromUri(contentResolver, uri), null);
+        uri.hashCode(), uri, FileUtils.getFileName(uri, contentResolver), null);
   }
 
   //region Animation methods

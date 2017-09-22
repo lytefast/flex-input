@@ -7,7 +7,7 @@ import android.os.Parcelable
 import android.support.annotation.CallSuper
 
 import com.facebook.common.util.HashCodeUtil
-import com.lytefast.flexinput.utils.FileUtils
+import com.lytefast.flexinput.utils.FileUtils.getFileName
 
 
 /**
@@ -63,7 +63,7 @@ open class Attachment<T> (
 
     @JvmStatic
     fun fromUri(resolver: ContentResolver, uri: Uri): Attachment<*> {
-      val fileName = FileUtils.getFileNameFromUri(resolver, uri)
+      val fileName = uri.getFileName(resolver)
       return Attachment(uri.hashCode().toLong(), uri, fileName, null)
     }
   }
