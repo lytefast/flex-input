@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.model.Emoji;
+import com.lytefast.flexinput.model.EmojiCategory;
 
 import butterknife.BindView;
 
@@ -31,7 +32,7 @@ public class EmojiGridFragment extends Fragment {
 
   @BindView(R2.id.list) RecyclerView emojiGrid;
 
-  private Emoji.EmojiCategory emojiCategory;
+  private EmojiCategory emojiCategory;
   private FlexInputFragment flexInputFrag;
 
   @Override
@@ -66,7 +67,7 @@ public class EmojiGridFragment extends Fragment {
     outState.putParcelable(EMOJI_CATEGORY, emojiCategory);
   }
 
-  public EmojiGridFragment with(final Emoji.EmojiCategory emojiCategory) {
+  public EmojiGridFragment with(final EmojiCategory emojiCategory) {
     this.emojiCategory = emojiCategory;
     return this;
   }
@@ -82,13 +83,13 @@ public class EmojiGridFragment extends Fragment {
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-      Emoji emoji = emojiCategory.emojis.get(position);
+      Emoji emoji = emojiCategory.getEmojis().get(position);
       holder.bind(emoji);
     }
 
     @Override
     public int getItemCount() {
-      return emojiCategory.emojis.size();
+      return emojiCategory.getEmojis().size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -100,13 +101,13 @@ public class EmojiGridFragment extends Fragment {
       }
 
       public void bind(final Emoji emoji) {
-        textView.setText(emoji.strValue);
-        textView.setContentDescription(emoji.aliases[0]);
+        textView.setText(emoji.getStrValue());
+        textView.setContentDescription(emoji.getAliases()[0]);
 
         itemView.setOnLongClickListener(new View.OnLongClickListener() {
           @Override
           public boolean onLongClick(final View v) {
-            Toast.makeText(getContext(), emoji.aliases[0], Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), emoji.getAliases()[0], Toast.LENGTH_SHORT).show();
             return true;
           }
         });
@@ -114,7 +115,7 @@ public class EmojiGridFragment extends Fragment {
         itemView.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(final View v) {
-            flexInputFrag.append(emoji.strValue);
+            flexInputFrag.append(emoji.getStrValue());
           }
         });
       }

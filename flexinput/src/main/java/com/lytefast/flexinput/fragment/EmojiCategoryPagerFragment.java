@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.content.res.AppCompatResources;
@@ -18,6 +17,7 @@ import android.view.ViewGroup;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.model.Emoji;
+import com.lytefast.flexinput.model.EmojiCategory;
 
 import java.util.List;
 
@@ -59,9 +59,9 @@ public abstract class EmojiCategoryPagerFragment extends Fragment {
   }
 
   /**
-   * @return a list where each {@link com.lytefast.flexinput.model.Emoji.EmojiCategory} represents a tab.
+   * @return a list where each {@link com.lytefast.flexinput.model.EmojiCategory} represents a tab.
    */
-  public abstract List<Emoji.EmojiCategory> buildEmojiCategoryData();
+  public abstract List<EmojiCategory> buildEmojiCategoryData();
 
   @Override
   public void onDestroyView() {
@@ -69,7 +69,7 @@ public abstract class EmojiCategoryPagerFragment extends Fragment {
     super.onDestroyView();
   }
 
-  public void initFrom(final List<Emoji.EmojiCategory> emojiCategories) {
+  public void initFrom(final List<EmojiCategory> emojiCategories) {
     viewPager.setAdapter(new FragmentPagerAdapter(getFragmentManager()) {
       @Override
       public Fragment getItem(final int position) {
@@ -85,13 +85,13 @@ public abstract class EmojiCategoryPagerFragment extends Fragment {
     setIcons(emojiCategories);
   }
 
-  protected void setIcons(final List<Emoji.EmojiCategory> emojiCategories) {
+  protected void setIcons(final List<EmojiCategory> emojiCategories) {
     ColorStateList iconColors =
         AppCompatResources.getColorStateList(getContext(), R.color.tab_color_selector);
 
     for (int i = 0; i < emojiCategories.size(); i++) {
       TabLayout.Tab tab = pageTabs.getTabAt(i)
-          .setIcon(emojiCategories.get(i).icon);
+          .setIcon(emojiCategories.get(i).getIcon());
 
       Drawable icon = tab.getIcon();
       if (icon != null) {
