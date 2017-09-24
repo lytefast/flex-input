@@ -7,14 +7,14 @@ import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.lytefast.flexinput.model.Attachment;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.lytefast.flexinput.model.Attachment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -63,6 +63,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
   static class ViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.index_tv) TextView indexTv;
     @BindView(R.id.message_tv) TextView messageTv;
+    @BindView(R.id.attachment_tv) TextView attachmentTv;
     @BindView(R.id.attachment_iv) SimpleDraweeView imageView;
 
     public ViewHolder(final View itemView) {
@@ -77,8 +78,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         imageView.setVisibility(View.VISIBLE);
         Uri uri = data.attachment.getUri();
         imageView.setImageURI(uri);
+
+        attachmentTv.setVisibility(View.VISIBLE);
+        attachmentTv.setText(data.attachment.getDisplayName());
       } else {
         imageView.setVisibility(View.GONE);
+        attachmentTv.setVisibility(View.GONE);
       }
     }
   }

@@ -25,6 +25,16 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Message text" />
 
+    <TextView
+        android:id="@+id/attachment_tv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        app:layout_constraintLeft_toLeftOf="@id/message_tv"
+        app:layout_constraintRight_toRightOf="@+id/message_tv"
+        app:layout_constraintTop_toBottomOf="@id/message_tv"
+        tools:text="Attachment text" />
+
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/attachment_iv"
         android:layout_width="64dp"
