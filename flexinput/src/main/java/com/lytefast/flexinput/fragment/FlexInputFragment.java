@@ -297,7 +297,8 @@ public class FlexInputFragment extends Fragment
   }
 
   public AddContentPagerAdapter.PageSupplier[] getContentPages() {
-    return pageSuppliers;
+    return pageSuppliers == null || pageSuppliers.length == 0 ?
+        AddContentPagerAdapter.Companion.createDefaultPages() : pageSuppliers;
   }
 
   /**

@@ -25,9 +25,8 @@ import com.lytefast.flexinput.fragment.PhotosFragment
  * @see .createDefaultPages
  */
 class AddContentPagerAdapter(childFragmentManager: FragmentManager,
-                             private vararg val pageSuppliers: PageSupplier = createDefaultPages())
+                             private vararg val pageSuppliers: PageSupplier)
   : FragmentPagerAdapter(childFragmentManager) {
-
 
   override fun getItem(position: Int): Fragment = pageSuppliers[position].createFragment()
 
