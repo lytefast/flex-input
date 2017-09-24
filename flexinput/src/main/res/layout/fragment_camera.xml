@@ -37,6 +37,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
+
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/camera_facing_btn"
+            style="@style/FlexInput.Input.Button.Camera.Facing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
         <android.support.v7.widget.AppCompatImageView
             style="@style/FlexInput.Input.Button.Camera.Capture"
             android:id="@+id/take_photo_btn"

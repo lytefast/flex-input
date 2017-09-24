@@ -38,6 +38,7 @@ open class CameraFragment : PermissionsFragment() {
   protected var cameraContainer: View? = null
   protected var cameraView: CameraView? = null
   protected var permissionsContainer: FrameLayout? = null
+  protected var cameraFacingBtn: ImageView? = null
 
   private var flexInputCoordinator: FlexInputCoordinator<*>? = null
 
@@ -72,12 +73,14 @@ open class CameraFragment : PermissionsFragment() {
 
       findViewById<View>(R.id.camera_view_cropper)
           ?.setOnTouchListener { _, _ -> true  /* disable user scroll*/ }
-      findViewById<ImageView>(R.id.camera_flash_btn)
-          ?.setOnClickListener { onCameraFlashClick(it as ImageView) }
       findViewById<View>(R.id.take_photo_btn)
           ?.setOnClickListener { onTakePhotoClick() }
       findViewById<View>(R.id.launch_camera_btn)
           ?.setOnClickListener { onLaunchCameraClick() }
+      findViewById<ImageView>(R.id.camera_flash_btn)
+          ?.setOnClickListener { onCameraFlashClick(it as ImageView) }
+      cameraFacingBtn = findViewById<ImageView>(R.id.camera_facing_btn)
+      cameraFacingBtn?.setOnClickListener { onCameraFacingClick(it as ImageView) }
     }
 
     cameraView?.addCallback(cameraCallback)
@@ -167,6 +170,17 @@ open class CameraFragment : PermissionsFragment() {
     setFlash(flashBtn, FLASH_STATE_CYCLE_LIST[newStateIndex])
   }
 
+
+  private fun onCameraFacingClick(facingBtn: ImageView) {
+    val currentFlashState = cameraView?.facing
+    val currentStateIndex = FACING_STATE_CYCLE_LIST.indices.firstOrNull {
+      currentFlashState == FACING_STATE_CYCLE_LIST[it]
+    } ?: 0
+
+    val newStateIndex = (currentStateIndex + 1) % FACING_STATE_CYCLE_LIST.size
+    setFacing(facingBtn, FACING_STATE_CYCLE_LIST[newStateIndex])
+  }
+
   private fun onTakePhotoClick() {
     if (cameraView?.isCameraOpened == true) {
       cameraView?.takePicture()
@@ -209,15 +223,16 @@ open class CameraFragment : PermissionsFragment() {
 
   private val cameraCallback = object : CameraView.Callback() {
 
-    override fun onCameraOpened(cameraView: CameraView?) {
+    override fun onCameraOpened(cameraView: CameraView) {
       Log.d(TAG, "onCameraOpened")
+      cameraFacingBtn?.also { setFacing(it, cameraView.facing)}
     }
 
-    override fun onCameraClosed(cameraView: CameraView?) {
+    override fun onCameraClosed(cameraView: CameraView) {
       Log.d(TAG, "onCameraClosed")
     }
 
-    override fun onPictureTaken(cameraView: CameraView?, data: ByteArray?) {
+    override fun onPictureTaken(cameraView: CameraView, data: ByteArray?) {
       Log.d(TAG, "onPictureTaken " + data!!.size)
       Toast.makeText(cameraView.context, "Picture saved", Toast.LENGTH_SHORT)
           .show()
@@ -237,6 +252,22 @@ open class CameraFragment : PermissionsFragment() {
         }
       }
     }
+  }
+
+  private fun setFacing(btn: ImageView, @CameraView.Facing newFacingState: Int) {
+    cameraView?.apply {
+      if (facing != newFacingState) {
+        facing = newFacingState
+        Toast.makeText(context, R.string.camera_switched, Toast.LENGTH_SHORT).show()
+      }
+    }
+    @DrawableRes val facingImg: Int =
+        when (newFacingState) {
+          CameraView.FACING_FRONT -> R.drawable.ic_camera_rear_white_24dp
+//          CameraView.FACING_FRONT,
+          else -> R.drawable.ic_camera_front_white_24dp
+        }
+    btn.setImageResource(facingImg)
   }
 
   private fun setFlash(btn: ImageView, @CameraView.Flash newFlashState: Int) {
@@ -280,6 +311,9 @@ open class CameraFragment : PermissionsFragment() {
 
     @CameraView.Flash
     private val FLASH_STATE_CYCLE_LIST = intArrayOf(CameraView.FLASH_AUTO, CameraView.FLASH_ON, CameraView.FLASH_OFF)
+
+    @CameraView.Facing
+    private val FACING_STATE_CYCLE_LIST = intArrayOf(CameraView.FACING_BACK, CameraView.FACING_FRONT)
 
     private val TAG = CameraFragment::class.java.canonicalName
 

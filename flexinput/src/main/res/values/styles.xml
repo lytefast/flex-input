@@ -181,6 +181,15 @@
         <item name="android:tint">@android:color/white</item>
     </style>
 
+    <style name="FlexInput.Input.Button.Camera.Facing" parent="FlexInput.Input.Button">
+        <item name="android:layout_alignParentTop">true</item>
+        <item name="android:layout_alignParentEnd" tools:targetApi="jelly_bean_mr1">true</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_margin">@dimen/margin</item>
+        <item name="android:src">@drawable/ic_camera_front_white_24dp</item>
+        <item name="android:tint">@android:color/white</item>
+    </style>
+
     <style name="FlexInput.Items" parent="FlexInput">
         <item name="android:background">@android:color/transparent</item>
         <item name="android:animateLayoutChanges">true</item>
