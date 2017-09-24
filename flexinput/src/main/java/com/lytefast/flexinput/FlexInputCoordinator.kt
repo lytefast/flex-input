@@ -22,5 +22,5 @@ interface FlexInputCoordinator<T : Any> {
    */
   val selectionAggregator: SelectionAggregator<Attachment<T>>
 
-  fun addExternalAttachment(attachment: Attachment<T>)
+  fun addExternalAttachment(attachment: Attachment<*>)
 }

@@ -2,8 +2,8 @@ package com.lytefast.flexinput.fragment
 
 import android.Manifest
 import android.os.Bundle
-import android.os.Environment
 import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -12,14 +12,14 @@ import android.widget.Toast
 import com.lytefast.flexinput.FlexInputCoordinator
 import com.lytefast.flexinput.R
 import com.lytefast.flexinput.adapters.EmptyListAdapter
-import com.lytefast.flexinput.adapters.FileListAdapter
+import com.lytefast.flexinput.adapters.PhotoCursorAdapter
 import com.lytefast.flexinput.model.Attachment
+import com.lytefast.flexinput.model.Photo
 import com.lytefast.flexinput.utils.SelectionCoordinator
-import java.io.File
 
 
 /**
- * Fragment that displays the recent files for selection.
+ * Fragment that displays the recent photos on the phone for selection.
  *
  * @author Sam Shih
  */
@@ -27,14 +27,12 @@ import java.io.File
  * Mandatory empty constructor for the fragment manager to instantiate the
  * fragment (e.g. upon screen orientation changes).
  */
-open class FilesFragment : PermissionsFragment() {
+open class PhotosFragment : PermissionsFragment() {
 
-  private var selectionCoordinator: SelectionCoordinator<Attachment<Any>, Attachment<File>>? = null
+  private var selectionCoordinator: SelectionCoordinator<Attachment<Any>, Photo>? = null
 
   internal var swipeRefreshLayout: SwipeRefreshLayout? = null
   internal var recyclerView: RecyclerView? = null
-
-  private var adapter: FileListAdapter? = null
 
   override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                             savedInstanceState: Bundle?): View? {
@@ -51,15 +49,23 @@ open class FilesFragment : PermissionsFragment() {
     return view?.apply {
       recyclerView = findViewById(R.id.list)
 
+      val photoAdapter = PhotoCursorAdapter(context.contentResolver, selectionCoordinator!!)
+
       if (hasPermissions(REQUIRED_PERMISSION)) {
-        adapter = FileListAdapter(context.contentResolver, selectionCoordinator!!)
-        recyclerView?.adapter = adapter
+        recyclerView?.layoutManager = GridLayoutManager(context, 3)
+        recyclerView?.adapter = photoAdapter
       } else {
-        recyclerView?.adapter = newPermissionsRequestAdapter(View.OnClickListener { requestPermissions() })
+        recyclerView?.adapter = newPermissionsRequestAdapter(
+            View.OnClickListener { requestPermissions(photoAdapter) })
       }
 
       swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout)
-      swipeRefreshLayout?.setOnRefreshListener(this@FilesFragment::loadDownloadFolder)
+      swipeRefreshLayout?.setOnRefreshListener {
+        if (hasPermissions(REQUIRED_PERMISSION)) {
+          photoAdapter.loadPhotos()
+        }
+        swipeRefreshLayout?.isRefreshing = false
+      }
     }
   }
 
@@ -77,32 +83,17 @@ open class FilesFragment : PermissionsFragment() {
         R.layout.item_permission_storage, R.id.permissions_req_btn, onClickListener)
   }
 
-  override fun onStart() {
-    super.onStart()
-    loadDownloadFolder()
-  }
-
   override fun onDestroyView() {
-    selectionCoordinator?.close()
+    selectionCoordinator!!.close()
     super.onDestroyView()
   }
 
-  private fun loadDownloadFolder() {
-    if (adapter == null) {
-      swipeRefreshLayout!!.isRefreshing = false
-      return
-    }
-    val downloadFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-    adapter!!.load(downloadFolder)
-    swipeRefreshLayout!!.isRefreshing = false
-  }
-
-  private fun requestPermissions() {
+  private fun requestPermissions(photoAdapter: PhotoCursorAdapter) {
     requestPermissions(object : PermissionsFragment.PermissionsResultCallback {
       override fun granted() {
-        adapter = FileListAdapter(context.contentResolver, selectionCoordinator!!)
-        recyclerView?.adapter = adapter
-        loadDownloadFolder()
+        recyclerView!!.layoutManager = GridLayoutManager(context, 3)
+        recyclerView!!.adapter = photoAdapter
+        recyclerView!!.invalidateItemDecorations()
       }
 
       override fun denied() {
