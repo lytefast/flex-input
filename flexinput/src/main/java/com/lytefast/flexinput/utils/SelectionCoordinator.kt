@@ -8,22 +8,25 @@ import java.util.*
 /**
  * Manages selection logic for [android.support.v7.widget.RecyclerView.Adapter]s.
  *
+ * @param I The base acceptable type. Used as the type for all notifications. Usually [com.lytefast.flexinput.model.Attachment<Any>]
+ * @param T The type that this class primarily handles.
+ *
  * @author Sam Shih
  */
-open class SelectionCoordinator<T>(
+open class SelectionCoordinator<I, T: I>(
     /**
      * Maintains a mapping from the selected item to the position in the adapter.
      */
     @Suppress("MemberVisibilityCanPrivate")
     protected val selectedItemPositionMap: ArrayMap<T, Int> = ArrayMap(4),
-    var itemSelectionListener: ItemSelectionListener<T> = ItemSelectionListener()) {
+    var itemSelectionListener: ItemSelectionListener<in I> = ItemSelectionListener()) {
 
   /**
    * The [android.support.v7.widget.RecyclerView.Adapter] that should be notified when selection changes occur.
    */
   protected var adapter: RecyclerView.Adapter<*>? = null
 
-  fun bind(adapter: RecyclerView.Adapter<*>): SelectionCoordinator<T> {
+  fun bind(adapter: RecyclerView.Adapter<*>): SelectionCoordinator<I, T> {
     this.adapter = adapter
     return this
   }
@@ -64,7 +67,8 @@ open class SelectionCoordinator<T>(
    *
    * @return True if the item was added. False otherwise.
    */
-  fun toggleItem(item: T, position: Int): Boolean {
+  fun toggleItem(item: T?, position: Int): Boolean {
+    if (item == null) return false
     if (unselectItem(item)) {
       return false
     }
@@ -95,7 +99,7 @@ open class SelectionCoordinator<T>(
    *
    * @return True if the item was unselected. False otherwise.
    */
-  fun unselectItem(item: T): Boolean {
+  fun unselectItem(item: I): Boolean {
     val removedItemPosition = selectedItemPositionMap.remove(item) ?: return false
     adapter?.notifyItemChanged(removedItemPosition)
     itemSelectionListener.onItemUnselected(item)
@@ -110,13 +114,15 @@ open class SelectionCoordinator<T>(
    * @throws RestorationException if the adapter has already been set. This is thrown to prevent mismatches.
    */
   @Throws(RestorationException::class)
-  fun restoreSelections(selectedItems: ArrayList<T>) {
+  fun restoreSelections(selectedItems: ArrayList<out I>) {
     if (adapter != null) {
       throw RestorationException("cannot restoreSelections after adapter set: prevents mismatches")
     }
 
     for (item in selectedItems) {
-      selectedItemPositionMap.put(item, -1)
+      (item as? T)?.also {
+        selectedItemPositionMap.put(it, -1)
+      }
     }
   }
 
@@ -126,9 +132,9 @@ open class SelectionCoordinator<T>(
 
   class RestorationException internal constructor(msg: String) : Exception(msg)
 
-  open class ItemSelectionListener<in T> {
-    open fun onItemSelected(item: T) {}
-    open fun onItemUnselected(item: T) {}
+  open class ItemSelectionListener<I> {
+    open fun onItemSelected(item: I) {}
+    open fun onItemUnselected(item: I) {}
 
     /**
      * Signals that no new notifications are required. This should be called when the

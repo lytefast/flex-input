@@ -22,7 +22,7 @@ import com.lytefast.flexinput.utils.SelectionAggregator
  *
  * @author Sam Shih
  */
-class AttachmentPreviewAdapter<T : Attachment<in Nothing>>(private val contentResolver: ContentResolver)
+class AttachmentPreviewAdapter<T : Attachment<Any>>(private val contentResolver: ContentResolver)
   : RecyclerView.Adapter<AttachmentPreviewAdapter<T>.ViewHolder>() {
 
   val selectionAggregator: SelectionAggregator<T> = SelectionAggregator(this)

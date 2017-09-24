@@ -34,7 +34,7 @@ public class PhotosFragment extends PermissionsFragment {
 
   private static final String REQUIRED_PERMISSION = Manifest.permission.READ_EXTERNAL_STORAGE;
 
-  private SelectionCoordinator<Photo> selectionCoordinator;
+  private SelectionCoordinator<Object, Photo> selectionCoordinator;
 
   @BindView(R2.id.swipeRefreshLayout) SwipeRefreshLayout swipeRefreshLayout;
   @BindView(R2.id.list) RecyclerView recyclerView;

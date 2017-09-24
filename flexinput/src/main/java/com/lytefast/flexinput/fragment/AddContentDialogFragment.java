@@ -31,6 +31,9 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.lytefast.flexinput.FlexInputCoordinator;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.R2;
@@ -39,9 +42,6 @@ import com.lytefast.flexinput.model.Attachment;
 import com.lytefast.flexinput.utils.FileUtils;
 import com.lytefast.flexinput.utils.SelectionAggregator;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -63,7 +63,7 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
   @BindView(R2.id.launch_btn) ImageView launchButton;
   private Unbinder unbinder;
 
-  private SelectionAggregator<Attachment> selectionAggregator;
+  private SelectionAggregator<Attachment<?>> selectionAggregator;
 
 
   @Override

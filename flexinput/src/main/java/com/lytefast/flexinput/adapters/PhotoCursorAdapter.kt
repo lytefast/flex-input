@@ -24,9 +24,9 @@ import com.lytefast.flexinput.utils.SelectionCoordinator
  * @author Sam Shih
  */
 class PhotoCursorAdapter(private val contentResolver: ContentResolver,
-                         selectionCoordinator: SelectionCoordinator<in Photo>)
+                         selectionCoordinator: SelectionCoordinator<*, Photo>)
   : RecyclerView.Adapter<PhotoCursorAdapter.ViewHolder>() {
-  private val selectionCoordinator: SelectionCoordinator<in Photo> = selectionCoordinator.bind(this)
+  private val selectionCoordinator: SelectionCoordinator<*, Photo> = selectionCoordinator.bind(this)
   private var cursor: Cursor? = null
 
   private var colId: Int = 0

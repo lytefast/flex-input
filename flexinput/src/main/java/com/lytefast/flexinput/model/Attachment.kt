@@ -15,7 +15,7 @@ import com.lytefast.flexinput.utils.FileUtils.getFileName
  *
  * @author Sam Shih
  */
-open class Attachment<T> (
+open class Attachment<out T> (
   val id: Long,
   val uri: Uri,
   val displayName: String,

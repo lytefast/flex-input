@@ -3,28 +3,19 @@ package com.lytefast.flexinput.fragment
 import android.Manifest
 import android.os.Bundle
 import android.os.Environment
-import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-
 import com.lytefast.flexinput.FlexInputCoordinator
 import com.lytefast.flexinput.R
-import com.lytefast.flexinput.R2
 import com.lytefast.flexinput.adapters.EmptyListAdapter
 import com.lytefast.flexinput.adapters.FileListAdapter
 import com.lytefast.flexinput.model.Attachment
-import com.lytefast.flexinput.utils.SelectionAggregator
 import com.lytefast.flexinput.utils.SelectionCoordinator
-
 import java.io.File
-
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.Unbinder
 
 
 /**
@@ -38,11 +29,10 @@ import butterknife.Unbinder
  */
 class FilesFragment : PermissionsFragment() {
 
-  private var selectionCoordinator: SelectionCoordinator<Attachment<File>>? = null
+  private var selectionCoordinator: SelectionCoordinator<Attachment<Any>, Attachment<File>>? = null
 
-  @BindView(R2.id.swipeRefreshLayout) internal var swipeRefreshLayout: SwipeRefreshLayout? = null
-  @BindView(R2.id.list) internal var recyclerView: RecyclerView? = null
-  private var unbinder: Unbinder? = null
+  internal var swipeRefreshLayout: SwipeRefreshLayout? = null
+  internal var recyclerView: RecyclerView? = null
 
   private var adapter: FileListAdapter? = null
 
@@ -50,25 +40,27 @@ class FilesFragment : PermissionsFragment() {
                             savedInstanceState: Bundle?): View? {
     this.selectionCoordinator = SelectionCoordinator()
 
-    val targetFragment = parentFragment?.parentFragment
-
-    if (targetFragment is FlexInputCoordinator<*>) {
+    val targetFragment = parentFragment?.parentFragment as? FlexInputCoordinator<Any>
+    targetFragment?.also {
       val selectionAgg = targetFragment.selectionAggregator
-      selectionAgg.registerSelectionCoordinator(selectionCoordinator)
+      selectionAgg.registerSelectionCoordinator(selectionCoordinator!!)
+
     }
 
-    val view = inflater!!.inflate(R.layout.fragment_recycler_view, container, false)
-    unbinder = ButterKnife.bind(this, view)
+    val view = inflater?.inflate(R.layout.fragment_recycler_view, container, false)
+    return view?.apply {
+      recyclerView = findViewById(R.id.list)
 
-    if (hasPermissions(REQUIRED_PERMISSION)) {
-      adapter = FileListAdapter(context.contentResolver, selectionCoordinator)
-      recyclerView!!.adapter = adapter
-    } else {
-      recyclerView!!.adapter = newPermissionsRequestAdapter(View.OnClickListener { requestPermissions() })
+      if (hasPermissions(REQUIRED_PERMISSION)) {
+        adapter = FileListAdapter(context.contentResolver, selectionCoordinator!!)
+        recyclerView?.adapter = adapter
+      } else {
+        recyclerView?.adapter = newPermissionsRequestAdapter(View.OnClickListener { requestPermissions() })
+      }
+
+      swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout)
+      swipeRefreshLayout?.setOnRefreshListener(this@FilesFragment::loadDownloadFolder)
     }
-
-    swipeRefreshLayout!!.setOnRefreshListener { loadDownloadFolder() }
-    return view
   }
 
   /**
@@ -91,8 +83,7 @@ class FilesFragment : PermissionsFragment() {
   }
 
   override fun onDestroyView() {
-    unbinder!!.unbind()
-    selectionCoordinator!!.close()
+    selectionCoordinator?.close()
     super.onDestroyView()
   }
 
@@ -109,8 +100,8 @@ class FilesFragment : PermissionsFragment() {
   private fun requestPermissions() {
     requestPermissions(object : PermissionsFragment.PermissionsResultCallback {
       override fun granted() {
-        adapter = FileListAdapter(context.contentResolver, selectionCoordinator)
-        recyclerView!!.adapter = adapter
+        adapter = FileListAdapter(context.contentResolver, selectionCoordinator!!)
+        recyclerView?.adapter = adapter
         loadDownloadFolder()
       }
 

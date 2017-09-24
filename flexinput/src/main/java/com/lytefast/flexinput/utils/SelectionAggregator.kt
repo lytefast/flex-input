@@ -13,10 +13,10 @@ import java.util.*
  *
  * @author Sam Shih
  */
-class SelectionAggregator<T : Attachment<*>>(
+open class SelectionAggregator<T: Attachment<Any>>(
     val adapter: AttachmentPreviewAdapter<T>,
     val attachments: ArrayList<T> = arrayListOf(),
-    protected val childSelectionCoordinators: ArrayList<SelectionCoordinator<T>> = ArrayList(4),
+    protected val childSelectionCoordinators: ArrayList<SelectionCoordinator<T, *>> = ArrayList(4),
     protected var itemSelectionListeners: ArrayList<SelectionCoordinator.ItemSelectionListener<T>> = ArrayList(4)) {
 
   /**
@@ -38,9 +38,9 @@ class SelectionAggregator<T : Attachment<*>>(
   }
 
   fun initFrom(savedAttachments: ArrayList<in Parcelable>): SelectionAggregator<T> {
-    for (attachment in savedAttachments.map { it as? T }) {
-      attachment?.also { toggleItemInternal(it) }
-    }
+    savedAttachments
+        .map { it as? T }.filterNotNull()
+        .forEach { toggleItemInternal(it) }
     return this
   }
 
@@ -109,7 +109,6 @@ class SelectionAggregator<T : Attachment<*>>(
   /**
    * Allows the aggregator to unselect an item.
    *
-   *
    * This is the only method provided as selection needs to have a position reference to work properly.
    *
    * @see SelectionCoordinator.selectItem
@@ -126,7 +125,7 @@ class SelectionAggregator<T : Attachment<*>>(
    *
    * @param selectionCoordinator instance that manages a collection of selectable items
    */
-  fun registerSelectionCoordinator(selectionCoordinator: SelectionCoordinator<T>) {
+  fun registerSelectionCoordinator(selectionCoordinator: SelectionCoordinator<T, *>) {
     registerSelectionCoordinatorInternal(selectionCoordinator)
     try {
       selectionCoordinator.restoreSelections(attachments)
@@ -137,7 +136,7 @@ class SelectionAggregator<T : Attachment<*>>(
   }
 
   protected fun registerSelectionCoordinatorInternal(
-      selectionCoordinator: SelectionCoordinator<T>) {
+      selectionCoordinator: SelectionCoordinator<T, *>) {
     selectionCoordinator.itemSelectionListener = object : SelectionCoordinator.ItemSelectionListener<T>() {
       override fun onItemSelected(item: T) {
         addItem(item)

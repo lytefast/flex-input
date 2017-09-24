@@ -32,10 +32,10 @@ import java.util.*
  * @author Sam Shih
  */
 class FileListAdapter(private val contentResolver: ContentResolver,
-                      selectionCoordinator: SelectionCoordinator<in Attachment<File>>)
+                      selectionCoordinator: SelectionCoordinator<*, Attachment<File>>)
   : RecyclerView.Adapter<FileListAdapter.ViewHolder>() {
 
-  private val selectionCoordinator: SelectionCoordinator<in Attachment<File>> =
+  private val selectionCoordinator: SelectionCoordinator<*, in Attachment<File>> =
       selectionCoordinator.bind(this)
   private var files: List<Attachment<File>> = listOf()
 
@@ -46,11 +46,10 @@ class FileListAdapter(private val contentResolver: ContentResolver,
     return ViewHolder(view)
   }
 
-  override fun onBindViewHolder(holder: FileListAdapter.ViewHolder, position: Int) {
-    holder.bind(files!![position])
-  }
+  override fun onBindViewHolder(holder: FileListAdapter.ViewHolder, position: Int) =
+      holder.bind(files[position])
 
-  override fun getItemCount(): Int = files!!.size
+  override fun getItemCount(): Int = files.size
 
   fun load(root: File) {
     FileLoaderTask().execute(root)
