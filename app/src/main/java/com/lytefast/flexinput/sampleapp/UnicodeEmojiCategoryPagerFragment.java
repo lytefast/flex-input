@@ -4,8 +4,9 @@ import android.support.annotation.DrawableRes;
 import android.util.JsonReader;
 import android.util.Log;
 
-import com.lytefast.flexinput.model.Emoji;
 import com.lytefast.flexinput.fragment.EmojiCategoryPagerFragment;
+import com.lytefast.flexinput.model.Emoji;
+import com.lytefast.flexinput.model.EmojiCategory;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,7 +17,7 @@ import java.util.List;
 
 
 /**
- * Loads and ordered {@link Emoji.EmojiCategory} list from the asset folder.
+ * Loads and ordered {@link EmojiCategory} list from the asset folder.
  * The {@link Emoji}s loaded are unicode emoji representations.
  *
  * @author Sam Shih
@@ -26,7 +27,7 @@ public class UnicodeEmojiCategoryPagerFragment extends EmojiCategoryPagerFragmen
   public static final String ASSET_PATH_EMOJIS = "emojis.json";
 
   @Override
-  public List<Emoji.EmojiCategory> buildEmojiCategoryData() {
+  public List<EmojiCategory> buildEmojiCategoryData() {
     JsonReader jsonReader = null;
     try {
       final Reader reader = new InputStreamReader(
@@ -34,7 +35,7 @@ public class UnicodeEmojiCategoryPagerFragment extends EmojiCategoryPagerFragmen
       jsonReader = new JsonReader(reader);
       jsonReader.beginObject();
 
-      ArrayList<Emoji.EmojiCategory> emojiCategories = new ArrayList<>();
+      ArrayList<EmojiCategory> emojiCategories = new ArrayList<>();
       while (jsonReader.hasNext()) {
         emojiCategories.add(readEmojiCategory(jsonReader));
       }
@@ -56,7 +57,7 @@ public class UnicodeEmojiCategoryPagerFragment extends EmojiCategoryPagerFragmen
     return Collections.EMPTY_LIST;
   }
 
-  private Emoji.EmojiCategory readEmojiCategory(final JsonReader jsonReader) throws IOException {
+  private EmojiCategory readEmojiCategory(final JsonReader jsonReader) throws IOException {
     String name = jsonReader.nextName();
 
     jsonReader.beginArray();
@@ -68,7 +69,7 @@ public class UnicodeEmojiCategoryPagerFragment extends EmojiCategoryPagerFragmen
     emojis.trimToSize();
 
     jsonReader.endArray();
-    return new Emoji.EmojiCategory(name, getCategoryIcon(name), emojis);
+    return new EmojiCategory(name, getCategoryIcon(name), emojis);
   }
 
   private Emoji readEmoji(final JsonReader jsonReader) throws IOException {

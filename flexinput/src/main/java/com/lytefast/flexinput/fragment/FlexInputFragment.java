@@ -29,6 +29,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import com.lytefast.flexinput.FlexInputCoordinator;
 import com.lytefast.flexinput.InputListener;
 import com.lytefast.flexinput.R;
@@ -40,8 +42,6 @@ import com.lytefast.flexinput.managers.KeyboardManager;
 import com.lytefast.flexinput.model.Attachment;
 import com.lytefast.flexinput.utils.SelectionAggregator;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,7 +60,7 @@ import butterknife.Unbinder;
  * @author Sam Shih
  */
 public class FlexInputFragment extends Fragment
-    implements FlexInputCoordinator<Attachment> {
+    implements FlexInputCoordinator<Object> {
 
   private static final String TAG = FlexInputFragment.class.getName();
 
@@ -517,7 +517,7 @@ public class FlexInputFragment extends Fragment
         }
 
         // Create a temporary SelectionCoordinator to add attachment
-        SelectionCoordinator<Attachment> coord = new SelectionCoordinator<>();
+        SelectionCoordinator<Object, Attachment> coord = new SelectionCoordinator<>();
         attachmentPreviewAdapter.getSelectionAggregator().registerSelectionCoordinator(coord);
         coord.selectItem(attachment, 0);
         coord.close();
@@ -532,7 +532,7 @@ public class FlexInputFragment extends Fragment
   }
 
   @Override
-  public SelectionAggregator<Attachment> getSelectionAggregator() {
+  public SelectionAggregator<Attachment<Object>> getSelectionAggregator() {
     return attachmentPreviewAdapter.getSelectionAggregator();
   }
 
