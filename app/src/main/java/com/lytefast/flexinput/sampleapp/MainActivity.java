@@ -1,16 +1,14 @@
 package com.lytefast.flexinput.sampleapp;
 
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.CompoundButton;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
-
-import butterknife.ButterKnife;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -31,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     getSupportActionBar().setDisplayShowCustomEnabled(true);
     getSupportActionBar().setCustomView(view);
 
-    SwitchCompat nightModeToggle = ButterKnife.findById(view, R.id.toggle);
+    SwitchCompat nightModeToggle = view.findViewById(R.id.toggle);
     nightModeToggle.setChecked(true);
     nightModeToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
       @Override

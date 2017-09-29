@@ -15,15 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.lytefast.flexinput.R;
-import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.model.Emoji;
 import com.lytefast.flexinput.model.EmojiCategory;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 
 /**
@@ -37,17 +32,17 @@ import butterknife.Unbinder;
  */
 public abstract class EmojiCategoryPagerFragment extends Fragment {
 
-  @BindView(R2.id.page_tabs) protected TabLayout pageTabs;
-  @BindView(R2.id.view_pager) protected ViewPager viewPager;
-  private Unbinder unbinder;
+  private TabLayout pageTabs;
+  private ViewPager viewPager;
 
   @Nullable
   @Override
   public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container,
                            @Nullable final Bundle savedInstanceState) {
     View rootView = inflateView(inflater, container);
-    unbinder = ButterKnife.bind(this, rootView);
 
+    viewPager = rootView.findViewById(R.id.view_pager);
+    pageTabs = rootView.findViewById(R.id.page_tabs);
     pageTabs.setupWithViewPager(viewPager);
 
     initFrom(buildEmojiCategoryData());
@@ -62,12 +57,6 @@ public abstract class EmojiCategoryPagerFragment extends Fragment {
    * @return a list where each {@link com.lytefast.flexinput.model.EmojiCategory} represents a tab.
    */
   public abstract List<EmojiCategory> buildEmojiCategoryData();
-
-  @Override
-  public void onDestroyView() {
-    unbinder.unbind();
-    super.onDestroyView();
-  }
 
   public void initFrom(final List<EmojiCategory> emojiCategories) {
     viewPager.setAdapter(new FragmentPagerAdapter(getFragmentManager()) {

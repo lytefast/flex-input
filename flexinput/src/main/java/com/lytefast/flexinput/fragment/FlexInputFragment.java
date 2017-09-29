@@ -20,6 +20,7 @@ import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,12 +30,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-
 import com.lytefast.flexinput.FlexInputCoordinator;
 import com.lytefast.flexinput.InputListener;
 import com.lytefast.flexinput.R;
-import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.adapters.AddContentPagerAdapter;
 import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
 import com.lytefast.flexinput.managers.FileManager;
@@ -43,13 +41,8 @@ import com.lytefast.flexinput.model.Attachment;
 import com.lytefast.flexinput.utils.SelectionAggregator;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.OnLongClick;
-import butterknife.OnTextChanged;
-import butterknife.OnTouch;
-import butterknife.Unbinder;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 /**
@@ -68,17 +61,17 @@ public class FlexInputFragment extends Fragment
   public static final String EXTRA_ATTACHMENTS = "FlexInput.ATTACHMENTS";
   public static final String EXTRA_TEXT = "FlexInput.TEXT";
 
-  @BindView(R2.id.attachment_preview_container) View attachmentPreviewContainer;
-  @BindView(R2.id.main_input_container) LinearLayout inputContainer;
-  @BindView(R2.id.emoji_container) View emojiContainer;
+  private View attachmentPreviewContainer;
+  private View attachmentClearButton;
+  private LinearLayout inputContainer;
+  private View emojiContainer;
 
-  @BindView(R2.id.attachment_preview_list) RecyclerView attachmentPreviewList;
+  private RecyclerView attachmentPreviewList;
 
-  @BindView(R2.id.text_input) AppCompatEditText textEt;
-  @BindView(R2.id.emoji_btn) AppCompatImageButton emojiBtn;
-  @BindView(R2.id.send_btn) AppCompatImageButton sendBtn;
-
-  private Unbinder unbinder;
+  private AppCompatEditText textEt;
+  private AppCompatImageButton emojiBtn;
+  private AppCompatImageButton sendBtn;
+  private View addBtn;
 
   /**
    * Temporarily stores the UI attributes until we can apply them after inflation.
@@ -152,7 +145,70 @@ public class FlexInputFragment extends Fragment
   public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container,
                            @Nullable final Bundle savedInstanceState) {
     LinearLayout root = (LinearLayout) inflater.inflate(R.layout.flex_input_widget, container, false);
-    this.unbinder = ButterKnife.bind(this, root);
+
+    attachmentPreviewContainer = root.findViewById(R.id.attachment_preview_container);
+    attachmentClearButton = root.findViewById(R.id.attachment_clear_btn);
+    attachmentClearButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        clearAttachments();
+      }
+    });
+    inputContainer = root.findViewById(R.id.main_input_container);
+    emojiContainer = root.findViewById(R.id.emoji_container);
+    attachmentPreviewList = root.findViewById(R.id.attachment_preview_list);
+    textEt = root.findViewById(R.id.text_input);
+    textEt.addTextChangedListener(new TextWatcher() {
+
+      @Override
+      public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+      }
+
+      @Override
+      public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+      }
+
+      @Override
+      public void afterTextChanged(Editable editable) {
+        updateSendBtnEnableState(editable);
+      }
+    });
+    textEt.setOnTouchListener(new View.OnTouchListener() {
+      @Override
+      public boolean onTouch(View view, MotionEvent motionEvent) {
+        return onTextInputTouch(motionEvent);
+      }
+    });
+    emojiBtn = root.findViewById(R.id.emoji_btn);
+    emojiBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        onEmojiToggle();
+      }
+    });
+    sendBtn = root.findViewById(R.id.send_btn);
+    sendBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        onSend();
+      }
+    });
+    addBtn = root.findViewById(R.id.add_btn);
+    addBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        onAddToggle();
+      }
+    });
+
+    for (final View view : Arrays.asList(attachmentClearButton, addBtn, emojiBtn, sendBtn)) {
+      view.setOnLongClickListener(new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View view) {
+          return tooltipButton(view);
+        }
+      });
+    }
 
     if (getChildFragmentManager().findFragmentById(R.id.emoji_container) != null) {
       this.emojiBtn.setVisibility(View.VISIBLE);
@@ -198,12 +254,6 @@ public class FlexInputFragment extends Fragment
     hideEmojiTray();
     keyboardManager.requestHide();
     super.onPause();
-  }
-
-  @Override
-  public void onDestroyView() {
-    this.unbinder.unbind();
-    super.onDestroyView();
   }
 
   private void initAttributes(final AttributeSet attrs) {
@@ -334,10 +384,6 @@ public class FlexInputFragment extends Fragment
             ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f));
         customEditText.requestLayout();
 
-        // Rebind Butterknife to make sure hooks work
-        unbinder.unbind();
-        unbinder = ButterKnife.bind(FlexInputFragment.this, getView());
-
         updateSendBtnEnableState(customEditText.getText());
       }
     });
@@ -380,7 +426,6 @@ public class FlexInputFragment extends Fragment
 
   // region UI Event Handlers
 
-  @OnClick(R2.id.send_btn)
   public void onSend() {
     boolean shouldClean = inputListener.onSend(
         textEt.getText(), attachmentPreviewAdapter.getSelectionAggregator().getAttachments());
@@ -391,7 +436,6 @@ public class FlexInputFragment extends Fragment
     }
   }
 
-  @OnClick(R2.id.attachment_clear_btn)
   public void clearAttachments() {
     attachmentPreviewAdapter.clear();
     attachmentPreviewContainer.setVisibility(View.GONE);
@@ -399,13 +443,11 @@ public class FlexInputFragment extends Fragment
     updateSendBtnEnableState(textEt.getText());
   }
 
-  @OnLongClick({R2.id.add_btn, R2.id.attachment_clear_btn, R2.id.emoji_btn, R2.id.send_btn})
   boolean tooltipButton(View view) {
     Toast.makeText(getContext(), view.getContentDescription(), Toast.LENGTH_SHORT).show();
     return true;
   }
 
-  @OnTouch(R2.id.text_input)
   boolean onTextInputTouch(MotionEvent motionEvent) {
     switch (motionEvent.getAction()) {
       case MotionEvent.ACTION_UP:
@@ -416,7 +458,6 @@ public class FlexInputFragment extends Fragment
     return false;  // Passthrough
   }
 
-  @OnClick(R2.id.emoji_btn)
   public void onEmojiToggle() {
     if (emojiContainer.getVisibility() == View.VISIBLE) {
       hideEmojiTray();
@@ -426,7 +467,6 @@ public class FlexInputFragment extends Fragment
     }
   }
 
-  @OnClick(R2.id.add_btn)
   void onAddToggle() {
     hideEmojiTray();
     keyboardManager.requestHide();  // Make sure the keyboard is hidden
@@ -458,11 +498,6 @@ public class FlexInputFragment extends Fragment
         updateAttachmentPreviewContainer();
       }
     });
-  }
-
-  @OnTextChanged(value = R2.id.text_input, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
-  void onTextChanged(Editable after) {
-    updateSendBtnEnableState(after);
   }
 
   // endregion

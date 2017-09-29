@@ -14,11 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lytefast.flexinput.R;
-import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.model.Emoji;
 import com.lytefast.flexinput.model.EmojiCategory;
-
-import butterknife.BindView;
 
 
 /**
@@ -30,7 +27,7 @@ public class EmojiGridFragment extends Fragment {
 
   public static final String EMOJI_CATEGORY = "emoji_category";
 
-  @BindView(R2.id.list) RecyclerView emojiGrid;
+  private RecyclerView emojiGrid;
 
   private EmojiCategory emojiCategory;
   private FlexInputFragment flexInputFrag;
