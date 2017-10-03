@@ -157,62 +157,9 @@ public class FlexInputFragment extends Fragment
     inputContainer = root.findViewById(R.id.main_input_container);
     emojiContainer = root.findViewById(R.id.emoji_container);
     attachmentPreviewList = root.findViewById(R.id.attachment_preview_list);
-    textEt = root.findViewById(R.id.text_input);
-    textEt.addTextChangedListener(new TextWatcher() {
 
-      @Override
-      public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-      }
-
-      @Override
-      public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-      }
-
-      @Override
-      public void afterTextChanged(Editable editable) {
-        updateSendBtnEnableState(editable);
-      }
-    });
-    textEt.setOnTouchListener(new View.OnTouchListener() {
-      @Override
-      public boolean onTouch(View view, MotionEvent motionEvent) {
-        return onTextInputTouch(motionEvent);
-      }
-    });
-    emojiBtn = root.findViewById(R.id.emoji_btn);
-    emojiBtn.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        onEmojiToggle();
-      }
-    });
-    sendBtn = root.findViewById(R.id.send_btn);
-    sendBtn.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        onSend();
-      }
-    });
-    addBtn = root.findViewById(R.id.add_btn);
-    addBtn.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        onAddToggle();
-      }
-    });
-
-    for (final View view : Arrays.asList(attachmentClearButton, addBtn, emojiBtn, sendBtn)) {
-      view.setOnLongClickListener(new View.OnLongClickListener() {
-        @Override
-        public boolean onLongClick(View view) {
-          return tooltipButton(view);
-        }
-      });
-    }
-
-    if (getChildFragmentManager().findFragmentById(R.id.emoji_container) != null) {
-      this.emojiBtn.setVisibility(View.VISIBLE);
-    }
+    bindTextInput(root);
+    bindButtons(root);
 
     this.initializeUiAttributes.run();
     this.initializeUiAttributes = null;
@@ -254,6 +201,68 @@ public class FlexInputFragment extends Fragment
     hideEmojiTray();
     keyboardManager.requestHide();
     super.onPause();
+  }
+
+  private void bindButtons(final View root) {
+    emojiBtn = root.findViewById(R.id.emoji_btn);
+    emojiBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        onEmojiToggle();
+      }
+    });
+    sendBtn = root.findViewById(R.id.send_btn);
+    sendBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        onSend();
+      }
+    });
+    addBtn = root.findViewById(R.id.add_btn);
+    addBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        onAddToggle();
+      }
+    });
+
+    for (final View view : Arrays.asList(attachmentClearButton, addBtn, emojiBtn, sendBtn)) {
+      view.setOnLongClickListener(new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View view) {
+          return tooltipButton(view);
+        }
+      });
+    }
+
+    if (getChildFragmentManager().findFragmentById(R.id.emoji_container) != null) {
+      this.emojiBtn.setVisibility(View.VISIBLE);
+    }
+  }
+
+  private void bindTextInput(final View root) {
+    textEt = root.findViewById(R.id.text_input);
+    textEt.addTextChangedListener(new TextWatcher() {
+
+      @Override
+      public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+      }
+
+      @Override
+      public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+      }
+
+      @Override
+      public void afterTextChanged(Editable editable) {
+        updateSendBtnEnableState(editable);
+      }
+    });
+    textEt.setOnTouchListener(new View.OnTouchListener() {
+      @Override
+      public boolean onTouch(View view, MotionEvent motionEvent) {
+        return onTextInputTouch(motionEvent);
+      }
+    });
   }
 
   private void initAttributes(final AttributeSet attrs) {
