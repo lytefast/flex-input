@@ -2,15 +2,10 @@ buildscript {
   repositories {
     mavenCentral()
   }
-
-  dependencies {
-    classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
-  }
 }
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.jakewharton.butterknife' // needed to use butterknife in libraries
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -38,9 +33,7 @@ dependencies {
     compile "com.android.support:support-v4:$supportLibraryVersion"
     compile "com.android.support.constraint:constraint-layout:$supportLibraryConstraintVersion"
 
-    compile "com.jakewharton:butterknife:8.4.0"
-    annotationProcessor "com.jakewharton:butterknife-compiler:8.4.0"
-
+    //noinspection GradleDynamicVersion
     compile "com.facebook.fresco:fresco:1.5.+"
 
     testCompile "junit:junit:4.12"

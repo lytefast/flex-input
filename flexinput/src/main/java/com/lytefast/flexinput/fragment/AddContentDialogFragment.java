@@ -31,22 +31,16 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.lytefast.flexinput.FlexInputCoordinator;
 import com.lytefast.flexinput.R;
-import com.lytefast.flexinput.R2;
 import com.lytefast.flexinput.adapters.AddContentPagerAdapter;
 import com.lytefast.flexinput.model.Attachment;
 import com.lytefast.flexinput.utils.FileUtils;
 import com.lytefast.flexinput.utils.SelectionAggregator;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -57,11 +51,11 @@ import butterknife.Unbinder;
 public class AddContentDialogFragment extends AppCompatDialogFragment {
 
   public static final int REQUEST_FILES = 5968;
-  @BindView(R2.id.content_pager) ViewPager contentPager;
-  @BindView(R2.id.content_tabs) TabLayout contentTabs;
-  @BindView(R2.id.action_btn) FloatingActionButton actionButton;
-  @BindView(R2.id.launch_btn) ImageView launchButton;
-  private Unbinder unbinder;
+
+  private ViewPager contentPager;
+  private TabLayout contentTabs;
+  private FloatingActionButton actionButton;
+  private ImageView launchButton;
 
   private SelectionAggregator<Attachment<?>> selectionAggregator;
 
@@ -104,7 +98,23 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
                            @Nullable final ViewGroup container,
                            @Nullable final Bundle savedInstanceState) {
     View root = inflater.inflate(R.layout.dialog_add_content_pager_with_fab, container, false);
-    this.unbinder = ButterKnife.bind(this, root);
+    root.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        onContentRootClick();
+      }
+    });
+
+    contentPager = root.findViewById(R.id.content_pager);
+    contentTabs = root.findViewById(R.id.content_tabs);
+    actionButton = root.findViewById(R.id.action_btn);
+    launchButton = root.findViewById(R.id.launch_btn);
+    launchButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        launchFileChooser();
+      }
+    });
 
     Fragment parentFragment = getParentFragment();
     if (parentFragment instanceof FlexInputFragment) {
@@ -140,7 +150,6 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
 
   @Override
   public void onDestroyView() {
-    unbinder.unbind();
     if (itemSelectionListener != null && selectionAggregator != null) {
       selectionAggregator.removeItemSelectionListener(itemSelectionListener);
     }
@@ -164,7 +173,6 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
     });
   }
 
-  @OnClick(R2.id.content_root)
   void onContentRootClick() {
     if (isCancelable()) {  // TODO check setCanceledOnTouchOutside
       dismissWithAnimation();
@@ -233,7 +241,6 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
         }
       };
 
-  @OnClick(R2.id.launch_btn)
   public void launchFileChooser() {
     final Intent imagePickerIntent = new Intent(Intent.ACTION_PICK)
         .setType("image/*")

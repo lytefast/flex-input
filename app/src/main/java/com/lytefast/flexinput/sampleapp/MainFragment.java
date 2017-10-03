@@ -25,10 +25,6 @@ import com.lytefast.flexinput.model.Attachment;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
 
 /**
  * Sample of how to use the {@link FlexInputFragment} component.
@@ -37,8 +33,7 @@ import butterknife.Unbinder;
  */
 public class MainFragment extends Fragment {
 
-  @BindView(R.id.message_list) RecyclerView recyclerView;
-  private Unbinder unbinder;
+  private RecyclerView recyclerView;
 
   private FlexInputFragment flexInput;
   private MessageAdapter msgAdapter;
@@ -57,13 +52,14 @@ public class MainFragment extends Fragment {
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
                            Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_message_main, container, false);
+    recyclerView = view.findViewById(R.id.message_list);
+
     return view;
   }
 
   @Override
   public void onViewCreated(final View view, @Nullable final Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    unbinder = ButterKnife.bind(this, getView());
 
     final InputMethodManager imm =
         (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -134,12 +130,6 @@ public class MainFragment extends Fragment {
   public void onResume() {
     super.onResume();
     flexInput.requestFocus();
-  }
-
-  @Override
-  public void onDestroyView() {
-    unbinder.unbind();
-    super.onDestroyView();
   }
 
   /**

@@ -2,7 +2,6 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/content_root"
     style="FlexInput.DialogWhenLarge.Main"
     android:background="?flexInputDialogBackground"
     android:clickable="true"

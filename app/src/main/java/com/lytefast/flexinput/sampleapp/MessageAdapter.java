@@ -10,14 +10,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.lytefast.flexinput.model.Attachment;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.lytefast.flexinput.model.Attachment;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 
 /**
@@ -61,14 +57,18 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
   }
 
   static class ViewHolder extends RecyclerView.ViewHolder {
-    @BindView(R.id.index_tv) TextView indexTv;
-    @BindView(R.id.message_tv) TextView messageTv;
-    @BindView(R.id.attachment_tv) TextView attachmentTv;
-    @BindView(R.id.attachment_iv) SimpleDraweeView imageView;
+    private TextView indexTv;
+    private TextView messageTv;
+    private TextView attachmentTv;
+    private SimpleDraweeView imageView;
 
     public ViewHolder(final View itemView) {
       super(itemView);
-      ButterKnife.bind(this, itemView);
+
+      indexTv = itemView.findViewById(R.id.index_tv);
+      messageTv = itemView.findViewById(R.id.message_tv);
+      attachmentTv = itemView.findViewById(R.id.attachment_tv);
+      imageView = itemView.findViewById(R.id.attachment_iv);
     }
 
     public void bind(Data data, int index) {
