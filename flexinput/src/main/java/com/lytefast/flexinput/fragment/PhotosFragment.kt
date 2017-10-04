@@ -78,7 +78,7 @@ open class PhotosFragment : PermissionsFragment() {
    * @return [RecyclerView.Adapter] shown when user has no permissions.
    * @see EmptyListAdapter
    */
-  protected fun newPermissionsRequestAdapter(onClickListener: View.OnClickListener): EmptyListAdapter {
+  protected open fun newPermissionsRequestAdapter(onClickListener: View.OnClickListener): EmptyListAdapter {
     return EmptyListAdapter(
         R.layout.item_permission_storage, R.id.permissions_req_btn, onClickListener)
   }

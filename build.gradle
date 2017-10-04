@@ -3,13 +3,13 @@
 buildscript {
 
     ext {
-        buildToolsVersion = '26.0.1'
+        buildToolsVersion = '26.0.2'
         compileSdkVersion = 26
         minSdkVersion = 16
         targetSdkVersion = 26
         supportLibraryVersion = '26.0.+'
         supportLibraryConstraintVersion = '1.1.0-beta1'
-        kotlin_version = '1.1.4-3'
+        kotlin_version = '1.1.51'
     }
 
     repositories {

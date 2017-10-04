@@ -2,10 +2,10 @@ package com.lytefast.flexinput;
 
 import android.text.Editable;
 
+import java.util.List;
+
 import com.lytefast.flexinput.fragment.FlexInputFragment;
 import com.lytefast.flexinput.model.Attachment;
-
-import java.util.List;
 
 
 /**
@@ -19,5 +19,5 @@ public interface InputListener {
    *
    * @return True if the attaachment and data should be cleared. False to keep
    */
-  boolean onSend(Editable data, List<? extends Attachment> attachments);
+  boolean onSend(Editable data, List<? extends Attachment<?>> attachments);
 }

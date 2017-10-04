@@ -110,7 +110,7 @@ open class CameraFragment : PermissionsFragment() {
     }, 350)
   }
 
-  protected fun initPermissionsView(permissionsContainer: FrameLayout) {
+  protected open fun initPermissionsView(permissionsContainer: FrameLayout) {
     val view = LayoutInflater.from(permissionsContainer.context)
         .inflate(R.layout.view_camera_permissions, permissionsContainer, true)
     view.findViewById<View>(R.id.permissions_req_btn)
@@ -148,7 +148,7 @@ open class CameraFragment : PermissionsFragment() {
     super.onPause()
   }
 
-  protected fun requestPermissionClick() {
+  protected open fun requestPermissionClick() {
     requestPermissions(object : PermissionsFragment.PermissionsResultCallback {
       override fun granted() {
         cameraView?.post {
@@ -264,7 +264,7 @@ open class CameraFragment : PermissionsFragment() {
     @DrawableRes val facingImg: Int =
         when (newFacingState) {
           CameraView.FACING_FRONT -> R.drawable.ic_camera_rear_white_24dp
-//          CameraView.FACING_FRONT,
+//          CameraView.FACING_BACK,
           else -> R.drawable.ic_camera_front_white_24dp
         }
     btn.setImageResource(facingImg)

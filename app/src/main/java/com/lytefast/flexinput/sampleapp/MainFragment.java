@@ -137,7 +137,7 @@ public class MainFragment extends Fragment {
    */
   private final InputListener flexInputListener = new InputListener() {
     @Override
-    public boolean onSend(final Editable data, List<? extends Attachment> attachments) {
+    public boolean onSend(final Editable data, List<? extends Attachment<?>> attachments) {
       if (data.length() > 0) {
         msgAdapter.addMessage(new MessageAdapter.Data(data, null));
       }

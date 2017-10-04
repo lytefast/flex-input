@@ -12,7 +12,7 @@ import android.view.ViewGroup
  * Simple [android.support.v7.widget.RecyclerView.Adapter] which just renders one item entry.
  * @author Sam Shih
  */
-class EmptyListAdapter(
+open class EmptyListAdapter(
     @LayoutRes private val itemLayoutId: Int,
     @IdRes private val actionBtnId: Int,
     private val onClickListener: View.OnClickListener) : RecyclerView.Adapter<EmptyListAdapter.ViewHolder>() {

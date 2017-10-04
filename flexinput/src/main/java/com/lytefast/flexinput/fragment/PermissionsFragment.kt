@@ -48,12 +48,12 @@ open class PermissionsFragment : Fragment() {
     permissionRequestCallback = null
   }
 
-  protected fun hasPermissions(vararg requiredPermissionList: String): Boolean =
+  protected open fun hasPermissions(vararg requiredPermissionList: String): Boolean =
       requiredPermissionList.all { reqPerm ->
         ContextCompat.checkSelfPermission(context, reqPerm) == PackageManager.PERMISSION_GRANTED
       }
 
-  protected fun areAllPermissionsGranted(vararg permissionsAccessList: Int): Boolean {
+  protected open fun areAllPermissionsGranted(vararg permissionsAccessList: Int): Boolean {
     if (permissionsAccessList.isEmpty()) {
       return false
     }
