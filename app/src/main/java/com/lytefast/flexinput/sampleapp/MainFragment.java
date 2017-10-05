@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatEditText;
@@ -16,14 +17,19 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import java.util.List;
+
 import com.lytefast.flexinput.InputListener;
+import com.lytefast.flexinput.adapters.AddContentPagerAdapter;
 import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
+import com.lytefast.flexinput.adapters.EmptyListAdapter;
+import com.lytefast.flexinput.fragment.CameraFragment;
+import com.lytefast.flexinput.fragment.FilesFragment;
 import com.lytefast.flexinput.fragment.FlexInputFragment;
+import com.lytefast.flexinput.fragment.PhotosFragment;
 import com.lytefast.flexinput.managers.KeyboardManager;
 import com.lytefast.flexinput.managers.SimpleFileManager;
 import com.lytefast.flexinput.model.Attachment;
-
-import java.util.List;
 
 
 /**
@@ -114,6 +120,11 @@ public class MainFragment extends Fragment {
     flexInput
         // Can be extended to provide custom previews (e.g. larger preview images, onclick) etc.
         .setAttachmentPreviewAdapter(new AttachmentPreviewAdapter(getContext().getContentResolver()));
+
+    final boolean hasCustomPages = false;
+    if (hasCustomPages) {
+      flexInput.setContentPages(createContentPages());
+    }
   }
 
   private void tryRiskyFeatures() {
@@ -133,11 +144,48 @@ public class MainFragment extends Fragment {
   }
 
   /**
+   * Not necessary if the defaults are sufficient. Add to this array if custom pages needed.
+   */
+  private static AddContentPagerAdapter.PageSupplier[] createContentPages() {
+    return new AddContentPagerAdapter.PageSupplier[]{
+        new AddContentPagerAdapter.PageSupplier(R.drawable.ic_image_24dp, R.string.attachment_photos) {
+          @Override
+          @NonNull
+          public Fragment createFragment() {
+            return new PhotosFragment();
+          }
+        },
+        new AddContentPagerAdapter.PageSupplier(R.drawable.ic_file_24dp, R.string.attachment_files) {
+          @Override
+          @NonNull
+          public Fragment createFragment() {
+            return new CustomFilesFragment();
+          }
+        },
+        new AddContentPagerAdapter.PageSupplier(R.drawable.ic_add_a_photo_24dp, R.string.attachment_camera) {
+          @Override
+          @NonNull
+          public Fragment createFragment() {
+            return new CameraFragment();
+          }
+        }
+    };
+  }
+
+  public static class CustomFilesFragment extends FilesFragment {
+    @Override @NonNull
+    protected EmptyListAdapter newPermissionsRequestAdapter(final View.OnClickListener onClickListener) {
+       return new EmptyListAdapter(
+        R.layout.custom_permission_storage, R.id.permissions_req_btn, onClickListener);
+    }
+  }
+
+  /**
    * Main point of interaction between the {@link FlexInputFragment} widget and the client.
    */
   private final InputListener flexInputListener = new InputListener() {
     @Override
-    public boolean onSend(final Editable data, List<? extends Attachment> attachments) {
+    public boolean onSend(final Editable data, List<? extends Attachment<?>> attachments) {
       if (data.length() > 0) {
         msgAdapter.addMessage(new MessageAdapter.Data(data, null));
       }

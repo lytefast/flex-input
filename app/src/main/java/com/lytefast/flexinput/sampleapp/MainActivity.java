@@ -2,13 +2,18 @@ package com.lytefast.flexinput.sampleapp;
 
 
 import android.os.Bundle;
+import android.support.annotation.IdRes;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.lytefast.flexinput.adapters.EmptyListAdapter;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -38,5 +43,18 @@ public class MainActivity extends AppCompatActivity {
             isChecked ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
       }
     });
+  }
+
+  @SuppressWarnings("unused")
+  public static class TestEmptyListAdapter extends EmptyListAdapter {
+
+    public TestEmptyListAdapter(@LayoutRes int itemLayoutId, @IdRes int actionBtnId, View.OnClickListener onClickListener) {
+      super(itemLayoutId, actionBtnId, onClickListener);
+    }
+
+    @Override @NonNull
+    public EmptyListAdapter.ViewHolder onCreateViewHolder(final @NonNull ViewGroup parent, final int viewType) {
+      return super.onCreateViewHolder(parent, viewType);
+    }
   }
 }
