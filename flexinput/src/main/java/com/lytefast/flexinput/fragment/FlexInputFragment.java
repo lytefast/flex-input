@@ -30,6 +30,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import com.lytefast.flexinput.FlexInputCoordinator;
 import com.lytefast.flexinput.InputListener;
 import com.lytefast.flexinput.R;
@@ -40,9 +43,6 @@ import com.lytefast.flexinput.managers.KeyboardManager;
 import com.lytefast.flexinput.model.Attachment;
 import com.lytefast.flexinput.utils.SelectionAggregator;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 
 /**
@@ -158,7 +158,8 @@ public class FlexInputFragment extends Fragment
     emojiContainer = root.findViewById(R.id.emoji_container);
     attachmentPreviewList = root.findViewById(R.id.attachment_preview_list);
 
-    bindTextInput(root);
+    textEt = root.findViewById(R.id.text_input);
+    bindTextInput(textEt);
     bindButtons(root);
 
     this.initializeUiAttributes.run();
@@ -240,9 +241,8 @@ public class FlexInputFragment extends Fragment
     }
   }
 
-  private void bindTextInput(final View root) {
-    textEt = root.findViewById(R.id.text_input);
-    textEt.addTextChangedListener(new TextWatcher() {
+  private void bindTextInput(final AppCompatEditText editText) {
+    editText.addTextChangedListener(new TextWatcher() {
 
       @Override
       public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -257,7 +257,7 @@ public class FlexInputFragment extends Fragment
         updateSendBtnEnableState(editable);
       }
     });
-    textEt.setOnTouchListener(new View.OnTouchListener() {
+    editText.setOnTouchListener(new View.OnTouchListener() {
       @Override
       public boolean onTouch(View view, MotionEvent motionEvent) {
         return onTextInputTouch(motionEvent);
@@ -393,6 +393,8 @@ public class FlexInputFragment extends Fragment
             ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f));
         customEditText.requestLayout();
 
+        Log.d(TAG, "Binding EditText hooks");
+        bindTextInput(customEditText);
         updateSendBtnEnableState(customEditText.getText());
       }
     });
@@ -532,7 +534,7 @@ public class FlexInputFragment extends Fragment
     textEt.getText().append(data);
   }
 
-  private void updateSendBtnEnableState(final Editable message) {
+  public void updateSendBtnEnableState(final Editable message) {
     sendBtn.setEnabled(isEnabled
         && (message.length() > 0 || attachmentPreviewAdapter.getItemCount() > 0));
   }
