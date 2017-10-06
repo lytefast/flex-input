@@ -44,7 +44,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_margin">@dimen/input_container_margin</item>
-        <item name="android:gravity">center_vertical</item>
+        <item name="android:gravity">top</item>
     </style>
     <style name="FlexInput.Input.Widget" parent="FlexInput.Input.Base.Widget"/>
 
