@@ -1,6 +1,7 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -37,7 +38,8 @@
             android:focusableInTouchMode="true"
             app:hint="@string/msg_hint"
             app:hintColor="@color/colorHint"
-            app:previewBackground="@drawable/rect_rounded_highlight_alpha_20"/>
+            app:previewBackground="@drawable/rect_rounded_highlight_alpha_20"
+            tools:layout="@layout/flex_input_widget"/>
 
     </LinearLayout>
 

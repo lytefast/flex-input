@@ -4,7 +4,7 @@
     <dimen name="input_container_margin">4dp</dimen>
     <dimen name="tab_container_margin">16dp</dimen>
 
-    <dimen name="input_height">48dp</dimen>
+    <dimen name="tab_height">48dp</dimen>
     <dimen name="default_keyboard_height">280dp</dimen>
 
     <dimen name="add_content_viewpager_bottom_margin">76dp</dimen>
