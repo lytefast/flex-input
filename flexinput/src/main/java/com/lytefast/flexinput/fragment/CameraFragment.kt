@@ -199,7 +199,6 @@ open class CameraFragment : PermissionsFragment() {
     if (takePictureIntent.resolveActivity(context.packageManager) != null) {
       context.grantWriteAccessToURI(takePictureIntent, photoUri)
       startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
-      // TODO need to handle the result: 1) save thumbnail, 2) call #addToMediaStore
     }
   }
 
@@ -216,7 +215,10 @@ open class CameraFragment : PermissionsFragment() {
           Toast.makeText(context, R.string.camera_intent_result_error, Toast.LENGTH_SHORT).show()
           it.delete()  // cleanup
         }
-        else -> flexInputCoordinator?.addExternalAttachment(it.toAttachment())
+        else -> {
+          context?.addToMediaStore(it)
+          flexInputCoordinator?.addExternalAttachment(it.toAttachment())
+        }
       }
     }
   }
@@ -244,7 +246,7 @@ open class CameraFragment : PermissionsFragment() {
               it.write(data)
             }
 
-            addToMediaStore(file)
+            context?.addToMediaStore(file)
             flexInputCoordinator?.addExternalAttachment(file.toAttachment())
           } catch (e: IOException) {
             Log.w(TAG, "Cannot write to " + file, e)
@@ -297,12 +299,6 @@ open class CameraFragment : PermissionsFragment() {
     btn.setImageResource(flashImage)
   }
 
-  private fun addToMediaStore(photo: File) {
-    val mediaScanIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(photo))
-    context.sendBroadcast(mediaScanIntent)
-    Log.d(TAG, "Photo added to MediaStore: " + photo.name)
-  }
-
   companion object {
     private val REQUIRED_PERMISSIONS = arrayOf(
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -335,6 +331,13 @@ open class CameraFragment : PermissionsFragment() {
 
         grantUriPermission(packageName, uri, mode)
       }
+    }
+
+
+    private fun Context.addToMediaStore(photo: File) {
+      val mediaScanIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(photo))
+      sendBroadcast(mediaScanIntent)
+      Log.d(TAG, "Photo added to MediaStore: " + photo.name)
     }
   }
 }
