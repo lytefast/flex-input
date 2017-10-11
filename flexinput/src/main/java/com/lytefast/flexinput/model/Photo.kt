@@ -7,6 +7,7 @@ import android.os.AsyncTask
 import android.os.Parcel
 import android.os.Parcelable
 import android.provider.MediaStore
+import android.util.Log
 
 
 /**
@@ -32,8 +33,12 @@ class Photo : Attachment<String> {
       // Generate thumbnail for next time
       object : AsyncTask<Uri, Int, Void>() {
         override fun doInBackground(vararg params: Uri): Void? {
-          MediaStore.Images.Thumbnails.getThumbnail(
-              contentResolver, id, MediaStore.Images.Thumbnails.MINI_KIND, null)
+          try {
+            MediaStore.Images.Thumbnails.getThumbnail(
+                contentResolver, id, MediaStore.Images.Thumbnails.MINI_KIND, null)
+          } catch (e: Exception) {
+            Log.v(Photo::class.java.name, "Error generating thumbnail for photo $id.")
+          }
           return null
         }
       }.execute(uri)
