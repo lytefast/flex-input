@@ -53,10 +53,9 @@ class AttachmentPreviewAdapter<T : Attachment<Any>>(private val contentResolver:
     private val draweeView: SimpleDraweeView = itemView as SimpleDraweeView
 
     fun bind(item: T) {
-      if (item is Photo) {
-        draweeView.setImageURI(item.getThumbnailUri(contentResolver))
-      } else {
-        if (item.uri == null) {
+      when (item) {
+        is Photo -> draweeView.setImageURI(item.getThumbnailUri(contentResolver))
+        else -> {
           // Make sure large images don't crash drawee
           // http://stackoverflow.com/questions/33676807/fresco-bitmap-too-large-to-be-uploaded-into-a-texture
           val height = draweeView.layoutParams.height
@@ -66,12 +65,11 @@ class AttachmentPreviewAdapter<T : Attachment<Any>>(private val contentResolver:
 
           val controller = Fresco.newDraweeControllerBuilder()
               .setOldController(draweeView.controller)
+              .setAutoPlayAnimations(true)
               .setImageRequest(imageRequestBuilder.build())
               .build()
 
           draweeView.controller = controller
-        } else {
-          draweeView.setImageResource(R.drawable.ic_attach_file_24dp)
         }
       }
 
