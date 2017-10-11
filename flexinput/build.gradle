@@ -25,6 +25,7 @@ dependencies {
     compile "com.android.support:design:$supportLibraryVersion"
     compile "com.android.support:recyclerview-v7:$supportLibraryVersion"
     compile "com.android.support:support-v4:$supportLibraryVersion"
+    compile "com.android.support:support-v13:$supportLibraryVersion"
     compile "com.android.support.constraint:constraint-layout:$supportLibraryConstraintVersion"
 
     //noinspection GradleDynamicVersion

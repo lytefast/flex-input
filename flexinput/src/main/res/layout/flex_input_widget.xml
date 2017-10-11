@@ -47,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <android.support.v7.widget.AppCompatEditText
+        <com.lytefast.flexinput.widget.FlexEditText
             android:id="@+id/text_input"
             android:background="@android:color/transparent"
             android:layout_width="wrap_content"
