@@ -54,13 +54,9 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
     holder.bind(photo)
   }
 
-  override fun getItemCount(): Int {
-    return cursor?.count ?: 0
-  }
+  override fun getItemCount(): Int = cursor?.count ?: 0
 
-  override fun getItemId(position: Int): Long {
-    return this[position].id
-  }
+  override fun getItemId(position: Int): Long = this[position].id
 
   override fun onDetachedFromRecyclerView(recyclerView: RecyclerView?) {
     cursor?.close()
@@ -68,12 +64,12 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
   }
 
   fun loadPhotos() {
-    val asyncQueryHandler = object : AsyncQueryHandler(contentResolver) {
+    class LoadQueryHandler : AsyncQueryHandler(contentResolver) {
       override fun onQueryComplete(token: Int, cookie: Any, cursor: Cursor?) {
         if (cursor == null) {
           return
         }
-        this@PhotoCursorAdapter?.apply {
+        this@PhotoCursorAdapter.apply {
           this.colId = cursor.getColumnIndex(MediaStore.Images.Media._ID)
           this.colData = cursor.getColumnIndex(MediaStore.Images.Media.DATA)
           this.colName = cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME)
@@ -82,7 +78,8 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
         notifyDataSetChanged()
       }
     }
-    asyncQueryHandler.startQuery(1, this,
+
+    LoadQueryHandler().startQuery(1, this,
         MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
         arrayOf(MediaStore.Images.Media._ID,
             MediaStore.Images.Media.DATA,

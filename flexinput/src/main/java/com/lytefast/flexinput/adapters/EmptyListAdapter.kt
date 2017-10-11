@@ -27,9 +27,7 @@ open class EmptyListAdapter(
     holder.actionBtn.setOnClickListener(onClickListener)
   }
 
-  override fun getItemCount(): Int {
-    return 1
-  }
+  override fun getItemCount(): Int = 1
 
   inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     internal val actionBtn: View = itemView.findViewById(actionBtnId)

@@ -120,6 +120,7 @@ open class SelectionCoordinator<I, T: I>(
     }
 
     for (item in selectedItems) {
+      @Suppress("UNCHECKED_CAST")
       (item as? T)?.also {
         selectedItemPositionMap.put(it, -1)
       }
@@ -127,7 +128,7 @@ open class SelectionCoordinator<I, T: I>(
   }
 
   fun close() {
-    itemSelectionListener?.unregister()
+    itemSelectionListener.unregister()
   }
 
   class RestorationException internal constructor(msg: String) : Exception(msg)

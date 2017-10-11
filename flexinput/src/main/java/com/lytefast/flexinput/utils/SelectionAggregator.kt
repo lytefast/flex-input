@@ -39,7 +39,10 @@ open class SelectionAggregator<T: Attachment<Any>>(
 
   fun initFrom(savedAttachments: ArrayList<in Parcelable>): SelectionAggregator<T> {
     savedAttachments
-        .map { it as? T }.filterNotNull()
+        .mapNotNull {
+          @Suppress("UNCHECKED_CAST")
+          it as? T
+        }
         .forEach { toggleItemInternal(it) }
     return this
   }

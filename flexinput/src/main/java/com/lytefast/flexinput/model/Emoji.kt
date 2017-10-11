@@ -27,9 +27,7 @@ class Emoji : Parcelable {
     aliases = parcelIn.createStringArray()
   }
 
-  override fun describeContents(): Int {
-    return 0
-  }
+  override fun describeContents(): Int = 0
 
   override fun writeToParcel(dest: Parcel, flags: Int) {
     dest.writeString(strValue)
@@ -40,13 +38,9 @@ class Emoji : Parcelable {
 
     @JvmStatic
     val CREATOR: Parcelable.Creator<Emoji> = object : Parcelable.Creator<Emoji> {
-      override fun createFromParcel(`in`: Parcel): Emoji {
-        return Emoji(`in`)
-      }
+      override fun createFromParcel(parcel: Parcel): Emoji = Emoji(parcel)
 
-      override fun newArray(size: Int): Array<Emoji?> {
-        return arrayOfNulls(size)
-      }
+      override fun newArray(size: Int): Array<Emoji?> = arrayOfNulls(size)
     }
   }
 
@@ -75,9 +69,7 @@ class EmojiCategory(
     parcelIn.readTypedList(emojis, Emoji.CREATOR)
   }
 
-  override fun describeContents(): Int {
-    return 0
-  }
+  override fun describeContents(): Int = 0
 
   override fun writeToParcel(dest: Parcel, flags: Int) {
     dest.writeString(name)
@@ -87,15 +79,12 @@ class EmojiCategory(
 
   companion object {
 
+    @Suppress("unused")  // Used as part of Parcellable
     @JvmStatic
     val CREATOR: Parcelable.Creator<EmojiCategory> = object : Parcelable.Creator<EmojiCategory> {
-      override fun createFromParcel(parcelIn: Parcel): EmojiCategory {
-        return EmojiCategory(parcelIn)
-      }
+      override fun createFromParcel(parcelIn: Parcel): EmojiCategory = EmojiCategory(parcelIn)
 
-      override fun newArray(size: Int): Array<EmojiCategory?> {
-        return arrayOfNulls(size)
-      }
+      override fun newArray(size: Int): Array<EmojiCategory?> = arrayOfNulls(size)
     }
   }
   //endregion

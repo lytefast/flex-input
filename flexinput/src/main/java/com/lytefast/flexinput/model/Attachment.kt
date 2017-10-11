@@ -29,20 +29,16 @@ open class Attachment<out T> (
     data = null  // this shouldn't be required anyways.
   )
 
-  override fun equals(obj: Any?): Boolean {
-    if (obj != null && obj is Attachment<*>) {
-      return this.id == obj.id && this.uri == obj.uri
+  override fun equals(other: Any?): Boolean {
+    if (other != null && other is Attachment<*>) {
+      return this.id == other.id && this.uri == other.uri
     }
     return false
   }
 
-  override fun hashCode(): Int {
-    return HashCodeUtil.hashCode(id, uri)
-  }
+  override fun hashCode(): Int = HashCodeUtil.hashCode(id, uri)
 
-  override fun describeContents(): Int {
-    return 0
-  }
+  override fun describeContents(): Int = 0
 
   @CallSuper
   override fun writeToParcel(dest: Parcel, flags: Int) {
@@ -54,6 +50,7 @@ open class Attachment<out T> (
 
   companion object {
 
+    @Suppress("unused")  // Used as part of Parcellable
     @JvmStatic
     val CREATOR: Parcelable.Creator<Attachment<*>> = object : Parcelable.Creator<Attachment<*>> {
       override fun createFromParcel(parcelIn: Parcel): Attachment<*> = Attachment<Any>(parcelIn)
