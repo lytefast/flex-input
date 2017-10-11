@@ -551,6 +551,12 @@ public class FlexInputFragment extends Fragment
     final DialogFragment dialogFragment =
         (DialogFragment) getChildFragmentManager().findFragmentByTag(ADD_CONTENT_FRAG_TAG);
 
+    // Create a temporary SelectionCoordinator to add attachment
+    SelectionCoordinator<Object, Attachment> coord = new SelectionCoordinator<>();
+    attachmentPreviewAdapter.getSelectionAggregator().registerSelectionCoordinator(coord);
+    coord.selectItem(attachment, 0);
+    coord.close();
+
     attachmentPreviewList.post(new Runnable() {
       @Override
       public void run() {
@@ -562,12 +568,6 @@ public class FlexInputFragment extends Fragment
             Log.w(TAG, "could not dismiss add content dialog", ignored);
           }
         }
-
-        // Create a temporary SelectionCoordinator to add attachment
-        SelectionCoordinator<Object, Attachment> coord = new SelectionCoordinator<>();
-        attachmentPreviewAdapter.getSelectionAggregator().registerSelectionCoordinator(coord);
-        coord.selectItem(attachment, 0);
-        coord.close();
       }
     });
   }
