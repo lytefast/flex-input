@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import com.facebook.drawee.view.SimpleDraweeView
 import com.lytefast.flexinput.R
 import com.lytefast.flexinput.model.Photo
@@ -56,7 +55,7 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
 
   override fun getItemCount(): Int = cursor?.count ?: 0
 
-  override fun getItemId(position: Int): Long = this[position].id
+  override fun getItemId(position: Int): Long = this[position]?.id ?: -1
 
   override fun onDetachedFromRecyclerView(recyclerView: RecyclerView?) {
     cursor?.close()
@@ -87,16 +86,17 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
         null, null, "${MediaStore.Images.Media.DATE_ADDED} DESC")
   }
 
-  private operator fun get(position: Int): Photo {
-    cursor!!.moveToPosition(position)
-    val photoId = cursor!!.getLong(colId)
-    val fileUri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, photoId.toString())
-    return Photo(
-        id = photoId,
-        uri = fileUri,
-        displayName = cursor!!.getString(colName)?: "img-$photoId",
-        photoDataLocation = cursor!!.getString(colData))
-  }
+  private operator fun get(position: Int): Photo? =
+    cursor?.let {
+      it.moveToPosition(position)
+      val photoId = it.getLong(colId)
+      val fileUri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, photoId.toString())
+      Photo(
+          id = photoId,
+          uri = fileUri,
+          displayName = it.getString(colName) ?: "img-$photoId",
+          photoDataLocation = it.getString(colData))
+    }
 
   inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
     private val shrinkAnim: AnimatorSet
@@ -121,19 +121,18 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
       //endregion
     }
 
-    fun bind(photo: Photo) {
+    fun bind(photo: Photo?) {
       this.photo = photo
-      setSelected(selectionCoordinator.isSelected(photo, adapterPosition), false)
 
-      val thumbnailUri = photo.getThumbnailUri(contentResolver)
-      if (thumbnailUri == null) {
-        imageView.setImageURI(null as String?)
-      } else {
-        imageView.setImageURI(thumbnailUri)
+      val thumbnailUri = photo?.let {
+        setSelected(selectionCoordinator.isSelected(photo, adapterPosition), false)
+        it.getThumbnailUri(contentResolver)
       }
+
+      imageView.setImageURI(thumbnailUri)
     }
 
-    internal fun setSelected(isSelected: Boolean, isAnimationRequested: Boolean) {
+    private fun setSelected(isSelected: Boolean, isAnimationRequested: Boolean) {
       itemView.isSelected = isSelected
 
       fun scaleImage(animation: AnimatorSet) {
