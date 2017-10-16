@@ -38,7 +38,7 @@ object FileUtils {
           if (cursor.moveToFirst()) {
             val columnIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
             if (columnIndex >= 0) {
-              return cursor.getString(columnIndex)
+              return cursor.getString(columnIndex)?: this.lastPathSegment
             }
           }
         }
