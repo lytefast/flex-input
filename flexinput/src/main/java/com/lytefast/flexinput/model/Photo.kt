@@ -17,7 +17,7 @@ import android.util.Log
  */
 class Photo : Attachment<String> {
 
-  constructor(id: Long, uri: Uri, displayName: String, photoDataLocation: String)
+  constructor(id: Long, uri: Uri, displayName: String, photoDataLocation: String?)
       : super(id, uri, displayName, photoDataLocation)
 
   constructor(parcelIn: Parcel) : super(parcelIn)

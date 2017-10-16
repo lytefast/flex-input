@@ -295,7 +295,7 @@ open class CameraFragment : PermissionsFragment() {
     }
 
     cameraView?.flash = newFlashState
-    Toast.makeText(context, flashMsg, Toast.LENGTH_SHORT).show()
+    Toast.makeText(btn.context, flashMsg, Toast.LENGTH_SHORT).show()
     btn.setImageResource(flashImage)
   }
 
