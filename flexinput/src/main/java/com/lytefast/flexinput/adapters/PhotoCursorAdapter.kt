@@ -89,10 +89,13 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
 
   private operator fun get(position: Int): Photo {
     cursor!!.moveToPosition(position)
-    val photoId = Integer.toString(cursor!!.getInt(colId))
-    val fileUri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, photoId)
+    val photoId = cursor!!.getLong(colId)
+    val fileUri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, photoId.toString())
     return Photo(
-        cursor!!.getLong(colId), fileUri, cursor!!.getString(colName), cursor!!.getString(colData))
+        id = photoId,
+        uri = fileUri,
+        displayName = cursor!!.getString(colName)?: "img-$photoId",
+        photoDataLocation = cursor!!.getString(colData))
   }
 
   inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
