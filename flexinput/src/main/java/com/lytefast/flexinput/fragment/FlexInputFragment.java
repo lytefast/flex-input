@@ -6,12 +6,14 @@ import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v13.view.inputmethod.InputContentInfoCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -43,6 +45,10 @@ import com.lytefast.flexinput.managers.KeyboardManager;
 import com.lytefast.flexinput.model.Attachment;
 import com.lytefast.flexinput.utils.SelectionAggregator;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
+import com.lytefast.flexinput.widget.FlexEditText;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 
 /**
@@ -257,12 +263,26 @@ public class FlexInputFragment extends Fragment
         updateSendBtnEnableState(editable);
       }
     });
+
     editText.setOnTouchListener(new View.OnTouchListener() {
       @Override
       public boolean onTouch(View view, MotionEvent motionEvent) {
         return onTextInputTouch(motionEvent);
       }
     });
+
+    if (editText instanceof FlexEditText) {
+      FlexEditText flexEt = (FlexEditText) editText;
+      flexEt.setInputContentHandler(new Function1<InputContentInfoCompat, Unit>() {
+        @Override
+        public Unit invoke(final InputContentInfoCompat inputContentInfoCompat) {
+          final Uri linkUri = inputContentInfoCompat.getLinkUri();
+          Uri contentUri = inputContentInfoCompat.getContentUri();
+          addExternalAttachment(new Attachment<>(contentUri.hashCode(), contentUri, inputContentInfoCompat.getDescription().getLabel().toString(), linkUri));
+          return null;
+        }
+      });
+    }
   }
 
   private void initAttributes(final AttributeSet attrs) {

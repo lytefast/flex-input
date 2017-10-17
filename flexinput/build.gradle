@@ -25,10 +25,11 @@ dependencies {
     compile "com.android.support:design:$supportLibraryVersion"
     compile "com.android.support:recyclerview-v7:$supportLibraryVersion"
     compile "com.android.support:support-v4:$supportLibraryVersion"
+    compile "com.android.support:support-v13:$supportLibraryVersion"
     compile "com.android.support.constraint:constraint-layout:$supportLibraryConstraintVersion"
 
     //noinspection GradleDynamicVersion
-    compile "com.facebook.fresco:fresco:1.3.+"
+    compile "com.facebook.fresco:fresco:$frescoVersion"
 
     testCompile "junit:junit:4.12"
     androidTestCompile("com.android.support.test.espresso:espresso-core:2.2.2", {

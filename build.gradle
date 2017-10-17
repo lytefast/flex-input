@@ -9,6 +9,7 @@ buildscript {
         targetSdkVersion = 26
         supportLibraryVersion = '26.0.+'
         supportLibraryConstraintVersion = '1.1.0-beta3'
+        frescoVersion = '1.3.0'
         kotlin_version = '1.1.51'
     }
 

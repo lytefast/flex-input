@@ -9,11 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.lytefast.flexinput.model.Attachment;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.lytefast.flexinput.model.Attachment;
 
 
 /**
@@ -77,7 +80,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
       if (data.attachment != null) {
         imageView.setVisibility(View.VISIBLE);
         Uri uri = data.attachment.getUri();
-        imageView.setImageURI(uri);
+
+        DraweeController controller = Fresco.newDraweeControllerBuilder()
+            .setUri(uri)
+            .setAutoPlayAnimations(true)
+            .build();
+        imageView.setController(controller);
 
         attachmentTv.setVisibility(View.VISIBLE);
         attachmentTv.setText(data.attachment.getDisplayName());
