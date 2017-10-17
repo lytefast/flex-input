@@ -277,9 +277,12 @@ public class FlexInputFragment extends Fragment
       flexEt.setInputContentHandler(new Function1<InputContentInfoCompat, Unit>() {
         @Override
         public Unit invoke(final InputContentInfoCompat inputContentInfoCompat) {
-          final Uri linkUri = inputContentInfoCompat.getLinkUri();
           Uri contentUri = inputContentInfoCompat.getContentUri();
-          addExternalAttachment(new Attachment<>(contentUri.hashCode(), contentUri, inputContentInfoCompat.getDescription().getLabel().toString(), linkUri));
+          addExternalAttachment(new Attachment<>(
+              contentUri.hashCode(),
+              contentUri,
+              inputContentInfoCompat.getDescription().getLabel().toString(),
+              inputContentInfoCompat));
           return null;
         }
       });
