@@ -43,6 +43,7 @@ import com.lytefast.flexinput.adapters.AttachmentPreviewAdapter;
 import com.lytefast.flexinput.managers.FileManager;
 import com.lytefast.flexinput.managers.KeyboardManager;
 import com.lytefast.flexinput.model.Attachment;
+import com.lytefast.flexinput.utils.FlexInputEmojiStateChangeListener;
 import com.lytefast.flexinput.utils.SelectionAggregator;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 import com.lytefast.flexinput.widget.FlexEditText;
@@ -542,13 +543,22 @@ public class FlexInputFragment extends Fragment
     }
     emojiContainer.setVisibility(View.GONE);
     emojiBtn.setImageResource(R.drawable.ic_insert_emoticon_24dp);
+    onEmojiStateChange(false);
     return true;
   }
 
-  private void showEmojiTray() {
+  public void showEmojiTray() {
     emojiContainer.setVisibility(View.VISIBLE);
     keyboardManager.requestHide();
     emojiBtn.setImageResource(R.drawable.ic_keyboard_24dp);
+    onEmojiStateChange(true);
+  }
+
+  protected void onEmojiStateChange(boolean isActive) {
+    final Fragment fragment = getChildFragmentManager().findFragmentById(R.id.emoji_container);
+    if (fragment != null && fragment instanceof FlexInputEmojiStateChangeListener) {
+      ((FlexInputEmojiStateChangeListener) fragment).isShown(isActive);
+    }
   }
 
   public void append(CharSequence data) {

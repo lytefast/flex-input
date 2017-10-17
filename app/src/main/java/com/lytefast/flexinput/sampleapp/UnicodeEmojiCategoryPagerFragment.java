@@ -4,16 +4,17 @@ import android.support.annotation.DrawableRes;
 import android.util.JsonReader;
 import android.util.Log;
 
-import com.lytefast.flexinput.fragment.EmojiCategoryPagerFragment;
-import com.lytefast.flexinput.model.Emoji;
-import com.lytefast.flexinput.model.EmojiCategory;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import com.lytefast.flexinput.fragment.EmojiCategoryPagerFragment;
+import com.lytefast.flexinput.model.Emoji;
+import com.lytefast.flexinput.model.EmojiCategory;
+import com.lytefast.flexinput.utils.FlexInputEmojiStateChangeListener;
 
 
 /**
@@ -22,7 +23,8 @@ import java.util.List;
  *
  * @author Sam Shih
  */
-public class UnicodeEmojiCategoryPagerFragment extends EmojiCategoryPagerFragment {
+public class UnicodeEmojiCategoryPagerFragment extends EmojiCategoryPagerFragment
+  implements FlexInputEmojiStateChangeListener {
 
   public static final String ASSET_PATH_EMOJIS = "emojis.json";
 
@@ -122,5 +124,10 @@ public class UnicodeEmojiCategoryPagerFragment extends EmojiCategoryPagerFragmen
       default:
         return R.drawable.ic_mood_black_24dp;
     }
+  }
+
+  @Override
+  public void isShown(final boolean isActive) {
+    Log.d(this.getClass().getSimpleName(), "isActive: " + isActive);
   }
 }
