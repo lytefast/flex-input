@@ -388,10 +388,12 @@ public class FlexInputFragment extends Fragment
         final int editTextIndex = inputContainer.indexOfChild(textEt);
         inputContainer.removeView(textEt);
         inputContainer.addView(customEditText, editTextIndex);
+        FlexInputFragment.this.textEt = customEditText;
 
         customEditText.setLayoutParams(new LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f));
         customEditText.requestLayout();
+
 
         Log.d(TAG, "Binding EditText hooks");
         bindTextInput(customEditText);
