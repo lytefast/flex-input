@@ -3,7 +3,6 @@ package com.lytefast.flexinput.sampleapp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,18 +101,21 @@ public class MainFragment extends Fragment {
     optionalFeatures();
     tryRiskyFeatures();
 
-    consumeSendIntent(getActivity().getIntent());
+    consumeSendIntent();
   }
 
-  private void consumeSendIntent(final Intent intent) {
-    if (intent.getAction() != Intent.ACTION_SEND) {
-      return;
-    }
-
-    Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-    if (uri != null) {
-      flexInput.addExternalAttachment(Attachment.fromUri(getContext().getContentResolver(), uri));
-      intent.removeExtra(Intent.EXTRA_STREAM);
+  private void consumeSendIntent() {
+    Intent intent = getActivity().getIntent();
+    Attachment<?> attachment =
+        IntentUtil.consumeSendIntent(intent, getContext().getContentResolver());
+    if (attachment != null) {
+      flexInput.addExternalAttachment(attachment);
+      // Look for text
+      String text = intent.getStringExtra(Intent.EXTRA_TEXT);
+      if (!TextUtils.isEmpty(text)) {
+        flexInput.setText(text);
+        intent.removeExtra(Intent.EXTRA_TEXT);
+      }
     }
   }
 
