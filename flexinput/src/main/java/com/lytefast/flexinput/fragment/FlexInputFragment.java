@@ -321,8 +321,6 @@ public class FlexInputFragment extends Fragment
    *
    * Note that this should only be set once for the life of the containing fragment. Make sure to
    * check the <code>savedInstanceState</code> before creating and saving another fragment.
-   *
-   * @return
    */
   public FlexInputFragment setEmojiFragment(final Fragment emojiFragment) {
     getChildFragmentManager()
@@ -582,7 +580,7 @@ public class FlexInputFragment extends Fragment
   // region FlexInputCoordinator methods
 
   @Override
-  public void addExternalAttachment(final Attachment attachment) {
+  public void addExternalAttachment(@NonNull final Attachment<?> attachment) {
     final DialogFragment dialogFragment =
         (DialogFragment) getChildFragmentManager().findFragmentByTag(ADD_CONTENT_FRAG_TAG);
 
