@@ -16,16 +16,21 @@ import com.lytefast.flexinput.model.Photo
 import com.lytefast.flexinput.utils.SelectionAggregator
 
 
+typealias SelectionAggregatorProvider<T> = (AttachmentPreviewAdapter<T>) -> SelectionAggregator<T>
+
 /**
  * [RecyclerView.Adapter] which, given a list of attachments understands how to display them.
  * This can be extended to implement custom previews.
  *
  * @author Sam Shih
  */
-class AttachmentPreviewAdapter<T : Attachment<Any>>(private val contentResolver: ContentResolver)
+class AttachmentPreviewAdapter<T : Attachment<Any>>
+@JvmOverloads constructor(private val contentResolver: ContentResolver,
+                          selectionAggregatorProvider: SelectionAggregatorProvider<T>? = null)
   : RecyclerView.Adapter<AttachmentPreviewAdapter<T>.ViewHolder>() {
 
-  val selectionAggregator: SelectionAggregator<T> = SelectionAggregator(this)
+  val selectionAggregator: SelectionAggregator<T> =
+      selectionAggregatorProvider?.invoke(this) ?: SelectionAggregator(this)
 
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

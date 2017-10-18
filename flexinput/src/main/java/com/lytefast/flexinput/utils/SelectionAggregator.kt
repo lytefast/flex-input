@@ -13,7 +13,7 @@ import java.util.*
  *
  * @author Sam Shih
  */
-open class SelectionAggregator<T: Attachment<Any>>(
+open class SelectionAggregator<T: Attachment<Any>> @JvmOverloads constructor(
     val adapter: AttachmentPreviewAdapter<T>,
     val attachments: ArrayList<T> = arrayListOf(),
     protected val childSelectionCoordinators: ArrayList<SelectionCoordinator<T, *>> = ArrayList(4),
@@ -135,7 +135,6 @@ open class SelectionAggregator<T: Attachment<Any>>(
     } catch (e: SelectionCoordinator.RestorationException) {
       Log.d(TAG, "selections could not be synced", e)
     }
-
   }
 
   protected fun registerSelectionCoordinatorInternal(
