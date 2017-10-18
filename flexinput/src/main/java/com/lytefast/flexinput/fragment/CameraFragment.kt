@@ -247,7 +247,9 @@ open class CameraFragment : PermissionsFragment() {
             }
 
             context?.addToMediaStore(file)
-            flexInputCoordinator?.addExternalAttachment(file.toAttachment())
+            cameraView.post {
+              flexInputCoordinator?.addExternalAttachment(file.toAttachment())
+            }
           } catch (e: IOException) {
             Log.w(TAG, "Cannot write to " + file, e)
           }

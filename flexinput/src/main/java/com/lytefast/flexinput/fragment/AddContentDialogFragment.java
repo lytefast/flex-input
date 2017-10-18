@@ -31,6 +31,9 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.lytefast.flexinput.FlexInputCoordinator;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.adapters.AddContentPagerAdapter;
@@ -38,9 +41,6 @@ import com.lytefast.flexinput.model.Attachment;
 import com.lytefast.flexinput.utils.FileUtils;
 import com.lytefast.flexinput.utils.SelectionAggregator;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -383,11 +383,16 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
       return;  // Fragment gone, nothing to do
     }
 
-    if (selectionAggregator.getSize() > 0) {
-      actionButton.show();
-    } else {
-      actionButton.hide();
-    }
+    actionButton.post(new Runnable() {
+      @Override
+      public void run() {
+        if (selectionAggregator.getSize() > 0) {
+          actionButton.show();
+        } else {
+          actionButton.hide();
+        }
+      }
+    });
   }
 
   private CharSequence getLauncherString() {
