@@ -137,9 +137,9 @@ open class SelectionAggregator<T: Attachment<Any>> @JvmOverloads constructor(
     }
   }
 
-  protected fun registerSelectionCoordinatorInternal(
+  protected open fun registerSelectionCoordinatorInternal(
       selectionCoordinator: SelectionCoordinator<T, *>) {
-    selectionCoordinator.itemSelectionListener = object : SelectionCoordinator.ItemSelectionListener<T>() {
+    selectionCoordinator.itemSelectionListener = object : SelectionCoordinator.ItemSelectionListener<T> {
       override fun onItemSelected(item: T) {
         addItem(item)
       }

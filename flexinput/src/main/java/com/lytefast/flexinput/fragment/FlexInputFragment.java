@@ -126,6 +126,9 @@ public class FlexInputFragment extends Fragment
             updateUi();
           }
 
+          @Override
+          public void unregister() { }
+
           private void updateUi() {
             final View rootView = getView();
             if (rootView == null) {

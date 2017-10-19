@@ -19,7 +19,11 @@ open class SelectionCoordinator<I, T: I>(
      */
     @Suppress("MemberVisibilityCanPrivate")
     protected val selectedItemPositionMap: ArrayMap<T, Int> = ArrayMap(4),
-    var itemSelectionListener: ItemSelectionListener<in I> = ItemSelectionListener()) {
+    var itemSelectionListener: ItemSelectionListener<in I> = object : ItemSelectionListener<I> {
+      override fun onItemSelected(item: I) {}
+      override fun onItemUnselected(item: I) {}
+      override fun unregister() {}
+    }) {
 
   /**
    * The [android.support.v7.widget.RecyclerView.Adapter] that should be notified when selection changes occur.
@@ -133,14 +137,14 @@ open class SelectionCoordinator<I, T: I>(
 
   class RestorationException internal constructor(msg: String) : Exception(msg)
 
-  open class ItemSelectionListener<I> {
-    open fun onItemSelected(item: I) {}
-    open fun onItemUnselected(item: I) {}
+  interface ItemSelectionListener<I> {
+    fun onItemSelected(item: I) {}
+    fun onItemUnselected(item: I) {}
 
     /**
      * Signals that no new notifications are required. This should be called when the
      * [SelectionCoordinator] goes out of scope to clean up references.
      */
-    open fun unregister() {}
+    fun unregister() {}
   }
 }

@@ -239,6 +239,9 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
         public void onItemUnselected(final Object item) {
           updateActionButton();
         }
+
+        @Override
+        public void unregister() { }
       };
 
   public void launchFileChooser() {
