@@ -1,5 +1,16 @@
-# flex-input
-Android text/emoji/media input field
+# FlexInput
+Android EditText wrapper to support text/emoji/camera/media input.
+
+## Features
+- advance overrides to enable custom behaviour/look
+- built in media picker
+  - camera capture for quick pics
+  - photo/file selector
+- gif keyboard entry support
+- file/attachment preview
+- multi-file support
+
+Used in the [Discord](www.discordapp.com) android app!
 
 <img src="/images/keyboard.png" width="240">
   
@@ -18,11 +29,7 @@ Android text/emoji/media input field
 - This is currently using the still in development [cameraview](https://github.com/google/cameraview/)
   - at the current moment the cameraview project is just a symlink to the [camereaview/library project](https://github.com/google/cameraview/tree/master/library)
   - you must do the same (include as a local project module dependency) in you project
-- [Butterknife](http://jakewharton.github.io/butterknife/)
 - [Fresco](http://frescolib.org/)
-
-# Work in Progress
-- [x] Handle permission requests and denials
 
 # Usage
 For more details refer to the sample app included in this project.
@@ -154,5 +161,7 @@ private void tryRiskyFeatures() {
   }
 }
 ```
+
+There are other overrides that are possible via extension of `FlexInputFragment`, custom classes (e.g. `AttachmentPreview`), or providing your own `Fragments` to FlexInput.
 
 You can trigger the feature via the sample app to experiment.
