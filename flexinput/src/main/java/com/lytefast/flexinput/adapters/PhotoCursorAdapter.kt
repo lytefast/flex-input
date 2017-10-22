@@ -53,6 +53,14 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
     holder.bind(photo)
   }
 
+  override fun onBindViewHolder(holder: ViewHolder?, position: Int, payloads: MutableList<Any>?) {
+    payloads?.mapNotNull { it as? SelectionCoordinator.SelectionEvent<*> }?.firstOrNull()?.also {
+      holder?.setSelected(it.isSelected, isAnimationRequested = true)
+      return
+    }
+    super.onBindViewHolder(holder, position, payloads)
+  }
+
   override fun getItemCount(): Int = cursor?.count ?: 0
 
   override fun getItemId(position: Int): Long = this[position]?.id ?: -1
@@ -132,7 +140,7 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
       imageView.setImageURI(thumbnailUri)
     }
 
-    private fun setSelected(isSelected: Boolean, isAnimationRequested: Boolean) {
+    fun setSelected(isSelected: Boolean, isAnimationRequested: Boolean = true) {
       itemView.isSelected = isSelected
 
       fun scaleImage(animation: AnimatorSet) {
@@ -152,7 +160,7 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
     }
 
     override fun onClick(v: View) {
-      setSelected(selectionCoordinator.toggleItem(photo, adapterPosition), true)
+      selectionCoordinator.toggleItem(photo, adapterPosition)
     }
   }
 }

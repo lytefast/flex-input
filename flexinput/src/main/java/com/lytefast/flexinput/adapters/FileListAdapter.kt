@@ -49,6 +49,15 @@ class FileListAdapter(private val contentResolver: ContentResolver,
   override fun onBindViewHolder(holder: FileListAdapter.ViewHolder, position: Int) =
       holder.bind(files[position])
 
+
+  override fun onBindViewHolder(holder: ViewHolder?, position: Int, payloads: MutableList<Any>?) {
+    payloads?.mapNotNull { it as? SelectionCoordinator.SelectionEvent<*> }?.firstOrNull()?.also {
+      holder?.setSelected(it.isSelected, isAnimationRequested = true)
+      return
+    }
+    super.onBindViewHolder(holder, position, payloads)
+  }
+
   override fun getItemCount(): Int = files.size
 
   fun load(root: File) {
@@ -149,7 +158,7 @@ class FileListAdapter(private val contentResolver: ContentResolver,
       }
     }
 
-    private fun setSelected(isSelected: Boolean, isAnimationRequested: Boolean) {
+    fun setSelected(isSelected: Boolean, isAnimationRequested: Boolean) {
       itemView.isSelected = isSelected
 
       fun scaleImage(animation: AnimatorSet) {

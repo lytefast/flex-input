@@ -91,7 +91,7 @@ open class SelectionCoordinator<I, T: I>(
    */
   fun selectItem(item: T, position: Int) {
     selectedItemPositionMap.put(item, position)
-    adapter?.notifyItemChanged(position)
+    adapter?.notifyItemChanged(position, SelectionEvent(item, isSelected = true))
     itemSelectionListener.onItemSelected(item)
   }
 
@@ -105,7 +105,7 @@ open class SelectionCoordinator<I, T: I>(
    */
   fun unselectItem(item: I): Boolean {
     val removedItemPosition = selectedItemPositionMap.remove(item) ?: return false
-    adapter?.notifyItemChanged(removedItemPosition)
+    adapter?.notifyItemChanged(removedItemPosition, SelectionEvent(item, isSelected = false))
     itemSelectionListener.onItemUnselected(item)
     return true
   }
@@ -136,6 +136,8 @@ open class SelectionCoordinator<I, T: I>(
   }
 
   class RestorationException internal constructor(msg: String) : Exception(msg)
+
+  data class SelectionEvent<out T>(val item: T, val isSelected: Boolean)
 
   interface ItemSelectionListener<I> {
     fun onItemSelected(item: I) {}
