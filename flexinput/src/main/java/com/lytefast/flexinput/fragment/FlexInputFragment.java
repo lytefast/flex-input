@@ -32,6 +32,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -88,7 +90,7 @@ public class FlexInputFragment extends Fragment
   private InputListener inputListener;
 
   protected FileManager fileManager;
-  protected AttachmentPreviewAdapter attachmentPreviewAdapter;
+  protected AttachmentPreviewAdapter<Attachment<Object>> attachmentPreviewAdapter;
   protected AddContentPagerAdapter.PageSupplier[] pageSuppliers;
 
   private boolean isEnabled = true;
@@ -112,17 +114,18 @@ public class FlexInputFragment extends Fragment
     this.attachmentPreviewAdapter = initDefaultAttachmentPreviewAdapter();
   }
 
-  private AttachmentPreviewAdapter initDefaultAttachmentPreviewAdapter() {
-    AttachmentPreviewAdapter adapter = new AttachmentPreviewAdapter(getContext().getContentResolver());
+  private AttachmentPreviewAdapter<Attachment<Object>> initDefaultAttachmentPreviewAdapter() {
+    AttachmentPreviewAdapter<Attachment<Object>> adapter =
+        new AttachmentPreviewAdapter<>(getContext().getContentResolver());
     adapter.getSelectionAggregator()
-        .addItemSelectionListener(new SelectionCoordinator.ItemSelectionListener() {
+        .addItemSelectionListener(new SelectionCoordinator.ItemSelectionListener<Attachment<Object>>() {
           @Override
-          public void onItemSelected(final Object item) {
+          public void onItemSelected(final Attachment<Object> item) {
             updateUi();
           }
 
           @Override
-          public void onItemUnselected(final Object item) {
+          public void onItemUnselected(final Attachment<Object> item) {
             updateUi();
           }
 
@@ -306,8 +309,8 @@ public class FlexInputFragment extends Fragment
         textEt.setHintTextColor(hintColor);
       }
 
-      if (a.hasValue(R.styleable.FlexInput_previewBackground)) {
-        Drawable backgroundDrawable = a.getDrawable(R.styleable.FlexInput_previewBackground);
+      final Drawable backgroundDrawable = a.getDrawable(R.styleable.FlexInput_previewBackground);
+      if (backgroundDrawable != null) {
         backgroundDrawable.setCallback(getView());
         attachmentPreviewContainer.setBackground(backgroundDrawable);
       }
@@ -350,7 +353,7 @@ public class FlexInputFragment extends Fragment
    *
    * @see AttachmentPreviewAdapter#AttachmentPreviewAdapter(ContentResolver) for a default implementation of attachment previews
    */
-  public FlexInputFragment setAttachmentPreviewAdapter(@NonNull final AttachmentPreviewAdapter previewAdapter) {
+  public FlexInputFragment setAttachmentPreviewAdapter(@NonNull final AttachmentPreviewAdapter<Attachment<Object>> previewAdapter) {
     previewAdapter.getSelectionAggregator()
         .initFrom(attachmentPreviewAdapter.getSelectionAggregator());
 
@@ -566,7 +569,6 @@ public class FlexInputFragment extends Fragment
   }
 
   public void append(CharSequence data) {
-    // TODO figure out some way to allow custom spannables (e.g. fresco's DraweeSpan)
     textEt.getText().append(data);
   }
 
@@ -583,14 +585,15 @@ public class FlexInputFragment extends Fragment
   // region FlexInputCoordinator methods
 
   @Override
-  public void addExternalAttachment(@NonNull final Attachment<?> attachment) {
+  @SuppressWarnings("unchecked")
+  public void addExternalAttachment(@NotNull final Attachment<?> attachment) {
     final DialogFragment dialogFragment =
         (DialogFragment) getChildFragmentManager().findFragmentByTag(ADD_CONTENT_FRAG_TAG);
 
     // Create a temporary SelectionCoordinator to add attachment
-    SelectionCoordinator<Object, Attachment> coord = new SelectionCoordinator<>();
+    SelectionCoordinator<Attachment<Object>, Attachment<Object>> coord = new SelectionCoordinator<>();
     attachmentPreviewAdapter.getSelectionAggregator().registerSelectionCoordinator(coord);
-    coord.selectItem(attachment, 0);
+    coord.selectItem((Attachment<Object>) attachment, 0);
     coord.close();
 
     attachmentPreviewList.post(new Runnable() {
@@ -609,12 +612,12 @@ public class FlexInputFragment extends Fragment
   }
 
 
-  @Override
+  @Override @NotNull
   public FileManager getFileManager() {
     return fileManager;
   }
 
-  @Override
+  @Override @NonNull
   public SelectionAggregator<Attachment<Object>> getSelectionAggregator() {
     return attachmentPreviewAdapter.getSelectionAggregator();
   }

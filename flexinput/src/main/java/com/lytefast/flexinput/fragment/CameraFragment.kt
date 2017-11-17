@@ -40,7 +40,7 @@ open class CameraFragment : PermissionsFragment() {
   protected var permissionsContainer: FrameLayout? = null
   protected var cameraFacingBtn: ImageView? = null
 
-  private var flexInputCoordinator: FlexInputCoordinator<*>? = null
+  private var flexInputCoordinator: FlexInputCoordinator<Any>? = null
 
   /**
    * Temporary holder for when we intent to the camera. This is used because the resulting intent
@@ -54,11 +54,8 @@ open class CameraFragment : PermissionsFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    var targetFragment: Fragment? = parentFragment
-    targetFragment = if (targetFragment != null) targetFragment.parentFragment else null
-    if (targetFragment is FlexInputCoordinator<*>) {
-      this.flexInputCoordinator = targetFragment
-    }
+    @Suppress("UNCHECKED_CAST")
+    this.flexInputCoordinator = parentFragment?.parentFragment as? FlexInputCoordinator<Any>
 
     return inflater?.inflate(R.layout.fragment_camera, container, false)
   }

@@ -15,12 +15,11 @@ import com.lytefast.flexinput.utils.SelectionAggregator
 */
 interface FlexInputCoordinator<T : Any> {
   val fileManager: FileManager
-    get
 
   /**
    * Get the [SelectionAggregator] instance that manages all selectable items before sending.
    */
   val selectionAggregator: SelectionAggregator<Attachment<T>>
 
-  fun addExternalAttachment(attachment: Attachment<*>)
+  fun addExternalAttachment(attachment: Attachment<T>)
 }

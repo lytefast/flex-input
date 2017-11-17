@@ -59,7 +59,7 @@ open class Attachment<out T> (
     }
 
     @JvmStatic
-    fun Uri.toAttachment(resolver: ContentResolver): Attachment<*> {
+    fun Uri.toAttachment(resolver: ContentResolver): Attachment<Uri> {
       val fileName = getFileName(resolver)
       return Attachment(hashCode().toLong(), this, fileName, null)
     }

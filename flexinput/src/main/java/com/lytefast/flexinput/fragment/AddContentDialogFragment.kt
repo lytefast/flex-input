@@ -294,7 +294,8 @@ open class AddContentDialogFragment : AppCompatDialogFragment() {
     val contentResolver = context?.contentResolver ?: return
     val clipData = intentData.clipData
 
-    val flexInputCoordinator = parentFragment as FlexInputCoordinator<*>
+    @Suppress("UNCHECKED_CAST")
+    val flexInputCoordinator = parentFragment as FlexInputCoordinator<Any>
     if (clipData == null) {
       val uri = intentData.data
       uri?.also { flexInputCoordinator.addExternalAttachment(it.toAttachment(contentResolver)) }
