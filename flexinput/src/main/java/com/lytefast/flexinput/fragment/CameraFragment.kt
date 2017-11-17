@@ -235,7 +235,10 @@ open class CameraFragment : PermissionsFragment() {
     }
 
     override fun onPictureTaken(cameraView: CameraView, data: ByteArray?) {
-      Log.d(TAG, "onPictureTaken " + data!!.size)
+      Log.d(TAG, "onPictureTaken ${data?.size ?: 0}")
+      if (data == null) {
+        return
+      }
       Toast.makeText(cameraView.context, "Picture saved", Toast.LENGTH_SHORT)
           .show()
 
@@ -251,7 +254,7 @@ open class CameraFragment : PermissionsFragment() {
               flexInputCoordinator?.addExternalAttachment(file.toAttachment())
             }
           } catch (e: IOException) {
-            Log.w(TAG, "Cannot write to " + file, e)
+            Log.w(TAG, "Cannot write to $file", e)
           }
         }
       }
@@ -339,7 +342,7 @@ open class CameraFragment : PermissionsFragment() {
     private fun Context.addToMediaStore(photo: File) {
       val mediaScanIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(photo))
       sendBroadcast(mediaScanIntent)
-      Log.d(TAG, "Photo added to MediaStore: " + photo.name)
+      Log.d(TAG, "Photo added to MediaStore: ${photo.name}")
     }
   }
 }
