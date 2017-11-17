@@ -62,8 +62,10 @@ open class AddContentDialogFragment : AppCompatDialogFragment() {
   protected open val allIntents: List<Intent>
     @TargetApi(Build.VERSION_CODES.KITKAT)
     get() {
+      val packageManager = context?.packageManager ?: return emptyList()
+
       val mimetypes = arrayOf("text/*", "image/*", "video/*")
-      val resolveInfos = context.packageManager
+      val resolveInfos = packageManager
           .queryIntentActivities(
               Intent(Intent.ACTION_GET_CONTENT)
                   .setType("application/*")
