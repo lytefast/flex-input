@@ -1,5 +1,6 @@
 package com.lytefast.flexinput.fragment;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ClipData;
@@ -9,10 +10,12 @@ import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -60,7 +63,7 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
   private SelectionAggregator<Attachment<?>> selectionAggregator;
 
 
-  @Override
+  @Override @NonNull
   public Dialog onCreateDialog(final Bundle savedInstanceState) {
     AppCompatDialog dialog = new AppCompatDialog(getContext(), R.style.FlexInput_DialogWhenLarge) {
       @Override
@@ -244,6 +247,7 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
         public void unregister() { }
       };
 
+  @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
   public void launchFileChooser() {
     final Intent imagePickerIntent = new Intent(Intent.ACTION_PICK)
         .setType("image/*")
@@ -258,6 +262,7 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
     startActivityForResult(chooserIntent, REQUEST_FILES);
   }
 
+  @TargetApi(Build.VERSION_CODES.KITKAT)
   protected List<Intent> getAllIntents() {
     final String[] mimetypes = {"text/*", "image/*", "video/*"};
     List<ResolveInfo> resolveInfos = getContext().getPackageManager()
@@ -296,6 +301,7 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
    *
    * @return Intent to open google drive file picker. Null if not found.
    */
+  @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
   @Nullable
   private Intent getGoogleDriveIntent() {
     List<ResolveInfo> resolveInfos = getContext().getPackageManager()
@@ -343,9 +349,9 @@ public class AddContentDialogFragment extends AppCompatDialogFragment {
   }
 
   @NonNull
-  private Attachment toAttachment(final Uri uri) {
+  private Attachment<Uri> toAttachment(final Uri uri) {
     final ContentResolver contentResolver = getContext().getContentResolver();
-    return new Attachment(
+    return new Attachment<>(
         uri.hashCode(), uri, FileUtils.getFileName(uri, contentResolver), null);
   }
 
