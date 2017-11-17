@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import com.lytefast.flexinput.model.Attachment
+import com.lytefast.flexinput.model.Attachment.Companion.toAttachment
 
 /**
  * @author Sam Shih
@@ -24,12 +25,12 @@ object IntentUtil {
       val item = this.clipData.getItemAt(0)
       this.clipData = ClipData.newPlainText("", "")
 
-      Attachment.fromUri(contentResolver, item.uri)
+      item.uri.toAttachment(contentResolver)
     } else {
       val uri = this.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
       uri?.let {
         this.removeExtra(Intent.EXTRA_STREAM)
-        Attachment.fromUri(contentResolver, it)
+        it.toAttachment(contentResolver)
       }
     }
 

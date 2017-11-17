@@ -28,6 +28,7 @@ import com.lytefast.flexinput.FlexInputCoordinator
 import com.lytefast.flexinput.R
 import com.lytefast.flexinput.adapters.AddContentPagerAdapter
 import com.lytefast.flexinput.model.Attachment
+import com.lytefast.flexinput.model.Attachment.Companion.toAttachment
 import com.lytefast.flexinput.utils.SelectionAggregator
 import com.lytefast.flexinput.utils.SelectionCoordinator
 
@@ -82,9 +83,8 @@ open class AddContentDialogFragment : AppCompatDialogFragment() {
             .setPackage(resolveInfo.activityInfo.packageName)
       }
 
-      val googleDriveIntent = googleDriveIntent
-      if (googleDriveIntent != null && !intents.any { it.`package`.equals(googleDriveIntent.`package`) }) {
-        intents.add(googleDriveIntent)
+      if (!intents.any { it.`package` == GOOGLE_DRIVE_PACKAGE }) {
+        googleDriveIntent?.also { intents.add(it) }
       }
       return intents
     }
@@ -110,7 +110,7 @@ open class AddContentDialogFragment : AppCompatDialogFragment() {
       for (resolveInfo in resolveInfos) {
         val componentName = ComponentName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name)
 
-        if (resolveInfo.activityInfo.name == "com.google.android.apps.docs.app.PickActivity") {
+        if (resolveInfo.activityInfo.name == "$GOOGLE_DRIVE_PACKAGE.app.PickActivity") {
           return Intent(Intent.ACTION_PICK)
               .setComponent(componentName)
               .setPackage(resolveInfo.activityInfo.packageName)
@@ -295,13 +295,11 @@ open class AddContentDialogFragment : AppCompatDialogFragment() {
     val flexInputCoordinator = parentFragment as FlexInputCoordinator<*>
     if (clipData == null) {
       val uri = intentData.data
-      uri?.also { flexInputCoordinator.addExternalAttachment(
-          Attachment.fromUri(contentResolver, it)) }
+      uri?.also { flexInputCoordinator.addExternalAttachment(it.toAttachment(contentResolver)) }
     } else {
       (0 until clipData.itemCount)
           .map { clipData.getItemAt(it).uri }
-          .forEach { flexInputCoordinator.addExternalAttachment(
-              Attachment.fromUri(contentResolver, it)) }
+          .forEach { flexInputCoordinator.addExternalAttachment(it.toAttachment(contentResolver)) }
     }
   }
 
@@ -353,5 +351,6 @@ open class AddContentDialogFragment : AppCompatDialogFragment() {
   companion object {
 
     val REQUEST_FILES = 5968
+    val GOOGLE_DRIVE_PACKAGE = "com.google.android.apps.docs"
   }
 }
