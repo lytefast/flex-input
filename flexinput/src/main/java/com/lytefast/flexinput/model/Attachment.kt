@@ -69,7 +69,7 @@ open class Attachment<out T> (
     fun InputContentInfoCompat.toAttachment(
         resolver: ContentResolver,
         appendExtension: Boolean= false,
-        defaultName: String = "unknown"): Attachment<Uri> {
+        defaultName: String = "unknown"): Attachment<InputContentInfoCompat> {
       val rawFileName = contentUri.getQueryParameter("fileName") ?: defaultName
       val fileName = rawFileName.substringAfterLast(File.separatorChar)
 
@@ -88,7 +88,7 @@ open class Attachment<out T> (
           contentUri.hashCode().toLong(),
           contentUri,
           attachmentName,
-          contentUri)
+          this)
     }
   }
 }
