@@ -279,14 +279,17 @@ public class FlexInputFragment extends Fragment
 
     if (editText instanceof FlexEditText) {
       FlexEditText flexEt = (FlexEditText) editText;
-      flexEt.setInputContentHandler(new Function1<InputContentInfoCompat, Unit>() {
-        @Override
-        public Unit invoke(final InputContentInfoCompat inputContentInfoCompat) {
-          addExternalAttachment(Attachment.toAttachment(
-              inputContentInfoCompat, getContext().getContentResolver(), true, "unknown"));
-          return null;
-        }
-      });
+      if (flexEt.getInputContentHandler() == null) {
+        // Set a default
+        flexEt.setInputContentHandler(new Function1<InputContentInfoCompat, Unit>() {
+          @Override
+          public Unit invoke(final InputContentInfoCompat inputContentInfoCompat) {
+            addExternalAttachment(Attachment.toAttachment(
+                inputContentInfoCompat, getContext().getContentResolver(), true, "unknown"));
+            return null;
+          }
+        });
+      }
     }
   }
 
