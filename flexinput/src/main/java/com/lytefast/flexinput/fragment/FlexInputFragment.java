@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -283,12 +282,8 @@ public class FlexInputFragment extends Fragment
       flexEt.setInputContentHandler(new Function1<InputContentInfoCompat, Unit>() {
         @Override
         public Unit invoke(final InputContentInfoCompat inputContentInfoCompat) {
-          Uri contentUri = inputContentInfoCompat.getContentUri();
-          addExternalAttachment(new Attachment<>(
-              contentUri.hashCode(),
-              contentUri,
-              inputContentInfoCompat.getDescription().getLabel().toString(),
-              inputContentInfoCompat));
+          addExternalAttachment(Attachment.toAttachment(
+              inputContentInfoCompat, getContext().getContentResolver(), true, "unknown"));
           return null;
         }
       });

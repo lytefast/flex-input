@@ -5,9 +5,10 @@ import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
 import android.support.annotation.CallSuper
-
+import android.support.v13.view.inputmethod.InputContentInfoCompat
 import com.facebook.common.util.HashCodeUtil
 import com.lytefast.flexinput.utils.FileUtils.getFileName
+import java.io.File
 
 
 /**
@@ -62,6 +63,32 @@ open class Attachment<out T> (
     fun Uri.toAttachment(resolver: ContentResolver): Attachment<Uri> {
       val fileName = getFileName(resolver)
       return Attachment(hashCode().toLong(), this, fileName, null)
+    }
+
+    @JvmStatic
+    fun InputContentInfoCompat.toAttachment(
+        resolver: ContentResolver,
+        appendExtension: Boolean= false,
+        defaultName: String = "unknown"): Attachment<Uri> {
+      val rawFileName = contentUri.getQueryParameter("fileName") ?: defaultName
+      val fileName = rawFileName.substringAfterLast(File.separatorChar)
+
+      val attachmentName = if (appendExtension) {
+        val type = description.getMimeType(0)
+            ?: contentUri.getQueryParameter("mimeType")
+            ?: resolver.getType(contentUri)
+        type?.let {
+          "$fileName.${it.substringAfterLast('/')}"
+        } ?: fileName
+      } else {
+        fileName
+      }
+
+      return Attachment(
+          contentUri.hashCode().toLong(),
+          contentUri,
+          attachmentName,
+          contentUri)
     }
   }
 }
