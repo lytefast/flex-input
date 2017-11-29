@@ -416,8 +416,12 @@ public class FlexInputFragment extends Fragment
         inputContainer.addView(customEditText, editTextIndex);
         FlexInputFragment.this.textEt = customEditText;
 
-        customEditText.setLayoutParams(new LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f));
+        final LinearLayout.LayoutParams params =
+            customEditText.getLayoutParams() instanceof LinearLayout.LayoutParams
+                ? (LinearLayout.LayoutParams) customEditText.getLayoutParams()
+                : new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f);
+        customEditText.setLayoutParams(params);
         customEditText.requestLayout();
 
 

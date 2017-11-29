@@ -4,10 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_weight="1"
+    android:layout_gravity="center_vertical"
     android:background="@color/black_alpha_25"
     android:contentDescription="My Custom EditText"
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:hint="Custom hint"
     android:inputType="text|textAutoComplete|textMultiLine"
-    android:maxLines="2"/>
+    android:maxLines="3"/>
