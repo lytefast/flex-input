@@ -5,7 +5,6 @@ import android.os.Build
 import android.support.v13.view.inputmethod.EditorInfoCompat
 import android.support.v13.view.inputmethod.InputConnectionCompat
 import android.support.v13.view.inputmethod.InputContentInfoCompat
-import android.support.v7.appcompat.R
 import android.support.v7.widget.AppCompatEditText
 import android.util.AttributeSet
 import android.view.inputmethod.EditorInfo
@@ -17,9 +16,11 @@ import android.view.inputmethod.InputConnection
  *
  * @author Sam Shih
  */
-open class FlexEditText @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = R.attr.editTextStyle)
-  : AppCompatEditText(context, attrs, defStyleAttr) {
+open class FlexEditText : AppCompatEditText {
+
+  constructor(context: Context) : super(context)
+  constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+  constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
   /**
    * Handle the data from the edit text asynchronously.

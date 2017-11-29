@@ -424,7 +424,6 @@ public class FlexInputFragment extends Fragment
         customEditText.setLayoutParams(params);
         customEditText.requestLayout();
 
-
         Log.d(TAG, "Binding EditText hooks");
         bindTextInput(customEditText);
         updateSendBtnEnableState(customEditText.getText());
