@@ -7,7 +7,6 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
@@ -513,16 +512,15 @@ public class FlexInputFragment extends Fragment
     hideEmojiTray();
     keyboardManager.requestHide();  // Make sure the keyboard is hidden
 
-    new Handler().post(new Runnable() {
-      @Override
-      public void run() {
-        attachContentDialogFragment();
-      }
-    });
+    try {
+      attachContentDialogFragment();
+    } catch (Exception e) {
+      Log.d(TAG, "Could not open AddContentDialogFragment", e);
+    }
   }
 
   private void attachContentDialogFragment() {
-    FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+    final FragmentTransaction ft = getChildFragmentManager().beginTransaction();
     final AddContentDialogFragment dialogFrag = new AddContentDialogFragment();
     dialogFrag.show(ft, ADD_CONTENT_FRAG_TAG);
     getChildFragmentManager().executePendingTransactions();
