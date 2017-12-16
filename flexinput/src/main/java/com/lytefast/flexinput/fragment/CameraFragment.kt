@@ -53,17 +53,17 @@ open class CameraFragment : PermissionsFragment() {
     retainInstance = true
   }
 
-  override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     @Suppress("UNCHECKED_CAST")
     this.flexInputCoordinator = parentFragment?.parentFragment as? FlexInputCoordinator<Any>
 
-    return inflater?.inflate(R.layout.fragment_camera, container, false)
+    return inflater.inflate(R.layout.fragment_camera, container, false)
   }
 
-  override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
-    view?.apply {
+    view.apply {
       cameraContainer = findViewById(R.id.camera_container)
       cameraView = findViewById(R.id.camera_view)
       permissionsContainer = findViewById(R.id.permissions_container)
@@ -86,6 +86,8 @@ open class CameraFragment : PermissionsFragment() {
 
   override fun onResume() {
     super.onResume()
+
+    val context = context ?: return
 
     if (!context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA)
         || !hasPermissions(*REQUIRED_PERMISSIONS)) {
@@ -185,6 +187,7 @@ open class CameraFragment : PermissionsFragment() {
   }
 
   private fun onLaunchCameraClick() {
+    val context = context ?: return
     cameraView?.stop()
 
     photoFile = flexInputCoordinator!!.fileManager.newImageFile()

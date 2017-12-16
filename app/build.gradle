@@ -23,6 +23,8 @@ android {
                 './proguard/proguard-facebook-fresco.pro',
                 './proguard/proguard-support-design.pro',
                 './proguard/proguard-support-v7-appcompat.pro')
+
+            matchingFallbacks = ['debug', 'release']
         }
         release {
             minifyEnabled true
@@ -37,7 +39,7 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(path: ':flexinput')
+    compile project(':flexinput')
 
     compile "com.android.support:appcompat-v7:$supportLibraryVersion"
     compile "com.android.support:design:$supportLibraryVersion"
