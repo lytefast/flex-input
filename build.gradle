@@ -13,8 +13,7 @@ buildscript {
         supportLibraryVersion = '26.1.0'
         supportLibraryConstraintVersion = '1.1.0-beta3'
 
-        // 3rd Party
-        frescoVersion = '1.3.0'
+        frescoVersion = '1.7.1'
     }
 
     repositories {
