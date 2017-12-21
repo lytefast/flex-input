@@ -34,7 +34,7 @@ open class PhotosFragment : PermissionsFragment() {
   internal var swipeRefreshLayout: SwipeRefreshLayout? = null
   internal var recyclerView: RecyclerView? = null
 
-  override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                             savedInstanceState: Bundle?): View? {
     this.selectionCoordinator = SelectionCoordinator()
 
@@ -45,7 +45,7 @@ open class PhotosFragment : PermissionsFragment() {
 
     }
 
-    val view = inflater?.inflate(R.layout.fragment_recycler_view, container, false)
+    val view = inflater.inflate(R.layout.fragment_recycler_view, container, false)
     return view?.apply {
       recyclerView = findViewById(R.id.list)
 

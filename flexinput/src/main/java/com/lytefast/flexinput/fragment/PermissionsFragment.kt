@@ -49,9 +49,11 @@ open class PermissionsFragment : Fragment() {
   }
 
   protected open fun hasPermissions(vararg requiredPermissionList: String): Boolean =
-      requiredPermissionList.all { reqPerm ->
-        ContextCompat.checkSelfPermission(context, reqPerm) == PackageManager.PERMISSION_GRANTED
-      }
+      context?.let { context ->
+        requiredPermissionList.all { reqPerm ->
+          ContextCompat.checkSelfPermission(context, reqPerm) == PackageManager.PERMISSION_GRANTED
+        }
+      } ?: false
 
   protected open fun areAllPermissionsGranted(vararg permissionsAccessList: Int): Boolean {
     if (permissionsAccessList.isEmpty()) {

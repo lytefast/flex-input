@@ -36,7 +36,7 @@ open class FilesFragment : PermissionsFragment() {
 
   private var adapter: FileListAdapter? = null
 
-  override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                             savedInstanceState: Bundle?): View? {
     this.selectionCoordinator = SelectionCoordinator()
 
@@ -100,9 +100,11 @@ open class FilesFragment : PermissionsFragment() {
   private fun requestPermissions() {
     requestPermissions(object : PermissionsFragment.PermissionsResultCallback {
       override fun granted() {
-        adapter = FileListAdapter(context.contentResolver, selectionCoordinator!!)
-        recyclerView?.adapter = adapter
-        loadDownloadFolder()
+        context?.contentResolver?.let { contentResolver ->
+          adapter = FileListAdapter(contentResolver, selectionCoordinator!!)
+          recyclerView?.adapter = adapter
+          loadDownloadFolder()
+        }
       }
 
       override fun denied() {

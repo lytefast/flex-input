@@ -23,6 +23,8 @@ android {
                 './proguard/proguard-facebook-fresco.pro',
                 './proguard/proguard-support-design.pro',
                 './proguard/proguard-support-v7-appcompat.pro')
+
+            matchingFallbacks = ['debug', 'release']
         }
         release {
             minifyEnabled true
@@ -37,16 +39,16 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(path: ':flexinput')
+    implementation project(':flexinput')
 
-    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
-    compile "com.android.support:design:$supportLibraryVersion"
-    compile "com.android.support:recyclerview-v7:$supportLibraryVersion"
-    compile "com.android.support:support-v4:$supportLibraryVersion"
-    compile "com.android.support.constraint:constraint-layout:$supportLibraryConstraintVersion"
+    implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
+    implementation "com.android.support:design:$supportLibraryVersion"
+    implementation "com.android.support:recyclerview-v7:$supportLibraryVersion"
+    implementation "com.android.support:support-v4:$supportLibraryVersion"
+    implementation "com.android.support.constraint:constraint-layout:$supportLibraryConstraintVersion"
 
-    compile "com.facebook.fresco:fresco:$frescoVersion"
-    compile "com.facebook.fresco:animated-gif:$frescoVersion"
+    implementation "com.facebook.fresco:fresco:$frescoVersion"
+    implementation "com.facebook.fresco:animated-gif:$frescoVersion"
 
     testCompile 'junit:junit:4.12'
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {

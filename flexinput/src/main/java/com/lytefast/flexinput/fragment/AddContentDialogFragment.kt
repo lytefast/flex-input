@@ -103,6 +103,7 @@ open class AddContentDialogFragment : AppCompatDialogFragment() {
   private val googleDriveIntent: Intent?
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     get() {
+      val context = context ?: return null
       val resolveInfos = context.packageManager
           .queryIntentActivities(
               Intent(Intent.ACTION_PICK)
@@ -169,10 +170,10 @@ open class AddContentDialogFragment : AppCompatDialogFragment() {
     animateIn()
   }
 
-  override fun onCreateView(inflater: LayoutInflater?,
+  override fun onCreateView(inflater: LayoutInflater,
                             container: ViewGroup?,
                             savedInstanceState: Bundle?): View? {
-    val root = inflater?.inflate(R.layout.dialog_add_content_pager_with_fab, container, false)
+    val root = inflater.inflate(R.layout.dialog_add_content_pager_with_fab, container, false)
     root?.apply {
       setOnClickListener { onContentRootClick() }
 
@@ -229,10 +230,12 @@ open class AddContentDialogFragment : AppCompatDialogFragment() {
   }
 
   protected open fun initContentPages(pagerAdapter: AddContentPagerAdapter): AddContentDialogFragment {
-    contentTabs?.also {
-      pagerAdapter.initTabs(context, it)
-      contentPager?.adapter = pagerAdapter
-      synchronizeTabAndPagerEvents()
+    context?.let { context ->
+      contentTabs?.also {
+        pagerAdapter.initTabs(context, it)
+        contentPager?.adapter = pagerAdapter
+        synchronizeTabAndPagerEvents()
+      }
     }
     return this
   }
