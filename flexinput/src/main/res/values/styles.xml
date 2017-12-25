@@ -49,7 +49,7 @@
     <style name="FlexInput.Input.Widget" parent="FlexInput.Input.Base.Widget"/>
 
     <style name="FlexInput.Input.Button">
-        <item name="android:tint">?flexInputIconColor</item>
+        <item name="tint">@color/button_color_selector</item>
         <item name="android:padding">8dp</item>
     </style>
 
