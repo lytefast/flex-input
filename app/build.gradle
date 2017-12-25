@@ -14,6 +14,7 @@ android {
 
         multiDexEnabled true
     }
+
     buildTypes {
         debugProguard {
             initWith debug
@@ -26,6 +27,7 @@ android {
 
             matchingFallbacks = ['debug', 'release']
         }
+
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt')
