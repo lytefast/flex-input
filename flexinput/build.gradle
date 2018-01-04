@@ -20,7 +20,9 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':cameraview-aar')
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.0"
 
     implementation "androidx.annotation:annotation:$androidxVersion"
     implementation "androidx.appcompat:appcompat:$appCompatVersion"
@@ -40,5 +42,7 @@ dependencies {
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     implementation "com.facebook.fresco:fresco:$frescoVersion"
+    implementation "com.camerakit:camerakit:$cameraKitVersion"
+    implementation "com.camerakit:jpegkit:0.1.0"
 
 }
