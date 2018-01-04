@@ -16,6 +16,7 @@ buildscript {
 
         // 3rd party libs
         frescoVersion = '1.7.1'
+        cameraViewVersion = '1.4.1'
     }
 
     repositories {
