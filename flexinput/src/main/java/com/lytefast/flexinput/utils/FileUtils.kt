@@ -16,14 +16,7 @@ object FileUtils {
 
   @JvmStatic
   fun File.toAttachment(): Attachment<File> =
-      Attachment(this.hashCode().toLong(), this.toUri(), this.name, this)
-
-  @JvmStatic
-  fun File.toUri(): Uri =
-      // Use parse due to bug with fresco loader: https://github.com/facebook/fresco/issues/1596
-      // FIXME 2017-01: when https://github.com/facebook/fresco/issues/1596 is resolve remove
-      // Uri fileUri = Uri.fromFile(f);
-      Uri.parse("file://" + this.absolutePath)
+      Attachment(this.hashCode().toLong(), Uri.fromFile(this), this.name, this)
 
   @JvmStatic
   @Throws(IllegalArgumentException::class)
@@ -38,7 +31,7 @@ object FileUtils {
           if (cursor.moveToFirst()) {
             val columnIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
             if (columnIndex >= 0) {
-              return cursor.getString(columnIndex)?: this.lastPathSegment
+              return cursor.getString(columnIndex) ?: this.lastPathSegment
             }
           }
         }

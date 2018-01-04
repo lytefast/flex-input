@@ -20,7 +20,6 @@ import com.lytefast.flexinput.R
 import com.lytefast.flexinput.model.Attachment
 import com.lytefast.flexinput.utils.FileUtils.getFileSize
 import com.lytefast.flexinput.utils.FileUtils.toAttachment
-import com.lytefast.flexinput.utils.FileUtils.toUri
 import com.lytefast.flexinput.utils.SelectionCoordinator
 import java.io.File
 import java.util.*
@@ -118,7 +117,7 @@ class FileListAdapter(private val contentResolver: ContentResolver,
       } else if (mimeType.startsWith("video")) {
         typeIv.setImageResource(R.drawable.ic_movie_24dp)
         typeIv.visibility = View.VISIBLE
-        thumbIv.setImageURI(file.toUri())
+        thumbIv.setImageURI(Uri.fromFile(file))
       }
     }
 
