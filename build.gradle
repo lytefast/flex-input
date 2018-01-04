@@ -3,16 +3,18 @@
 buildscript {
 
     ext {
-        buildToolsVersion = '27.0.2'
+        buildToolsVersion = '27.0.3'
         compileSdkVersion = 27
         minSdkVersion = 16
         targetSdkVersion = 27
 
         // Platform
         kotlin_version = '1.2.10'
-        supportLibraryVersion = '26.1.0'
-        supportLibraryConstraintVersion = '1.1.0-beta3'
+        supportLibraryVersion = '27.0.2'
+        supportLibraryConstraintVersion = '1.1.0-beta4'
+        junitVersion = '4.12'
 
+        // 3rd party libs
         frescoVersion = '1.7.1'
     }
 
