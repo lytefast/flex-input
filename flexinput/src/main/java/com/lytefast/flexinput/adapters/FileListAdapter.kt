@@ -60,7 +60,7 @@ class FileListAdapter(private val contentResolver: ContentResolver,
   override fun getItemCount(): Int = files.size
 
   fun load(root: File) {
-    FileLoaderTask().execute(root)
+    FileLoaderTask(this).execute(root)
   }
 
   open inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
@@ -189,7 +189,7 @@ class FileListAdapter(private val contentResolver: ContentResolver,
     return type
   }
 
-  private inner class FileLoaderTask : AsyncTask<File, Boolean, List<Attachment<File>>>() {
+  private class FileLoaderTask(val adapter : FileListAdapter) : AsyncTask<File, Boolean, List<Attachment<File>>>() {
 
     override fun doInBackground(vararg rootFiles: File): List<Attachment<File>> {
       val files = flattenFileList(rootFiles[0])
@@ -202,8 +202,8 @@ class FileListAdapter(private val contentResolver: ContentResolver,
     }
 
     override fun onPostExecute(files: List<Attachment<File>>) {
-      this@FileListAdapter.files = files
-      notifyDataSetChanged()
+      this.adapter.files = files
+      this.adapter.notifyDataSetChanged()
     }
 
     private fun flattenFileList(parentDir: File): List<Attachment<File>> {
