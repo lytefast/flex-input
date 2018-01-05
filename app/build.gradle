@@ -40,7 +40,6 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':flexinput')
 
     implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
