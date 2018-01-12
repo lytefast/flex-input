@@ -94,7 +94,9 @@ open class CameraFragment : PermissionsFragment() {
       cameraContainer?.visibility = View.GONE
       permissionsContainer?.also {
         it.visibility = View.VISIBLE
-        initPermissionsView(it)
+        if (it.childCount == 0) {
+          initPermissionsView(it)
+        }
       }
 
       return   // No camera detected. just chill
