@@ -121,19 +121,21 @@ open class CameraFragment : PermissionsFragment() {
    * So here, if we fail, just try getting the first front facing camera.
    */
   private fun tryStartCamera() {
-    try {
-      if (cameraView?.isCameraOpened == true) {
-        cameraView?.stop()
-      }
-      cameraView?.start()
-    } catch (e: Exception) {
-      Log.w(TAG, "Camera could not be loaded, try front facing camera", e)
-
+    cameraView?.apply {
       try {
-        cameraView?.facing = CameraView.FACING_FRONT
-        cameraView?.start()
-      } catch (ex: Exception) {
-        Log.e(TAG, "Camera could not be loaded", e)
+        if (isCameraOpened) {
+          stop()
+        }
+        start()
+      } catch (e: Exception) {
+        Log.w(TAG, "Camera could not be loaded, try front facing camera", e)
+
+        try {
+          facing = CameraView.FACING_FRONT
+          start()
+        } catch (ex: Exception) {
+          Log.e(TAG, "Camera could not be loaded", e)
+        }
       }
     }
 
@@ -181,8 +183,15 @@ open class CameraFragment : PermissionsFragment() {
   }
 
   private fun onTakePhotoClick() {
-    if (cameraView?.isCameraOpened == true) {
-      cameraView?.takePicture()
+    cameraView?.apply {
+      if (isCameraOpened) {
+        try {
+          takePicture()
+        } catch (e: Exception) {
+          Log.e(TAG, "Camera error on take picture", e)
+          Toast.makeText(context, R.string.camera_unknown_error, Toast.LENGTH_SHORT)
+        }
+      }
     }
   }
 
@@ -218,6 +227,7 @@ open class CameraFragment : PermissionsFragment() {
         else -> {
           context?.addToMediaStore(it)
           flexInputCoordinator?.addExternalAttachment(it.toAttachment())
+          cameraView?.stop()  // make sure we stop the camera since we are just going to exit
         }
       }
     }
@@ -278,13 +288,20 @@ open class CameraFragment : PermissionsFragment() {
   }
 
   private fun setFlash(btn: ImageView, @CameraView.Flash newFlashState: Int) {
-    if (cameraView?.flash == newFlashState) {
+    val cameraView = this.cameraView ?: return
+    if (cameraView.flash == newFlashState) {
       return
+    }
+
+    try {
+      cameraView.flash = newFlashState
+    } catch (e: Exception) {
+      Log.e(TAG, "Camera error on set flash", e)
     }
 
     @DrawableRes val flashImage: Int
     @StringRes val flashMsg: Int
-    when (newFlashState) {
+    when (cameraView.flash) {
       CameraView.FLASH_ON -> {
         flashMsg = R.string.flash_on
         flashImage = R.drawable.ic_flash_on_24dp
@@ -299,7 +316,6 @@ open class CameraFragment : PermissionsFragment() {
       }
     }
 
-    cameraView?.flash = newFlashState
     Toast.makeText(btn.context, flashMsg, Toast.LENGTH_SHORT).show()
     btn.setImageResource(flashImage)
   }
