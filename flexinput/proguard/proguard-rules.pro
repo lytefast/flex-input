@@ -15,4 +15,7 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-dontnote kotlin.jvm.**
+
 -keep class com.google.android.cameraview.** { *; }

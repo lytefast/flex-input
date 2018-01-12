@@ -11,7 +11,10 @@ android {
         versionCode 1
         versionName "0.9.8"
 
-        consumerProguardFiles 'proguard-rules.pro'
+        proguardFiles getDefaultProguardFile('proguard-android-optimize.txt')
+        consumerProguardFiles(
+                './proguard/proguard-rules.pro',
+                './proguard/proguard-fresco.pro')
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
