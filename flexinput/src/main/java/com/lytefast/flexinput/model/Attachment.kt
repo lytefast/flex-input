@@ -52,8 +52,8 @@ open class Attachment<out T> (
   companion object {
 
     @Suppress("unused")  // Used as part of Parcellable
-    @JvmStatic
-    val CREATOR: Parcelable.Creator<Attachment<*>> = object : Parcelable.Creator<Attachment<*>> {
+    @JvmField
+    val CREATOR = object : Parcelable.Creator<Attachment<*>> {
       override fun createFromParcel(parcelIn: Parcel): Attachment<*> = Attachment<Any>(parcelIn)
 
       override fun newArray(size: Int): Array<Attachment<*>?> = arrayOfNulls(size)

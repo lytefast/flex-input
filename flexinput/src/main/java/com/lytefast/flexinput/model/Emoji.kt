@@ -35,8 +35,7 @@ class Emoji : Parcelable {
   }
 
   companion object {
-
-    @JvmStatic
+    @JvmField
     val CREATOR: Parcelable.Creator<Emoji> = object : Parcelable.Creator<Emoji> {
       override fun createFromParcel(parcel: Parcel): Emoji = Emoji(parcel)
 
@@ -80,8 +79,8 @@ class EmojiCategory(
   companion object {
 
     @Suppress("unused")  // Used as part of Parcellable
-    @JvmStatic
-    val CREATOR: Parcelable.Creator<EmojiCategory> = object : Parcelable.Creator<EmojiCategory> {
+    @JvmField
+    val CREATOR = object : Parcelable.Creator<EmojiCategory> {
       override fun createFromParcel(parcelIn: Parcel): EmojiCategory = EmojiCategory(parcelIn)
 
       override fun newArray(size: Int): Array<EmojiCategory?> = arrayOfNulls(size)

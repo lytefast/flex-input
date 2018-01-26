@@ -52,9 +52,9 @@ class Photo : Attachment<String> {
   }
 
   companion object {
-    @Suppress("unused")  // Used as part of Parcelable
-    @JvmStatic
-    val CREATOR: Parcelable.Creator<Photo> = object : Parcelable.Creator<Photo> {
+    @Suppress("unused")  // Used as part of Parcellable
+    @JvmField
+    val CREATOR = object : Parcelable.Creator<Photo> {
       override fun createFromParcel(parcel: Parcel): Photo = Photo(parcel)
       override fun newArray(size: Int): Array<Photo?> = arrayOfNulls(size)
     }
