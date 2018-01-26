@@ -31,17 +31,14 @@ class Photo : Attachment<String> {
 
     if (cursor == null || !cursor.moveToFirst()) {
       // Generate thumbnail for next time
-      object : AsyncTask<Uri, Int, Void>() {
-        override fun doInBackground(vararg params: Uri): Void? {
-          try {
-            MediaStore.Images.Thumbnails.getThumbnail(
-                contentResolver, id, MediaStore.Images.Thumbnails.MINI_KIND, null)
-          } catch (e: Exception) {
-            Log.v(Photo::class.java.name, "Error generating thumbnail for photo $id.")
-          }
-          return null
+      AsyncTask.execute {
+        try {
+          MediaStore.Images.Thumbnails.getThumbnail(
+              contentResolver, id, MediaStore.Images.Thumbnails.MINI_KIND, null)
+        } catch (e: Exception) {
+          Log.v(Photo::class.java.name, "Error generating thumbnail for photo $id.")
         }
-      }.execute(uri)
+      }
       return uri  // Slow due to photo size and manipulation but better than nothing
     }
     cursor.use {

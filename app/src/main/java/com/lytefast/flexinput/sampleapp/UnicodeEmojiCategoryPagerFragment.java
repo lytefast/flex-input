@@ -26,7 +26,7 @@ import com.lytefast.flexinput.utils.FlexInputEmojiStateChangeListener;
 public class UnicodeEmojiCategoryPagerFragment extends EmojiCategoryPagerFragment
   implements FlexInputEmojiStateChangeListener {
 
-  public static final String ASSET_PATH_EMOJIS = "emojis.json";
+  private static final String ASSET_PATH_EMOJIS = "emojis.json";
 
   @Override
   public List<EmojiCategory> buildEmojiCategoryData() {

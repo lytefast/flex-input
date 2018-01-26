@@ -16,6 +16,7 @@ import java.util.Date;
  *
  * @author Sam Shih
  */
+@SuppressWarnings("WeakerAccess")
 public class SimpleFileManager implements FileManager {
 
   private static final String TAG = SimpleFileManager.class.getCanonicalName();

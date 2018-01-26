@@ -42,7 +42,7 @@ public class MainFragment extends Fragment {
   private RecyclerView recyclerView;
 
   private FlexInputFragment flexInput;
-  private MessageAdapter msgAdapter;
+  private final MessageAdapter msgAdapter;
 
   public MainFragment() {
     this.msgAdapter = new MessageAdapter();

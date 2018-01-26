@@ -56,7 +56,7 @@ open class SelectionCoordinator<I, T: I>(
     if (position != knownPosition) {
       // Update the position as it might have changed
       // Or we restored the item from an external source.
-      selectedItemPositionMap.put(item, position)
+      selectedItemPositionMap[item] = position
     }
     return true
   }
@@ -139,7 +139,7 @@ open class SelectionCoordinator<I, T: I>(
 
   data class SelectionEvent<out T>(val item: T, val isSelected: Boolean)
 
-  interface ItemSelectionListener<I> {
+  interface ItemSelectionListener<in I> {
     fun onItemSelected(item: I) {}
     fun onItemUnselected(item: I) {}
 

@@ -63,7 +63,8 @@ class FileListAdapter(private val contentResolver: ContentResolver,
     FileLoaderTask(this).execute(root)
   }
 
-  open inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+  @Suppress("MemberVisibilityCanBePrivate")
+  open inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val shrinkAnim: AnimatorSet
     private val growAnim: AnimatorSet
 
@@ -77,7 +78,9 @@ class FileListAdapter(private val contentResolver: ContentResolver,
 
     init {
       this.itemView.isClickable = true
-      this.itemView.setOnClickListener(this)
+      this.itemView.setOnClickListener {
+        setSelected(selectionCoordinator.toggleItem(attachmentFile, adapterPosition), true)
+      }
 
       //region Perf: Load animations once
       this.shrinkAnim = AnimatorInflater.loadAnimator(
@@ -172,10 +175,6 @@ class FileListAdapter(private val contentResolver: ContentResolver,
       } else {
         if (thumbIv.scaleX != 1.0f) scaleImage(growAnim)
       }
-    }
-
-    override fun onClick(v: View) {
-      setSelected(selectionCoordinator.toggleItem(attachmentFile, adapterPosition), true)
     }
   }
 

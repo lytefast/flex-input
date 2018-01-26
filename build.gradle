@@ -9,7 +9,7 @@ buildscript {
         targetSdkVersion = 27
 
         // Platform
-        kotlin_version = '1.2.10'
+        kotlin_version = '1.2.21'
         supportLibraryVersion = '27.0.2'
         supportLibraryConstraintVersion = '1.1.0-beta4'
         junitVersion = '4.12'

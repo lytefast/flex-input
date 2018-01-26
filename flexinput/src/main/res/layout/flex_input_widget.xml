@@ -17,7 +17,7 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/attachment_preview_list"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:clipToPadding="false"
@@ -50,14 +50,13 @@
         <com.lytefast.flexinput.widget.FlexEditText
             android:id="@+id/text_input"
             android:background="@android:color/transparent"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:focusableInTouchMode="true"
             android:focusable="true"
             android:maxLines="2"
             android:inputType="textShortMessage|textAutoComplete|textMultiLine"
-            android:contentDescription="Message text entry"
             android:hint="Send a message"/>
 
         <android.support.v7.widget.AppCompatImageButton

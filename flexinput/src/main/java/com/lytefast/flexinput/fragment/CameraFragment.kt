@@ -33,6 +33,7 @@ import java.io.IOException
  *
  * @author Sam Shih
  */
+@Suppress("MemberVisibilityCanBePrivate")
 open class CameraFragment : PermissionsFragment() {
 
   protected var cameraContainer: View? = null
@@ -76,7 +77,7 @@ open class CameraFragment : PermissionsFragment() {
           ?.setOnClickListener { onLaunchCameraClick() }
       findViewById<ImageView>(R.id.camera_flash_btn)
           ?.setOnClickListener { onCameraFlashClick(it as ImageView) }
-      cameraFacingBtn = findViewById<ImageView>(R.id.camera_facing_btn)
+      cameraFacingBtn = findViewById(R.id.camera_facing_btn)
       cameraFacingBtn?.setOnClickListener { onCameraFacingClick(it as ImageView) }
     }
 
@@ -86,7 +87,6 @@ open class CameraFragment : PermissionsFragment() {
 
   override fun onResume() {
     super.onResume()
-
     val context = context ?: return
 
     if (!context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA)

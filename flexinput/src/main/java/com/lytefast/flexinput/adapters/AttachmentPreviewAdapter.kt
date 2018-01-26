@@ -40,7 +40,7 @@ class AttachmentPreviewAdapter<T : Attachment<Any>>
   }
 
   override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-    val item = selectionAggregator.get(position)
+    val item = selectionAggregator[position]
     holder.bind(item)
   }
 

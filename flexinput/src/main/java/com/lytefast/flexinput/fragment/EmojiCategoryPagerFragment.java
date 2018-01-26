@@ -3,6 +3,7 @@ package com.lytefast.flexinput.fragment;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -14,11 +15,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.model.Emoji;
 import com.lytefast.flexinput.model.EmojiCategory;
-
-import java.util.List;
 
 
 /**
@@ -37,7 +38,8 @@ public abstract class EmojiCategoryPagerFragment extends Fragment {
 
   @Nullable
   @Override
-  public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container,
+  public View onCreateView(@NonNull final LayoutInflater inflater,
+                           @Nullable final ViewGroup container,
                            @Nullable final Bundle savedInstanceState) {
     View rootView = inflateView(inflater, container);
 
@@ -56,7 +58,7 @@ public abstract class EmojiCategoryPagerFragment extends Fragment {
   /**
    * @return a list where each {@link com.lytefast.flexinput.model.EmojiCategory} represents a tab.
    */
-  public abstract List<EmojiCategory> buildEmojiCategoryData();
+  public abstract List buildEmojiCategoryData();
 
   public void initFrom(final List<EmojiCategory> emojiCategories) {
     viewPager.setAdapter(new FragmentPagerAdapter(getFragmentManager()) {

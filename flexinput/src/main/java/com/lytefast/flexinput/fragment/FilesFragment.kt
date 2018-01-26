@@ -47,7 +47,7 @@ open class FilesFragment : PermissionsFragment() {
 
     }
 
-    val view = inflater?.inflate(R.layout.fragment_recycler_view, container, false)
+    val view = inflater.inflate(R.layout.fragment_recycler_view, container, false)
     return view?.apply {
       recyclerView = findViewById(R.id.list)
 
@@ -115,7 +115,6 @@ open class FilesFragment : PermissionsFragment() {
   }
 
   companion object {
-
-    private val REQUIRED_PERMISSION = Manifest.permission.READ_EXTERNAL_STORAGE
+    private const val REQUIRED_PERMISSION = Manifest.permission.READ_EXTERNAL_STORAGE
   }
 }

@@ -27,8 +27,6 @@ public class EmojiGridFragment extends Fragment {
 
   public static final String EMOJI_CATEGORY = "emoji_category";
 
-  private RecyclerView emojiGrid;
-
   private EmojiCategory emojiCategory;
   private FlexInputFragment flexInputFrag;
 
@@ -45,7 +43,7 @@ public class EmojiGridFragment extends Fragment {
   @Override
   public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container,
                            @Nullable final Bundle savedInstanceState) {
-    emojiGrid = new RecyclerView(inflater.getContext(), null, R.style.FlexInput_Emoji_Page);
+    RecyclerView emojiGrid = new RecyclerView(inflater.getContext(), null, R.style.FlexInput_Emoji_Page);
 
     final int numFittedColumns = calculateNumOfColumns(getResources());
     emojiGrid.setLayoutManager(new GridLayoutManager(getContext(), numFittedColumns));

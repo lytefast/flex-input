@@ -25,7 +25,7 @@ import com.lytefast.flexinput.model.Attachment;
  */
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
-  List<Data> msgList = new ArrayList<>();
+  private final List<Data> msgList = new ArrayList<>();
 
   @Override
   public ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
@@ -60,12 +60,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
   }
 
   static class ViewHolder extends RecyclerView.ViewHolder {
-    private TextView indexTv;
-    private TextView messageTv;
-    private TextView attachmentTv;
-    private SimpleDraweeView imageView;
+    private final TextView indexTv;
+    private final  TextView messageTv;
+    private final  TextView attachmentTv;
+    private final  SimpleDraweeView imageView;
 
-    public ViewHolder(final View itemView) {
+    ViewHolder(final View itemView) {
       super(itemView);
 
       indexTv = itemView.findViewById(R.id.index_tv);
@@ -74,7 +74,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
       imageView = itemView.findViewById(R.id.attachment_iv);
     }
 
-    public void bind(Data data, int index) {
+    void bind(Data data, int index) {
       indexTv.setText(String.valueOf(index));
       messageTv.setText(data.editable);
       if (data.attachment != null) {

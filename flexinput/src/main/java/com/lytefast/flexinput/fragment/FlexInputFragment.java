@@ -59,6 +59,7 @@ import kotlin.jvm.functions.Function1;
  *
  * @author Sam Shih
  */
+@SuppressWarnings("UnusedReturnValue")
 public class FlexInputFragment extends Fragment
     implements FlexInputCoordinator<Object> {
 
@@ -78,6 +79,7 @@ public class FlexInputFragment extends Fragment
   private AppCompatEditText textEt;
   private AppCompatImageButton emojiBtn;
   private AppCompatImageButton sendBtn;
+  @SuppressWarnings("FieldCanBeLocal")  // Keep here so we know it's available
   private View addBtn;
 
   /**
@@ -94,8 +96,6 @@ public class FlexInputFragment extends Fragment
   private boolean isEnabled = true;
 
 
-  public FlexInputFragment() {}
-
   //region Lifecycle Methods
 
   @Override
@@ -105,16 +105,22 @@ public class FlexInputFragment extends Fragment
     initializeUiAttributes = new Runnable() {
       @Override
       public void run() {
-        initAttributes(attrs);
+        final TypedArray attrTypedArray = context.obtainStyledAttributes(attrs, R.styleable.FlexInput);
+        try {
+          initAttributes(attrTypedArray);
+        } finally {
+          attrTypedArray.recycle();
+        }
       }
     };
     // Set this so we can capture SelectionCoordinators ASAP
-    this.attachmentPreviewAdapter = initDefaultAttachmentPreviewAdapter();
+    this.attachmentPreviewAdapter = initDefaultAttachmentPreviewAdapter(context);
   }
 
-  private AttachmentPreviewAdapter<Attachment<Object>> initDefaultAttachmentPreviewAdapter() {
+  private AttachmentPreviewAdapter<Attachment<Object>> initDefaultAttachmentPreviewAdapter(
+      @NonNull final Context context) {
     AttachmentPreviewAdapter<Attachment<Object>> adapter =
-        new AttachmentPreviewAdapter<>(getContext().getContentResolver());
+        new AttachmentPreviewAdapter<>(context.getContentResolver());
     adapter.getSelectionAggregator()
         .addItemSelectionListener(new SelectionCoordinator.ItemSelectionListener<Attachment<Object>>() {
           @Override
@@ -153,9 +159,10 @@ public class FlexInputFragment extends Fragment
 
   @Nullable
   @Override
-  public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container,
+  public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable final ViewGroup container,
                            @Nullable final Bundle savedInstanceState) {
-    LinearLayout root = (LinearLayout) inflater.inflate(R.layout.flex_input_widget, container, false);
+    LinearLayout root = (LinearLayout) inflater.inflate(
+        R.layout.flex_input_widget, container, false);
 
     attachmentPreviewContainer = root.findViewById(R.id.attachment_preview_container);
     attachmentClearButton = root.findViewById(R.id.attachment_clear_btn);
@@ -180,7 +187,7 @@ public class FlexInputFragment extends Fragment
   }
 
   @Override
-  public void onViewCreated(final View view, @Nullable final Bundle savedInstanceState) {
+  public void onViewCreated(@NonNull final View view, @Nullable final Bundle savedInstanceState) {
     if (savedInstanceState != null ) {
       ArrayList<Parcelable> savedAttachments =
           savedInstanceState.getParcelableArrayList(EXTRA_ATTACHMENTS);
@@ -201,7 +208,7 @@ public class FlexInputFragment extends Fragment
   }
 
   @Override
-  public void onSaveInstanceState(final Bundle outState) {
+  public void onSaveInstanceState(@NonNull final Bundle outState) {
     super.onSaveInstanceState(outState);
     outState.putParcelableArrayList(
         EXTRA_ATTACHMENTS, attachmentPreviewAdapter.getSelectionAggregator().getAttachments());
@@ -292,27 +299,21 @@ public class FlexInputFragment extends Fragment
     }
   }
 
-  private void initAttributes(final AttributeSet attrs) {
-    final TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.FlexInput);
+  private void initAttributes(final TypedArray typedArray) {
+    final CharSequence hintText = typedArray.getText(R.styleable.FlexInput_hint);
+    if (!TextUtils.isEmpty(hintText)) {
+      textEt.setHint(hintText);
+    }
 
-    try {
-      final CharSequence hintText = a.getText(R.styleable.FlexInput_hint);
-      if (!TextUtils.isEmpty(hintText)) {
-        textEt.setHint(hintText);
-      }
+    if (typedArray.hasValue(R.styleable.FlexInput_hintColor)) {
+      @ColorInt final int hintColor = typedArray.getColor(R.styleable.FlexInput_hintColor, Color.LTGRAY);
+      textEt.setHintTextColor(hintColor);
+    }
 
-      if (a.hasValue(R.styleable.FlexInput_hintColor)) {
-        @ColorInt final int hintColor = a.getColor(R.styleable.FlexInput_hintColor, Color.LTGRAY);
-        textEt.setHintTextColor(hintColor);
-      }
-
-      final Drawable backgroundDrawable = a.getDrawable(R.styleable.FlexInput_previewBackground);
-      if (backgroundDrawable != null) {
-        backgroundDrawable.setCallback(getView());
-        attachmentPreviewContainer.setBackground(backgroundDrawable);
-      }
-    } finally {
-      a.recycle();
+    final Drawable backgroundDrawable = typedArray.getDrawable(R.styleable.FlexInput_previewBackground);
+    if (backgroundDrawable != null) {
+      backgroundDrawable.setCallback(getView());
+      attachmentPreviewContainer.setBackground(backgroundDrawable);
     }
   }
 
@@ -431,6 +432,7 @@ public class FlexInputFragment extends Fragment
     return this;
   }
 
+  @SuppressWarnings("unused")
   public FlexInputFragment setEnabled(final boolean isEnabled) {
     this.isEnabled = isEnabled;
 
@@ -445,6 +447,7 @@ public class FlexInputFragment extends Fragment
     return this;
   }
 
+  @SuppressWarnings("unused")
   public boolean isEnabled() {
     return this.isEnabled;
   }
@@ -542,6 +545,7 @@ public class FlexInputFragment extends Fragment
 
   // endregion
 
+  @SuppressWarnings("unused")
   public boolean hideEmojiTray() {
     boolean isVisible = emojiContainer.isShown();
     if (!isVisible) {

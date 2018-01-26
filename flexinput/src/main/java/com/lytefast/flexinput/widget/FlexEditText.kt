@@ -12,7 +12,7 @@ import android.view.inputmethod.InputConnection
 
 
 /**
- * Basic [EditText] component that understands how to consume media from the IME keyboard.
+ * Basic [AppCompatEditText] component that understands how to consume media from the IME keyboard.
  *
  * @author Sam Shih
  */
