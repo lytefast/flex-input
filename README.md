@@ -25,14 +25,29 @@ Used in the [Discord](www.discordapp.com) android app!
   ![Camera tab](/images/tabCamera.png?raw=true "Camera tab")
 </details>
 
+
 # Dependencies
+- [Fresco](http://frescolib.org/)
 - This is currently using the still in development [cameraview](https://github.com/google/cameraview/)
   - at the current moment the cameraview project is just a symlink to the [camereaview/library project](https://github.com/google/cameraview/tree/master/library)
   - you must do the same (include as a local project module dependency) in you project
-- [Fresco](http://frescolib.org/)
+  - this is not actively maintained/developed and will likely be replaced before 1.0 release. Tracked in [#37](https://github.com/lytefast/flex-input/issues/3
 
 # Usage
 For more details refer to the sample app included in this project.
+
+## Gradle
+```gradle
+repositories {
+    jcenter()
+    google()
+    maven { url 'http://dl.bintray.com/lytefast/android' }
+}
+
+dependencies {
+    implementation "com.lytefast:flexinput:0.9.15@aar"
+}
+```
 
 ## XML
 To use the widget, you can just include it in your layout `my_layout.xml`:
@@ -43,15 +58,16 @@ To use the widget, you can just include it in your layout `my_layout.xml`:
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:focusable="true"
-    android:focusableInTouchMode="true"
 
     app:inputBackground="@drawable/rect_rounded_highlight_alpha_20"
     app:previewBackground="@drawable/rect_rounded_highlight_alpha_20"
     app:tabsBackground="@drawable/content_tab_background"
     app:hint="@string/msg_hint"
-    app:hintColor="@color/colorHint"/>
+    app:hintColor="@color/colorHint"
+
+    tools:layout="@layout/flex_input_widget"/>
 ```
-### Appearance styles
+### Styling Appearance
 The widget tries to reuse as much of the app style as possible: icon colors are set via the `colorButtonNormal`, `colorControlActivated`, and `colorControlHighlight` style attributes.
 
 See [`colors.xml`](flexinput/src/main/res/values/colors.xml):
