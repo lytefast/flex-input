@@ -25,7 +25,6 @@ Used in the [Discord](www.discordapp.com) android app!
   ![Camera tab](/images/tabCamera.png?raw=true "Camera tab")
 </details>
 
-
 # Dependencies
 - [Fresco](http://frescolib.org/)
 - This is currently using the still in development [cameraview](https://github.com/google/cameraview/)
@@ -45,7 +44,7 @@ repositories {
 }
 
 dependencies {
-    implementation "com.lytefast:flexinput:0.9.15@aar"
+    implementation "com.lytefast:flexinput:0.9.18@aar"
 }
 ```
 
@@ -67,35 +66,6 @@ To use the widget, you can just include it in your layout `my_layout.xml`:
 
     tools:layout="@layout/flex_input_widget"/>
 ```
-### Styling Appearance
-The widget tries to reuse as much of the app style as possible: icon colors are set via the `colorButtonNormal`, `colorControlActivated`, and `colorControlHighlight` style attributes.
-
-See [`colors.xml`](flexinput/src/main/res/values/colors.xml):
-```xml
-<!--These are used within FlexInput. Override to customize.-->
-<!-- Defaults for these values are style attr and listed beside the overrides-->
-<color name="flexInputIconColor">@color/colorPrimary</color>  <!-- colorButtonNormal -->
-<color name="flexInputIconColorActivated">@color/colorPrimaryDark</color>  <!-- colorControlActivated -->
-<color name="flexInputIconColorDisabled">#c03f4a54</color>  <!-- colorControlHighlight -->
-```
-Or the same attributes in [`styles.xml`](flexinput/src/main/res/values/styles.xml).
-<details>
- <summary>Sample overrides of interest</summary>
-  ```
-  <style name="FlexInput.Main" parent="AppTheme">
-    <item name="android:background">@color/app_input_background_color</item>
-  </style>
-  <style name="FlexInput.AddContent.TabLayout" parent="FlexInput.AddContent.Base.TabLayout">
-    <item name="android:background">@drawable/rounded_rect</item>
-  </style>
-  ```
-</details>
-
-There are also `styles.xml` overrides that you can provide. All styles are prefixed by `FlexInput`. See [`styles.xml`](flexinput/src/main/res/values/styles.xml) for the full set of styles.
-
-Addtionally there are special `app` attributes that you may set to customize the appearance of the widget.
-- `inputBackground` defines the background for the text input row
-- `previewBackground` defines the background for the attachment preview row
 
 ## Setup
 Now you need to add some hooks and adapters to make sure everything works. Don't worry there are some default implementations that can just be dropped in.
@@ -151,6 +121,38 @@ private final InputListener flexInputListener = new InputListener() {
 ```
 
 That's it! Now you have the output string and the attachments (in order) from the user.
+
+### Styling Appearance
+The widget tries to reuse as much of the app style as possible: icon colors are set via the `colorButtonNormal`, `colorControlActivated`, and `colorControlHighlight` style attributes.
+
+See [`colors.xml`](flexinput/src/main/res/values/colors.xml):
+```xml
+<!--These are used within FlexInput. Override to customize.-->
+<!-- Defaults for these values are style attr and listed beside the overrides-->
+<color name="flexInputIconColor">@color/colorPrimary</color>  <!-- colorButtonNormal -->
+<color name="flexInputIconColorActivated">@color/colorPrimaryDark</color>  <!-- colorControlActivated -->
+<color name="flexInputIconColorDisabled">#c03f4a54</color>  <!-- colorControlHighlight -->
+```
+Or the same attributes in [`styles.xml`](flexinput/src/main/res/values/styles.xml).
+<details>
+ <summary>Sample overrides of interest</summary>
+
+  ```xml
+  <style name="FlexInput.Main" parent="AppTheme">
+    <item name="android:background">@color/app_input_background_color</item>
+  </style>
+  <style name="FlexInput.AddContent.TabLayout" parent="FlexInput.AddContent.Base.TabLayout">
+    <item name="android:background">@drawable/rounded_rect</item>
+  </style>
+  ```
+
+</details>
+
+There are also `styles.xml` overrides that you can provide. All styles are prefixed by `FlexInput`. See [`styles.xml`](flexinput/src/main/res/values/styles.xml) for the full set of styles.
+
+Addtionally there are special `app` attributes that you may set to customize the appearance of the widget.
+- `inputBackground` defines the background for the text input row
+- `previewBackground` defines the background for the attachment preview row
 
 # Optional Features
 ```java
