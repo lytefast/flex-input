@@ -30,7 +30,7 @@ Used in the [Discord](www.discordapp.com) android app!
 - This is currently using the still in development [cameraview](https://github.com/google/cameraview/)
   - at the current moment the cameraview project is just a symlink to the [camereaview/library project](https://github.com/google/cameraview/tree/master/library)
   - you must do the same (include as a local project module dependency) in you project
-  - this is not actively maintained/developed and will likely be replaced before 1.0 release. Tracked in [#37](https://github.com/lytefast/flex-input/issues/3
+  - this is not actively maintained/developed and will likely be replaced before 1.0 release. Tracked in [#37](https://github.com/lytefast/flex-input/issues/37
 
 # Usage
 For more details refer to the sample app included in this project.
