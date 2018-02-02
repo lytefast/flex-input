@@ -30,21 +30,28 @@ class Photo : Attachment<String> {
         arrayOf(id.toString(), Integer.toString(MediaStore.Images.Thumbnails.MINI_KIND)), null)
 
     if (cursor == null || !cursor.moveToFirst()) {
-      // Generate thumbnail for next time
-      AsyncTask.execute {
-        try {
-          MediaStore.Images.Thumbnails.getThumbnail(
-              contentResolver, id, MediaStore.Images.Thumbnails.MINI_KIND, null)
-        } catch (e: Exception) {
-          Log.v(Photo::class.java.name, "Error generating thumbnail for photo $id.")
-        }
-      }
+      asyncGenerateThumbnail(contentResolver)
+      cursor?.close()
       return uri  // Slow due to photo size and manipulation but better than nothing
     }
     cursor.use {
       val thumbId = it.getLong(0)
       return ContentUris.withAppendedId(
           MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, thumbId)
+    }
+  }
+
+  /**
+   * Generate thumbnail for next time.
+   */
+  private fun asyncGenerateThumbnail(contentResolver: ContentResolver) {
+    AsyncTask.execute {
+      try {
+        MediaStore.Images.Thumbnails.getThumbnail(
+                contentResolver, id, MediaStore.Images.Thumbnails.MINI_KIND, null)
+      } catch (e: Exception) {
+        Log.v(Photo::class.java.name, "Error generating thumbnail for photo $id.")
+      }
     }
   }
 
