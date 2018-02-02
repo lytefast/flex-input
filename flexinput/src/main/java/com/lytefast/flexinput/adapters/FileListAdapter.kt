@@ -195,7 +195,11 @@ class FileListAdapter(private val contentResolver: ContentResolver,
 
       Collections.sort(files) { f1, f2 ->
         // Sort by newest first
-        f2.data!!.lastModified().compareTo(f1.data!!.lastModified())
+        val timeCompare = f2.lastModified.compareTo(f1.lastModified)
+        when (timeCompare) {
+          0 -> f2.uri.compareTo(f1.uri)
+          else -> timeCompare
+        }
       }
       return files
     }
@@ -224,5 +228,8 @@ class FileListAdapter(private val contentResolver: ContentResolver,
       }
       return flattenedFileList
     }
+
+    private val Attachment<File>.lastModified
+      get() = data?.lastModified() ?: 0
   }
 }
