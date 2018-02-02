@@ -130,13 +130,14 @@ open class CameraFragment : PermissionsFragment() {
         }
         start()
       } catch (e: Exception) {
-        Log.w(TAG, "Camera could not be loaded, try front facing camera", e)
+        onCameraError(e, "Camera could not be loaded, try front facing camera")
 
         try {
           facing = CameraView.FACING_FRONT
           start()
         } catch (ex: Exception) {
-          Log.e(TAG, "Camera could not be loaded", e)
+          onCameraError(e, "Camera could not be loaded")
+          Toast.makeText(context, R.string.camera_unknown_error, Toast.LENGTH_SHORT)
         }
       }
     }
@@ -190,7 +191,7 @@ open class CameraFragment : PermissionsFragment() {
         try {
           takePicture()
         } catch (e: Exception) {
-          Log.e(TAG, "Camera error on take picture", e)
+          onCameraError(e, "Camera error on take picture")
           Toast.makeText(context, R.string.camera_unknown_error, Toast.LENGTH_SHORT)
         }
       }
@@ -274,19 +275,25 @@ open class CameraFragment : PermissionsFragment() {
   }
 
   private fun setFacing(btn: ImageView, @CameraView.Facing newFacingState: Int) {
-    cameraView?.apply {
-      if (facing != newFacingState) {
-        facing = newFacingState
-        Toast.makeText(context, R.string.camera_switched, Toast.LENGTH_SHORT).show()
-      }
-    }
-    @DrawableRes val facingImg: Int =
-        when (newFacingState) {
-          CameraView.FACING_FRONT -> R.drawable.ic_camera_rear_white_24dp
-//          CameraView.FACING_BACK,
-          else -> R.drawable.ic_camera_front_white_24dp
+    try {
+      cameraView?.apply {
+        if (facing != newFacingState) {
+          facing = newFacingState
+          Toast.makeText(context, R.string.camera_switched, Toast.LENGTH_SHORT).show()
         }
-    btn.setImageResource(facingImg)
+      }
+      @DrawableRes
+      val facingImg: Int = when (newFacingState) {
+        CameraView.FACING_FRONT -> R.drawable.ic_camera_rear_white_24dp
+//        CameraView.FACING_BACK,
+        else -> R.drawable.ic_camera_front_white_24dp
+      }
+      btn.setImageResource(facingImg)
+
+    } catch (e: Exception) {
+      onCameraError(e, "Cannot switch camera facing")
+      Toast.makeText(context, R.string.camera_unknown_error, Toast.LENGTH_SHORT)
+    }
   }
 
   private fun setFlash(btn: ImageView, @CameraView.Flash newFlashState: Int) {
@@ -298,7 +305,8 @@ open class CameraFragment : PermissionsFragment() {
     try {
       cameraView.flash = newFlashState
     } catch (e: Exception) {
-      Log.e(TAG, "Camera error on set flash", e)
+      onCameraError(e, "Camera error on set flash")
+      Toast.makeText(context, R.string.camera_unknown_error, Toast.LENGTH_SHORT)
     }
 
     @DrawableRes val flashImage: Int
@@ -320,6 +328,10 @@ open class CameraFragment : PermissionsFragment() {
 
     Toast.makeText(btn.context, flashMsg, Toast.LENGTH_SHORT).show()
     btn.setImageResource(flashImage)
+  }
+
+  protected open fun onCameraError(e: Exception, message: String) {
+    Log.e(TAG, message, e)
   }
 
   companion object {
