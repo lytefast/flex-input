@@ -5,6 +5,7 @@ import android.annotation.TargetApi
 import android.app.Activity
 import android.app.Dialog
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -167,7 +168,7 @@ open class AddContentDialogFragment : AppCompatDialogFragment() {
 
   override fun onStart() {
     super.onStart()
-    animateIn()
+    context?.also { animateIn(it) }
   }
 
   override fun onCreateView(inflater: LayoutInflater,
@@ -212,7 +213,9 @@ open class AddContentDialogFragment : AppCompatDialogFragment() {
   }
 
   fun dismissWithAnimation() {
-    animateOut().setAnimationListener(object : Animation.AnimationListener {
+    val context = context ?: return dismissAllowingStateLoss()
+
+    animateOut(context).setAnimationListener(object : Animation.AnimationListener {
       override fun onAnimationStart(animation: Animation) {}
 
       override fun onAnimationEnd(animation: Animation) {
@@ -312,12 +315,12 @@ open class AddContentDialogFragment : AppCompatDialogFragment() {
   //region Animation methods
 
   @SuppressLint("PrivateResource")
-  private fun animateOut(): Animation {
+  private fun animateOut(ctx: Context): Animation {
     val animation = AnimationUtils.loadAnimation(
-        context, android.support.design.R.anim.design_bottom_sheet_slide_out)
+            ctx, android.support.design.R.anim.design_bottom_sheet_slide_out)
     animation.duration = resources
-        .getInteger(android.support.design.R.integer.bottom_sheet_slide_duration).toLong()
-    animation.setInterpolator(context, android.R.anim.accelerate_decelerate_interpolator)
+            .getInteger(android.support.design.R.integer.bottom_sheet_slide_duration).toLong()
+    animation.setInterpolator(ctx, android.R.anim.accelerate_decelerate_interpolator)
 
     actionButton?.hide()
     contentTabs?.startAnimation(animation)
@@ -328,12 +331,12 @@ open class AddContentDialogFragment : AppCompatDialogFragment() {
   }
 
   @SuppressLint("PrivateResource")
-  private fun animateIn(): Animation {
+  private fun animateIn(ctx: Context): Animation {
     val animation = AnimationUtils.loadAnimation(
-        context, android.support.design.R.anim.design_bottom_sheet_slide_in)
+        ctx, android.support.design.R.anim.design_bottom_sheet_slide_in)
     animation.duration = resources
         .getInteger(android.support.design.R.integer.bottom_sheet_slide_duration).toLong()
-    animation.setInterpolator(context, android.R.anim.accelerate_decelerate_interpolator)
+    animation.setInterpolator(ctx, android.R.anim.accelerate_decelerate_interpolator)
 
     contentTabs?.startAnimation(animation)
     contentPager?.startAnimation(animation)

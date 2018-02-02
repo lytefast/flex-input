@@ -532,7 +532,7 @@ public class FlexInputFragment extends Fragment
       @Override
       public void onDismiss(final DialogInterface dialog) {
         if (dialogFrag.isAdded() && !dialogFrag.isDetached()) {
-          dialogFrag.dismiss();
+          dialogFrag.dismissAllowingStateLoss();
         }
         if (!FlexInputFragment.this.isAdded() || FlexInputFragment.this.isHidden()) {
           return;  // Nothing to do
