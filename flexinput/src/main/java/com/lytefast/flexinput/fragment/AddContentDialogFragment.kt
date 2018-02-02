@@ -219,7 +219,7 @@ open class AddContentDialogFragment : AppCompatDialogFragment() {
       override fun onAnimationStart(animation: Animation) {}
 
       override fun onAnimationEnd(animation: Animation) {
-        dismiss()
+        dismissAllowingStateLoss()
       }
 
       override fun onAnimationRepeat(animation: Animation) {}
