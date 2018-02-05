@@ -8,11 +8,14 @@
     <attr name="flexInputAddContentLauncherTitle" format="reference"/>
 
     <style name="FlexInput.DialogWhenLarge" parent="Theme.AppCompat.DayNight.DialogWhenLarge">
+        <!--Taken from Theme.Design.BottomSheetDialog-->
         <item name="android:windowTranslucentStatus" tools:targetApi="kitkat">true</item>
         <item name="android:colorBackground">@android:color/transparent</item>
         <item name="flexInputDialogBackground">
             @android:drawable/screen_background_dark_transparent
         </item>
+        <item name="android:windowAnimationStyle">@style/Animation.Design.BottomSheetDialog</item>
+        <item name="bottomSheetStyle">@style/Widget.Design.BottomSheet.Modal</item>
         <item name="flexInputAddContentLauncherTitle">@string/choose_an_application</item>
     </style>
 
