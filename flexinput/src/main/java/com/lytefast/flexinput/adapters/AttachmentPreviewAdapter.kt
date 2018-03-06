@@ -1,6 +1,9 @@
 package com.lytefast.flexinput.adapters
 
 import android.content.ContentResolver
+import android.support.v4.content.res.ResourcesCompat
+import android.support.v4.graphics.drawable.DrawableCompat
+import android.support.v7.content.res.AppCompatResources
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -56,6 +59,11 @@ class AttachmentPreviewAdapter<T : Attachment<Any>>
   inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private val draweeView: SimpleDraweeView = itemView as SimpleDraweeView
+
+    init {
+      val tintDrawable = AppCompatResources.getDrawable(itemView.context, R.drawable.ic_file_24dp)
+      draweeView.hierarchy.setPlaceholderImage(tintDrawable)
+    }
 
     fun bind(item: T) {
       when (item) {
