@@ -7,7 +7,6 @@ import android.content.ContentResolver
 import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
-import android.support.v7.content.res.AppCompatResources
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -119,9 +118,6 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
 
     init {
       this.itemView.setOnClickListener(this)
-
-      val tintDrawable = AppCompatResources.getDrawable(itemView.context, R.drawable.ic_check_circle_24dp)
-      checkIndicator.hierarchy.setPlaceholderImage(tintDrawable)
 
       //region Perf: Load animations once
       this.shrinkAnim = AnimatorInflater.loadAnimator(
