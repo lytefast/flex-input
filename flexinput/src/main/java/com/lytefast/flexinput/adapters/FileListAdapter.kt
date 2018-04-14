@@ -3,9 +3,12 @@ package com.lytefast.flexinput.adapters
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.content.ContentResolver
+import android.graphics.Color
 import android.net.Uri
 import android.os.AsyncTask
 import android.provider.MediaStore
+import android.support.v4.content.ContextCompat
+import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -110,19 +113,30 @@ class FileListAdapter(private val contentResolver: ContentResolver,
 
       // Set defaults
       thumbIv.setImageURI(null as Uri?)
+      thumbIv.hierarchy.setOverlayImage(null)
       typeIv.visibility = View.GONE
 
-      val mimeType = file?.getMimeType()
-      if (mimeType.isNullOrEmpty()) return
-
-      if (mimeType!!.startsWith("image")) {
-        typeIv.setImageResource(R.drawable.ic_image_24dp)
-        typeIv.visibility = View.VISIBLE
-        bindThumbIvWithImage(file)
-      } else if (mimeType.startsWith("video")) {
-        typeIv.setImageResource(R.drawable.ic_movie_24dp)
-        typeIv.visibility = View.VISIBLE
-        thumbIv.setImageURI(Uri.fromFile(file))
+      val mimeType = file?.getMimeType()?.takeIf { it.isNotBlank() } ?: return
+      when {
+        mimeType.startsWith("image") -> {
+          typeIv.setImageResource(R.drawable.ic_image_24dp)
+          typeIv.visibility = View.VISIBLE
+          bindThumbIvWithImage(file)
+        }
+        mimeType.startsWith("video") -> {
+          typeIv.setImageResource(R.drawable.ic_movie_24dp)
+          typeIv.visibility = View.VISIBLE
+          thumbIv.setImageURI(Uri.fromFile(file))
+        }
+        else -> {
+          thumbIv.context
+            ?.let { ContextCompat.getDrawable(it, R.drawable.ic_file_24dp) }
+            ?.let { DrawableCompat.wrap(it) }
+            ?.also {
+              DrawableCompat.setTint(it, Color.parseColor("#BEBEBE"))
+              thumbIv.hierarchy.setOverlayImage(it)
+            }
+        }
       }
     }
 
