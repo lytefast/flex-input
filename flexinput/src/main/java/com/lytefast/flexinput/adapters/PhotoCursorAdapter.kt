@@ -37,7 +37,7 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
     setHasStableIds(true)
   }
 
-  override fun onAttachedToRecyclerView(recyclerView: RecyclerView?) {
+  override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
     super.onAttachedToRecyclerView(recyclerView)
     loadPhotos()
   }
@@ -53,11 +53,14 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
     holder.bind(photo)
   }
 
-  override fun onBindViewHolder(holder: ViewHolder?, position: Int, payloads: MutableList<Any>?) {
-    payloads?.mapNotNull { it as? SelectionCoordinator.SelectionEvent<*> }?.firstOrNull()?.also {
-      holder?.setSelected(it.isSelected, isAnimationRequested = true)
-      return
-    }
+  override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
+    payloads
+      .firstOrNull { it is SelectionCoordinator.SelectionEvent<*> }
+      ?.let { it as? SelectionCoordinator.SelectionEvent<*> }
+      ?.also {
+        holder?.setSelected(it.isSelected, isAnimationRequested = true)
+        return
+      }
     super.onBindViewHolder(holder, position, payloads)
   }
 
@@ -65,7 +68,7 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
 
   override fun getItemId(position: Int): Long = this[position]?.id ?: -1
 
-  override fun onDetachedFromRecyclerView(recyclerView: RecyclerView?) {
+  override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
     cursor?.close()
     super.onDetachedFromRecyclerView(recyclerView)
   }
