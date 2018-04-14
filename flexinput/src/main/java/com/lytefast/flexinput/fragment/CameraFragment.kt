@@ -93,12 +93,14 @@ open class CameraFragment : PermissionsFragment() {
     tryStartCamera()
   }
 
-  @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-  private val isSingleCamera = when (Build.VERSION.SDK_INT) {
-    in 0..Build.VERSION_CODES.KITKAT_WATCH -> Camera.getNumberOfCameras() == 1
-    else -> {
-      (requireContext().getSystemService(CAMERA_SERVICE) as CameraManager)
-        .cameraIdList.size == 1
+  private val isSingleCamera by lazy {
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    when (Build.VERSION.SDK_INT) {
+      in 0..Build.VERSION_CODES.KITKAT_WATCH -> Camera.getNumberOfCameras() == 1
+      else -> {
+        (context!!.getSystemService(CAMERA_SERVICE) as CameraManager)
+          .cameraIdList.size == 1
+      }
     }
   }
 
