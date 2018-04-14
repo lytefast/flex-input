@@ -210,10 +210,12 @@ class FileListAdapter(private val contentResolver: ContentResolver,
     }
 
     private fun flattenFileList(parentDir: File): List<Attachment<File>> {
+      fun File.getFileList() = listFiles()?.asSequence() ?: emptySequence()
+
       val flattenedFileList = ArrayList<Attachment<File>>()
       val files = LinkedList<File>()
-      val fileList = parentDir.listFiles() ?: return flattenedFileList
-      files.addAll(Arrays.asList(*fileList))
+
+      files.addAll(parentDir.getFileList())
       while (!files.isEmpty()) {
         val file = files.remove()
         if (file.isHidden) {
@@ -221,7 +223,7 @@ class FileListAdapter(private val contentResolver: ContentResolver,
         }
 
         if (file.isDirectory) {
-          files.addAll(Arrays.asList(*file.listFiles()))
+          files.addAll(file.getFileList())
         } else {
           flattenedFileList.add(file.toAttachment())
         }
