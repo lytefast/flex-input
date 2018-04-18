@@ -1,12 +1,17 @@
 package com.lytefast.flexinput.fragment
 
 import android.Manifest
+import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
+import android.content.Context.CAMERA_SERVICE
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.hardware.Camera
+import android.hardware.camera2.CameraManager
 import android.net.Uri
 import android.os.AsyncTask
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.annotation.DrawableRes
@@ -79,10 +84,24 @@ open class CameraFragment : PermissionsFragment() {
           ?.setOnClickListener { onCameraFlashClick(it as ImageView) }
       cameraFacingBtn = findViewById(R.id.camera_facing_btn)
       cameraFacingBtn?.setOnClickListener { onCameraFacingClick(it as ImageView) }
+      if (isSingleCamera) {
+        cameraFacingBtn?.visibility = View.GONE
+      }
     }
 
     cameraView?.addCallback(cameraCallback)
     tryStartCamera()
+  }
+
+  private val isSingleCamera by lazy {
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    when (Build.VERSION.SDK_INT) {
+      in 0..Build.VERSION_CODES.KITKAT_WATCH -> Camera.getNumberOfCameras() == 1
+      else -> {
+        (context!!.getSystemService(CAMERA_SERVICE) as CameraManager)
+          .cameraIdList.size == 1
+      }
+    }
   }
 
   override fun onResume() {

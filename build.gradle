@@ -9,13 +9,14 @@ buildscript {
         targetSdkVersion = 27
 
         // Platform
-        kotlin_version = '1.2.21'
-        supportLibraryVersion = '27.0.2'
-        supportLibraryConstraintVersion = '1.1.0-beta4'
+        espressoCoreVersion = '3.0.1'
+        kotlin_version = '1.2.31'
+        supportLibraryVersion = '27.1.1'
+        supportLibraryConstraintVersion = '1.1.0-beta6'
         junitVersion = '4.12'
 
         // 3rd party libs
-        frescoVersion = '1.7.1'
+        frescoVersion = '1.8.1'
     }
 
     repositories {
@@ -24,7 +25,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:3.1.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // NOTE: Do not place your application dependencies here; they belong

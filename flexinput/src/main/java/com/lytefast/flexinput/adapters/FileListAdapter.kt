@@ -48,12 +48,14 @@ class FileListAdapter(private val contentResolver: ContentResolver,
   override fun onBindViewHolder(holder: FileListAdapter.ViewHolder, position: Int) =
       holder.bind(files[position])
 
-
-  override fun onBindViewHolder(holder: ViewHolder?, position: Int, payloads: MutableList<Any>?) {
-    payloads?.mapNotNull { it as? SelectionCoordinator.SelectionEvent<*> }?.firstOrNull()?.also {
-      holder?.setSelected(it.isSelected, isAnimationRequested = true)
-      return
-    }
+  override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
+    payloads
+      .firstOrNull { it is SelectionCoordinator.SelectionEvent<*> }
+      ?.let { it as? SelectionCoordinator.SelectionEvent<*> }
+      ?.also {
+        holder.setSelected(it.isSelected, isAnimationRequested = true)
+        return
+      }
     super.onBindViewHolder(holder, position, payloads)
   }
 
@@ -210,10 +212,12 @@ class FileListAdapter(private val contentResolver: ContentResolver,
     }
 
     private fun flattenFileList(parentDir: File): List<Attachment<File>> {
+      fun File.getFileList() = listFiles()?.asSequence() ?: emptySequence()
+
       val flattenedFileList = ArrayList<Attachment<File>>()
       val files = LinkedList<File>()
-      val fileList = parentDir.listFiles() ?: return flattenedFileList
-      files.addAll(Arrays.asList(*fileList))
+
+      files.addAll(parentDir.getFileList())
       while (!files.isEmpty()) {
         val file = files.remove()
         if (file.isHidden) {
@@ -221,7 +225,7 @@ class FileListAdapter(private val contentResolver: ContentResolver,
         }
 
         if (file.isDirectory) {
-          files.addAll(Arrays.asList(*file.listFiles()))
+          files.addAll(file.getFileList())
         } else {
           flattenedFileList.add(file.toAttachment())
         }

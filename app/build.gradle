@@ -53,7 +53,7 @@ dependencies {
     implementation "com.facebook.fresco:animated-gif:$frescoVersion"
 
     testImplementation "junit:junit:$junitVersion"
-    androidTestImplementation("com.android.support.test.espresso:espresso-core:2.2.2", {
+    androidTestImplementation("com.android.support.test.espresso:espresso-core:$espressoCoreVersion", {
         exclude group: "com.android.support", module: "support-annotations"
     })
 }
