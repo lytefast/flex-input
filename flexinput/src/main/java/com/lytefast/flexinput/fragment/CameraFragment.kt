@@ -3,6 +3,7 @@ package com.lytefast.flexinput.fragment
 import android.Manifest
 import android.annotation.TargetApi
 import android.app.Activity
+import android.arch.lifecycle.Lifecycle
 import android.content.Context
 import android.content.Context.CAMERA_SERVICE
 import android.content.Intent
@@ -13,6 +14,7 @@ import android.net.Uri
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.provider.MediaStore
 import android.support.annotation.DrawableRes
 import android.support.annotation.StringRes
@@ -48,6 +50,8 @@ open class CameraFragment : PermissionsFragment() {
 
   private var flexInputCoordinator: FlexInputCoordinator<Any>? = null
 
+  private lateinit var handler: Handler
+
   /**
    * Temporary holder for when we intent to the camera. This is used because the resulting intent
    * doesn't return any data if you set the output file in the request.
@@ -57,6 +61,8 @@ open class CameraFragment : PermissionsFragment() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     retainInstance = true
+
+    handler = Handler()
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -90,7 +96,6 @@ open class CameraFragment : PermissionsFragment() {
     }
 
     cameraView?.addCallback(cameraCallback)
-    tryStartCamera()
   }
 
   private val isSingleCamera by lazy {
@@ -125,9 +130,11 @@ open class CameraFragment : PermissionsFragment() {
 
     // Delayed restart since we are coming back from camera, and for some reason the API
     // isn't fast enough to acknowledge the other activity closed the camera.
-    cameraView?.postDelayed({
-      tryStartCamera()
-    }, 350)
+    handler.postDelayed({
+      if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+        tryStartCamera()
+      }
+    }, 300)
   }
 
   protected open fun initPermissionsView(permissionsContainer: FrameLayout) {
@@ -142,6 +149,7 @@ open class CameraFragment : PermissionsFragment() {
    * So here, if we fail, just try getting the first front facing camera.
    */
   private fun tryStartCamera() {
+    Log.d(TAG, "Try starting the camera")
     cameraView?.apply {
       try {
         if (isCameraOpened) {
@@ -156,7 +164,7 @@ open class CameraFragment : PermissionsFragment() {
           start()
         } catch (ex: Exception) {
           onCameraError(e, "Camera could not be loaded")
-          Toast.makeText(context, R.string.camera_unknown_error, Toast.LENGTH_SHORT)
+          Toast.makeText(context, R.string.camera_unknown_error, Toast.LENGTH_SHORT).show()
         }
       }
     }
@@ -167,6 +175,7 @@ open class CameraFragment : PermissionsFragment() {
   }
 
   override fun onPause() {
+    handler.removeCallbacksAndMessages(null)
     cameraView?.stop()
     super.onPause()
   }
@@ -211,7 +220,7 @@ open class CameraFragment : PermissionsFragment() {
           takePicture()
         } catch (e: Exception) {
           onCameraError(e, "Camera error on take picture")
-          Toast.makeText(context, R.string.camera_unknown_error, Toast.LENGTH_SHORT)
+          Toast.makeText(context, R.string.camera_unknown_error, Toast.LENGTH_SHORT).show()
         }
       }
     }
@@ -240,16 +249,16 @@ open class CameraFragment : PermissionsFragment() {
     }
 
     photoFile?.also {
-      when {
-        Activity.RESULT_CANCELED == resultCode -> { /* Do nothing*/ }
-        Activity.RESULT_OK != resultCode -> {
-          Toast.makeText(context, R.string.camera_intent_result_error, Toast.LENGTH_SHORT).show()
-          it.delete()  // cleanup
-        }
-        else -> {
+      when(resultCode) {
+        Activity.RESULT_CANCELED -> { /* Do nothing*/ }
+        Activity.RESULT_OK -> {
           context?.addToMediaStore(it)
           flexInputCoordinator?.addExternalAttachment(it.toAttachment())
           cameraView?.stop()  // make sure we stop the camera since we are just going to exit
+        }
+        else -> {
+          Toast.makeText(context, R.string.camera_intent_result_error, Toast.LENGTH_SHORT).show()
+          it.delete()  // cleanup
         }
       }
     }
@@ -311,7 +320,7 @@ open class CameraFragment : PermissionsFragment() {
 
     } catch (e: Exception) {
       onCameraError(e, "Cannot switch camera facing")
-      Toast.makeText(context, R.string.camera_unknown_error, Toast.LENGTH_SHORT)
+      Toast.makeText(context, R.string.camera_unknown_error, Toast.LENGTH_SHORT).show()
     }
   }
 
