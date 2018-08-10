@@ -195,14 +195,10 @@ class FileListAdapter(private val contentResolver: ContentResolver,
     override fun doInBackground(vararg rootFiles: File): List<Attachment<File>> {
       val files = flattenFileList(rootFiles[0])
 
-      Collections.sort(files) { f1, f2 ->
-        // Sort by newest first
-        val timeCompare = f2.lastModified.compareTo(f1.lastModified)
-        when (timeCompare) {
-          0 -> f2.uri.compareTo(f1.uri)
-          else -> timeCompare
-        }
-      }
+      files.sortWith(
+          compareByDescending<Attachment<File>> { it.lastModified }
+              .then(compareBy { it.uri })
+      )
       return files
     }
 
@@ -211,7 +207,7 @@ class FileListAdapter(private val contentResolver: ContentResolver,
       this.adapter.notifyDataSetChanged()
     }
 
-    private fun flattenFileList(parentDir: File): List<Attachment<File>> {
+    private fun flattenFileList(parentDir: File): MutableList<Attachment<File>> {
       fun File.getFileList() = listFiles()?.asSequence() ?: emptySequence()
 
       val flattenedFileList = ArrayList<Attachment<File>>()
