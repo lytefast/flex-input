@@ -14,33 +14,9 @@ android {
 
         multiDexEnabled true
     }
-
-    buildTypes {
-        debugProguard {
-            initWith debug
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt')
-            proguardFiles(
-                './proguard/proguard-facebook-fresco.pro',
-                './proguard/proguard-support-design.pro',
-                './proguard/proguard-support-v7-appcompat.pro')
-
-            matchingFallbacks = ['debug', 'release']
-        }
-
-        release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt')
-            proguardFiles(
-                './proguard/proguard-facebook-fresco.pro',
-                './proguard/proguard-support-design.pro',
-                './proguard/proguard-support-v7-appcompat.pro')
-        }
-    }
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':flexinput')
 
     implementation "com.android.support:appcompat-v7:$supportLibraryVersion"

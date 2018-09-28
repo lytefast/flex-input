@@ -21,7 +21,6 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(path: ':cameraview-aar')
 
     implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
