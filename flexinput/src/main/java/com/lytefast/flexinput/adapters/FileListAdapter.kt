@@ -6,7 +6,6 @@ import android.content.ContentResolver
 import android.net.Uri
 import android.os.AsyncTask
 import android.provider.MediaStore
-import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +13,7 @@ import android.view.ViewGroup
 import android.webkit.MimeTypeMap
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
 import com.lytefast.flexinput.R
@@ -131,35 +131,36 @@ class FileListAdapter(private val contentResolver: ContentResolver,
           MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
           arrayOf(MediaStore.Images.Media._ID, MediaStore.Images.Media.MINI_THUMB_MAGIC),
           "${MediaStore.Images.Media.DATA}=?",
-          arrayOf(file.path), null/* sortOrder */)?.use {
-        if (!it.moveToFirst()) return
+          arrayOf(file.path), null/* sortOrder */)
+          ?.use { cursor ->
+            if (!cursor.moveToFirst()) return
+            val imageId = cursor.getLong(0)
+            val thumbMagic = cursor.getLong(1)
 
-        val imageId = it.getLong(0)
-        val thumbMagic = it.getLong(1)
+            if (thumbMagic == 0L) {
+              // Force thumbnail generation
+              val genThumb = MediaStore.Images.Thumbnails.getThumbnail(
+                  contentResolver, imageId, MediaStore.Images.Thumbnails.MINI_KIND, null)
+              genThumb?.recycle()
+            }
 
-        if (thumbMagic == 0L) {
-          // Force thumbnail generation
-          val genThumb = MediaStore.Images.Thumbnails.getThumbnail(
-              contentResolver, imageId, MediaStore.Images.Thumbnails.MINI_KIND, null)
-          genThumb?.recycle()
-        }
+            contentResolver.query(
+                MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
+                arrayOf(MediaStore.Images.Thumbnails._ID),
+                "${MediaStore.Images.Thumbnails.IMAGE_ID}=?",
+                arrayOf(java.lang.Long.toString(imageId)),
+                null)
+                ?.use { thumbnailCursor ->
+                  if (!thumbnailCursor.moveToFirst()) return
+                  val thumbId = thumbnailCursor.getString(0)
 
-        contentResolver.query(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
-            arrayOf(MediaStore.Images.Thumbnails._ID),
-            "${MediaStore.Images.Thumbnails.IMAGE_ID}=?",
-            arrayOf(java.lang.Long.toString(imageId)), null)?.use {
-          if (!it.moveToFirst()) {
-            return
+                  thumbIv.controller = Fresco.newDraweeControllerBuilder()
+                      .setOldController(thumbIv.controller)
+                      .setUri(Uri.withAppendedPath(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, thumbId))
+                      .setTapToRetryEnabled(true)
+                      .build()
+                }
           }
-          val thumbId = it.getString(0)
-
-          thumbIv.controller = Fresco.newDraweeControllerBuilder()
-              .setOldController(thumbIv.controller)
-              .setUri(Uri.withAppendedPath(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, thumbId))
-              .setTapToRetryEnabled(true)
-              .build()
-        }
-      }
     }
 
     fun setSelected(isSelected: Boolean, isAnimationRequested: Boolean) {

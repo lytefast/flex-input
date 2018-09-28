@@ -7,10 +7,10 @@ import android.content.ContentResolver
 import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.facebook.drawee.view.SimpleDraweeView
 import com.lytefast.flexinput.R
 import com.lytefast.flexinput.model.Photo
@@ -18,7 +18,7 @@ import com.lytefast.flexinput.utils.SelectionCoordinator
 
 
 /**
- * [android.support.v7.widget.RecyclerView.Adapter] that knows how to load photos from the media store.
+ * [RecyclerView.Adapter] that knows how to load photos from the media store.
  *
  * @author Sam Shih
  */
@@ -58,7 +58,7 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
       .firstOrNull { it is SelectionCoordinator.SelectionEvent<*> }
       ?.let { it as? SelectionCoordinator.SelectionEvent<*> }
       ?.also {
-        holder?.setSelected(it.isSelected, isAnimationRequested = true)
+        holder.setSelected(it.isSelected, isAnimationRequested = true)
         return
       }
     super.onBindViewHolder(holder, position, payloads)

@@ -9,13 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.TabLayout
-import android.support.v4.app.FragmentTransaction
-import android.support.v4.view.ViewPager
-import android.support.v7.app.AppCompatDialog
-import android.support.v7.app.AppCompatDialogFragment
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +18,13 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatDialog
+import androidx.appcompat.app.AppCompatDialogFragment
+import androidx.fragment.app.FragmentTransaction
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.tabs.TabLayout
 import com.lytefast.flexinput.FlexInputCoordinator
 import com.lytefast.flexinput.R
 import com.lytefast.flexinput.adapters.AddContentPagerAdapter
@@ -152,7 +152,7 @@ open class AddContentDialogFragment : AppCompatDialogFragment() {
     dialog.supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
 
     dialog.window?.apply {
-      setWindowAnimations(android.support.design.R.style.Animation_AppCompat_Dialog)
+      setWindowAnimations(com.google.android.material.R.style.Animation_AppCompat_Dialog)
       setBackgroundDrawableResource(android.R.color.transparent)
     }
     return dialog
@@ -161,8 +161,8 @@ open class AddContentDialogFragment : AppCompatDialogFragment() {
   @SuppressLint("PrivateResource")
   override fun show(transaction: FragmentTransaction, tag: String): Int {
     transaction.setCustomAnimations(
-        android.support.design.R.anim.abc_grow_fade_in_from_bottom,
-        android.support.design.R.anim.abc_shrink_fade_out_from_bottom)
+        com.google.android.material.R.anim.abc_grow_fade_in_from_bottom,
+        com.google.android.material.R.anim.abc_shrink_fade_out_from_bottom)
     return super.show(transaction, tag)
   }
 
@@ -317,9 +317,9 @@ open class AddContentDialogFragment : AppCompatDialogFragment() {
   @SuppressLint("PrivateResource")
   private fun animateOut(ctx: Context): Animation {
     val animation = AnimationUtils.loadAnimation(
-            ctx, android.support.design.R.anim.design_bottom_sheet_slide_out)
+        ctx, com.google.android.material.R.anim.design_bottom_sheet_slide_out)
     animation.duration = resources
-            .getInteger(android.support.design.R.integer.bottom_sheet_slide_duration).toLong()
+        .getInteger(com.google.android.material.R.integer.bottom_sheet_slide_duration).toLong()
     animation.setInterpolator(ctx, android.R.anim.accelerate_decelerate_interpolator)
 
     actionButton?.hide()
@@ -333,9 +333,9 @@ open class AddContentDialogFragment : AppCompatDialogFragment() {
   @SuppressLint("PrivateResource")
   private fun animateIn(ctx: Context): Animation {
     val animation = AnimationUtils.loadAnimation(
-        ctx, android.support.design.R.anim.design_bottom_sheet_slide_in)
+        ctx, com.google.android.material.R.anim.design_bottom_sheet_slide_in)
     animation.duration = resources
-        .getInteger(android.support.design.R.integer.bottom_sheet_slide_duration).toLong()
+        .getInteger(com.google.android.material.R.integer.bottom_sheet_slide_duration).toLong()
     animation.setInterpolator(ctx, android.R.anim.accelerate_decelerate_interpolator)
 
     contentTabs?.startAnimation(animation)

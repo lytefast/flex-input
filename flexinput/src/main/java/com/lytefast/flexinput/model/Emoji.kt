@@ -2,7 +2,7 @@ package com.lytefast.flexinput.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import android.support.annotation.DrawableRes
+import androidx.annotation.DrawableRes
 
 
 /**

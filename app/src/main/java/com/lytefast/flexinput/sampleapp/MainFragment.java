@@ -4,11 +4,6 @@ package com.lytefast.flexinput.sampleapp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -16,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -30,6 +27,11 @@ import com.lytefast.flexinput.fragment.PhotosFragment;
 import com.lytefast.flexinput.managers.KeyboardManager;
 import com.lytefast.flexinput.managers.SimpleFileManager;
 import com.lytefast.flexinput.model.Attachment;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 /**
@@ -153,21 +155,21 @@ public class MainFragment extends Fragment {
     return new AddContentPagerAdapter.PageSupplier[]{
         new AddContentPagerAdapter.PageSupplier(R.drawable.ic_image_24dp, R.string.attachment_photos) {
           @Override
-          @NonNull
+          @NotNull
           public Fragment createFragment() {
             return new PhotosFragment();
           }
         },
         new AddContentPagerAdapter.PageSupplier(R.drawable.ic_file_24dp, R.string.attachment_files) {
           @Override
-          @NonNull
+          @NotNull
           public Fragment createFragment() {
             return new CustomFilesFragment();
           }
         },
         new AddContentPagerAdapter.PageSupplier(R.drawable.ic_add_a_photo_24dp, R.string.attachment_camera) {
           @Override
-          @NonNull
+          @NotNull
           public Fragment createFragment() {
             return new CameraFragment();
           }
@@ -176,7 +178,7 @@ public class MainFragment extends Fragment {
   }
 
   public static class CustomFilesFragment extends FilesFragment {
-    @Override @NonNull
+    @Override @NotNull
     protected EmptyListAdapter newPermissionsRequestAdapter(final View.OnClickListener onClickListener) {
        return new EmptyListAdapter(
         R.layout.custom_permission_storage, R.id.permissions_req_btn, onClickListener);

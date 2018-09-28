@@ -1,8 +1,8 @@
 package com.lytefast.flexinput.fragment
 
 import android.content.pm.PackageManager
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
 
 
 /**

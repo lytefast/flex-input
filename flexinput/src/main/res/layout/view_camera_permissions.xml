@@ -11,7 +11,7 @@
         android:clickable="false"
         android:gravity="center"
         android:text="@string/camera_permission_denied_msg"/>
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/permissions_req_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

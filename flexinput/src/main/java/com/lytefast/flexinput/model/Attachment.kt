@@ -4,8 +4,8 @@ import android.content.ContentResolver
 import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
-import android.support.annotation.CallSuper
-import android.support.v13.view.inputmethod.InputContentInfoCompat
+import androidx.annotation.CallSuper
+import androidx.core.view.inputmethod.InputContentInfoCompat
 import com.facebook.common.util.HashCodeUtil
 import com.lytefast.flexinput.utils.FileUtils.getFileName
 import java.io.File
@@ -25,8 +25,8 @@ open class Attachment<out T> (
 
   constructor(parcelIn: Parcel) : this(
     id = parcelIn.readLong(),
-    uri = parcelIn.readParcelable(Uri::class.java.classLoader),
-    displayName = parcelIn.readString(),
+    uri = parcelIn.readParcelable(Uri::class.java.classLoader) ?: Uri.EMPTY,
+    displayName = parcelIn.readString() ?: "",
     data = null  // this shouldn't be required anyways.
   )
 

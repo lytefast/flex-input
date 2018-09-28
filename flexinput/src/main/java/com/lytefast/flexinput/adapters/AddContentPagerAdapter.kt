@@ -2,14 +2,14 @@ package com.lytefast.flexinput.adapters
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.support.annotation.DrawableRes
-import android.support.annotation.StringRes
-import android.support.design.widget.TabLayout
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
-import android.support.v4.graphics.drawable.DrawableCompat
-import android.support.v7.content.res.AppCompatResources
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
+import com.google.android.material.tabs.TabLayout
 import com.lytefast.flexinput.R
 import com.lytefast.flexinput.adapters.AddContentPagerAdapter.PageSupplier
 import com.lytefast.flexinput.fragment.CameraFragment
@@ -18,7 +18,7 @@ import com.lytefast.flexinput.fragment.PhotosFragment
 
 
 /**
- * [FragmentPagerAdapter] for the "Add Content" [android.support.v4.view.ViewPager]
+ * [FragmentPagerAdapter] for the "Add Content" [androidx.viewpager.widget.ViewPager]
  * allowing the user to set custom pages via a list of [PageSupplier]s.
  *
  * @author Sam Shih

@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:text="@string/storage_permission_denied_msg"/>
 
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/permissions_req_btn"
         android:gravity="center"
         android:layout_width="wrap_content"

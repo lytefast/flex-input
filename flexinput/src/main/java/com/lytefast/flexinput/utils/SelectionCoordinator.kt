@@ -1,7 +1,7 @@
 package com.lytefast.flexinput.utils
 
-import android.support.v4.util.ArrayMap
-import android.support.v7.widget.RecyclerView
+import androidx.collection.ArrayMap
+import androidx.recyclerview.widget.RecyclerView
 import java.util.*
 
 

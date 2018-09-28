@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/FlexInput.Items.File"
@@ -19,7 +19,7 @@
         app:layout_constraintRight_toLeftOf="@+id/file_name_tv"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/type_iv"
         android:layout_width="@dimen/file_type_icon_dimen"
         android:layout_height="@dimen/file_type_icon_dimen"
@@ -58,7 +58,7 @@
         app:layout_constraintRight_toRightOf="@+id/file_name_tv"
         app:layout_constraintTop_toBottomOf="@+id/file_name_tv" />
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/selection_indicator"
         style="@style/FlexInput.Items.File.Selection"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -70,4 +70,4 @@
         tools:layout_width="wrap_content"
         tools:src="@drawable/file_item_selection_indicator_btn" />
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

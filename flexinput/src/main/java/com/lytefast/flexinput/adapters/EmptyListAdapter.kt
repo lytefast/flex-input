@@ -1,15 +1,16 @@
 package com.lytefast.flexinput.adapters
 
-import android.support.annotation.IdRes
-import android.support.annotation.LayoutRes
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.IdRes
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.RecyclerView
 
 
 /**
- * Simple [android.support.v7.widget.RecyclerView.Adapter] which just renders one item entry.
+ * Simple [RecyclerView.Adapter] which just renders one item entry.
+ *
  * @author Sam Shih
  */
 open class EmptyListAdapter(

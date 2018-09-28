@@ -1,6 +1,6 @@
 package com.lytefast.flexinput.sampleapp;
 
-import android.support.annotation.DrawableRes;
+import androidx.annotation.DrawableRes;
 import android.util.JsonReader;
 import android.util.Log;
 

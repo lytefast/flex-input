@@ -3,7 +3,6 @@ package com.lytefast.flexinput.fragment
 import android.Manifest
 import android.annotation.TargetApi
 import android.app.Activity
-import android.arch.lifecycle.Lifecycle
 import android.content.Context
 import android.content.Context.CAMERA_SERVICE
 import android.content.Intent
@@ -16,9 +15,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
-import android.support.annotation.DrawableRes
-import android.support.annotation.StringRes
-import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -26,6 +22,10 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import com.google.android.cameraview.CameraView
 import com.lytefast.flexinput.FlexInputCoordinator
 import com.lytefast.flexinput.R
@@ -335,6 +335,7 @@ open class CameraFragment : PermissionsFragment() {
     } catch (e: Exception) {
       onCameraError(e, "Camera error on set flash")
       Toast.makeText(context, R.string.camera_unknown_error, Toast.LENGTH_SHORT)
+          .show()
     }
 
     @DrawableRes val flashImage: Int
