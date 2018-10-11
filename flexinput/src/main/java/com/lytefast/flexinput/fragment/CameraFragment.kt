@@ -72,7 +72,7 @@ open class CameraFragment : PermissionsFragment() {
           .apply()
     }
 
-  protected var onFlashChanged: (flashBtn: View, newState: Int) -> Unit = { flashBtn, newState ->
+  var onFlashChanged: (flashBtn: View, newState: Int) -> Unit = { flashBtn, newState ->
     @StringRes val messageStringRes = when (newState) {
       CameraView.FLASH_ON -> R.string.flash_on
       CameraView.FLASH_OFF -> R.string.flash_off
@@ -114,14 +114,15 @@ open class CameraFragment : PermissionsFragment() {
       val flashBtn = findViewById<ImageView>(R.id.camera_flash_btn)
       flashBtn?.setOnClickListener { onCameraFlashClick(it as ImageView) }
       setFlash(flashBtn, flashState, notify = false)
+
       cameraFacingBtn = findViewById(R.id.camera_facing_btn)
-      cameraFacingBtn?.setOnClickListener { onCameraFacingClick(it as ImageView) }
+      cameraFacingBtn.setOnClickListener { onCameraFacingClick(it as ImageView) }
       if (isSingleCamera) {
-        cameraFacingBtn?.visibility = View.GONE
+        cameraFacingBtn.visibility = View.GONE
       }
     }
 
-    cameraView?.addCallback(cameraCallback)
+    cameraView.addCallback(cameraCallback)
   }
 
   private val isSingleCamera by lazy {
@@ -141,8 +142,8 @@ open class CameraFragment : PermissionsFragment() {
 
     if (!context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA)
         || !hasPermissions(*REQUIRED_PERMISSIONS)) {
-      cameraContainer?.visibility = View.GONE
-      permissionsContainer?.also {
+      cameraContainer.visibility = View.GONE
+      permissionsContainer.also {
         it.visibility = View.VISIBLE
         if (it.childCount == 0) {
           initPermissionsView(it)
@@ -151,14 +152,14 @@ open class CameraFragment : PermissionsFragment() {
 
       return   // No camera detected. just chill
     }
-    cameraContainer?.visibility = View.VISIBLE
-    permissionsContainer?.visibility = View.GONE
+    cameraContainer.visibility = View.VISIBLE
+    permissionsContainer.visibility = View.GONE
 
     // Delayed restart since we are coming back from camera, and for some reason the API
     // isn't fast enough to acknowledge the other activity closed the camera.
     handler.postDelayed({
       if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-        tryStartCamera()
+        cameraView.tryStartCamera()
       }
     }, 300)
   }
@@ -174,38 +175,36 @@ open class CameraFragment : PermissionsFragment() {
    * Some cameras don't properly set the [android.hardware.Camera.CameraInfo.facing] value.
    * So here, if we fail, just try getting the first front facing camera.
    */
-  private fun tryStartCamera() {
+  private fun CameraView.tryStartCamera() {
     Log.d(TAG, "Try starting the camera")
-    cameraView?.apply {
-      try {
-        if (isCameraOpened) {
-          stop()
-        }
-        start()
-      } catch (e: Exception) {
-        onCameraError(e, "Camera could not be loaded, try front facing camera")
+    try {
+      if (isCameraOpened) {
+        stop()
+      }
+      start()
+    } catch (e: Exception) {
+      onCameraError(e, "Camera could not be loaded, try front facing camera")
 
-        try {
-          facing = CameraView.FACING_FRONT
-          start()
-        } catch (ex: Exception) {
-          onCameraError(e, "Camera could not be loaded")
-          Toast.makeText(context, R.string.camera_unknown_error, Toast.LENGTH_SHORT).show()
-        }
+      try {
+        facing = CameraView.FACING_FRONT
+        start()
+      } catch (ex: Exception) {
+        onCameraError(e, "Camera could not be loaded")
+        Toast.makeText(context, R.string.camera_unknown_error, Toast.LENGTH_SHORT).show()
       }
     }
   }
 
   override fun onPause() {
     handler.removeCallbacksAndMessages(null)
-    cameraView?.stop()
+    cameraView.stop()
     super.onPause()
   }
 
   protected open fun requestPermissionClick() {
     requestPermissions(object : PermissionsFragment.PermissionsResultCallback {
       override fun granted() {
-        cameraView?.post {
+        cameraView.post {
           // #onResume will take care of this for us
         }
       }
@@ -215,7 +214,7 @@ open class CameraFragment : PermissionsFragment() {
   }
 
   private fun onCameraFlashClick(flashBtn: ImageView) {
-    val currentFlashState = cameraView?.flash
+    val currentFlashState = cameraView.flash
     val currentStateIndex = FLASH_STATE_CYCLE_LIST.indices.firstOrNull {
       currentFlashState == FLASH_STATE_CYCLE_LIST[it]
     } ?: 0
@@ -226,7 +225,7 @@ open class CameraFragment : PermissionsFragment() {
 
 
   private fun onCameraFacingClick(facingBtn: ImageView) {
-    val currentFlashState = cameraView?.facing
+    val currentFlashState = cameraView.facing
     val currentStateIndex = FACING_STATE_CYCLE_LIST.indices.firstOrNull {
       currentFlashState == FACING_STATE_CYCLE_LIST[it]
     } ?: 0
@@ -236,7 +235,7 @@ open class CameraFragment : PermissionsFragment() {
   }
 
   private fun onTakePhotoClick() {
-    cameraView?.apply {
+    cameraView.apply {
       if (isCameraOpened) {
         try {
           takePicture()
@@ -250,7 +249,7 @@ open class CameraFragment : PermissionsFragment() {
 
   private fun onLaunchCameraClick() {
     val context = context ?: return
-    cameraView?.stop()
+    cameraView.stop()
 
     photoFile = flexInputCoordinator!!.fileManager.newImageFile()
     val photoUri = flexInputCoordinator!!.fileManager.toFileProviderUri(context, photoFile)
@@ -276,7 +275,7 @@ open class CameraFragment : PermissionsFragment() {
         Activity.RESULT_OK -> {
           context?.addToMediaStore(it)
           flexInputCoordinator?.addExternalAttachment(it.toAttachment())
-          cameraView?.stop()  // make sure we stop the camera since we are just going to exit
+          cameraView.stop()  // make sure we stop the camera since we are just going to exit
         }
         else -> {
           Toast.makeText(context, R.string.camera_intent_result_error, Toast.LENGTH_SHORT).show()
@@ -290,7 +289,7 @@ open class CameraFragment : PermissionsFragment() {
 
     override fun onCameraOpened(cameraView: CameraView) {
       Log.d(TAG, "onCameraOpened")
-      cameraFacingBtn?.also { setFacing(it, cameraView.facing)}
+      setFacing(cameraFacingBtn, cameraView.facing)
     }
 
     override fun onCameraClosed(cameraView: CameraView) {
@@ -312,8 +311,8 @@ open class CameraFragment : PermissionsFragment() {
               it.write(data)
             }
 
-            context?.addToMediaStore(file)
-            cameraView.post {
+            handler.post {
+              context?.addToMediaStore(file)
               flexInputCoordinator?.addExternalAttachment(file.toAttachment())
             }
           } catch (e: IOException) {
@@ -326,7 +325,7 @@ open class CameraFragment : PermissionsFragment() {
 
   private fun setFacing(btn: ImageView, @CameraView.Facing newFacingState: Int) {
     try {
-      cameraView?.apply {
+      cameraView.apply {
         if (facing != newFacingState) {
           facing = newFacingState
           Toast.makeText(context, R.string.camera_switched, Toast.LENGTH_SHORT).show()
@@ -347,7 +346,6 @@ open class CameraFragment : PermissionsFragment() {
   }
 
   private fun setFlash(btn: ImageView, @CameraView.Flash newFlashState: Int, notify: Boolean = true) {
-    val cameraView = this.cameraView ?: return
     if (cameraView.flash == newFlashState) {
       return
     }
