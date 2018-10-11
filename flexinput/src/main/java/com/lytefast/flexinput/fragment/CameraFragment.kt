@@ -14,6 +14,7 @@ import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.preference.PreferenceManager
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
@@ -24,6 +25,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.annotation.UiThread
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import com.google.android.cameraview.CameraView
@@ -43,10 +45,10 @@ import java.io.IOException
 @Suppress("MemberVisibilityCanBePrivate")
 open class CameraFragment : PermissionsFragment() {
 
-  protected var cameraContainer: View? = null
-  protected var cameraView: CameraView? = null
-  protected var permissionsContainer: FrameLayout? = null
-  protected var cameraFacingBtn: ImageView? = null
+  protected lateinit var cameraContainer: View
+  protected lateinit var cameraView: CameraView
+  protected lateinit var permissionsContainer: FrameLayout
+  protected lateinit var cameraFacingBtn: ImageView
 
   private var flexInputCoordinator: FlexInputCoordinator<Any>? = null
 
@@ -57,6 +59,28 @@ open class CameraFragment : PermissionsFragment() {
    * doesn't return any data if you set the output file in the request.
    */
   private var photoFile: File? = null
+
+  private var flashState: Int
+    @UiThread
+    get() = with(PreferenceManager.getDefaultSharedPreferences(requireContext())) {
+      getInt(PREF_FLASH_STATE, CameraView.FLASH_AUTO)
+    }
+    @UiThread
+    set(@CameraView.Flash value) = with(PreferenceManager.getDefaultSharedPreferences(requireContext())) {
+      edit()
+          .putInt(PREF_FLASH_STATE, value)
+          .apply()
+    }
+
+  protected var onFlashChanged: (flashBtn: View, newState: Int) -> Unit = { flashBtn, newState ->
+    @StringRes val messageStringRes = when (newState) {
+      CameraView.FLASH_ON -> R.string.flash_on
+      CameraView.FLASH_OFF -> R.string.flash_off
+      else -> R.string.flash_auto
+    }
+
+    Toast.makeText(flashBtn.context, messageStringRes, Toast.LENGTH_SHORT).show()
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -86,8 +110,10 @@ open class CameraFragment : PermissionsFragment() {
           ?.setOnClickListener { onTakePhotoClick() }
       findViewById<View>(R.id.launch_camera_btn)
           ?.setOnClickListener { onLaunchCameraClick() }
-      findViewById<ImageView>(R.id.camera_flash_btn)
-          ?.setOnClickListener { onCameraFlashClick(it as ImageView) }
+
+      val flashBtn = findViewById<ImageView>(R.id.camera_flash_btn)
+      flashBtn?.setOnClickListener { onCameraFlashClick(it as ImageView) }
+      setFlash(flashBtn, flashState, notify = false)
       cameraFacingBtn = findViewById(R.id.camera_facing_btn)
       cameraFacingBtn?.setOnClickListener { onCameraFacingClick(it as ImageView) }
       if (isSingleCamera) {
@@ -167,10 +193,6 @@ open class CameraFragment : PermissionsFragment() {
           Toast.makeText(context, R.string.camera_unknown_error, Toast.LENGTH_SHORT).show()
         }
       }
-    }
-
-    cameraContainer?.findViewById<ImageView>(R.id.camera_flash_btn)?.also {
-      setFlash(it, CameraView.FLASH_AUTO)
     }
   }
 
@@ -324,39 +346,28 @@ open class CameraFragment : PermissionsFragment() {
     }
   }
 
-  private fun setFlash(btn: ImageView, @CameraView.Flash newFlashState: Int) {
+  private fun setFlash(btn: ImageView, @CameraView.Flash newFlashState: Int, notify: Boolean = true) {
     val cameraView = this.cameraView ?: return
     if (cameraView.flash == newFlashState) {
       return
     }
+    flashState = newFlashState
 
     try {
       cameraView.flash = newFlashState
+      btn.setImageResource(when (cameraView.flash) {
+        CameraView.FLASH_ON -> R.drawable.ic_flash_on_24dp
+        CameraView.FLASH_OFF -> R.drawable.ic_flash_off_24dp
+        else -> R.drawable.ic_flash_auto_24dp
+      })
+
+      if (notify) onFlashChanged(btn, cameraView.flash)
+
     } catch (e: Exception) {
       onCameraError(e, "Camera error on set flash")
       Toast.makeText(context, R.string.camera_unknown_error, Toast.LENGTH_SHORT)
           .show()
     }
-
-    @DrawableRes val flashImage: Int
-    @StringRes val flashMsg: Int
-    when (cameraView.flash) {
-      CameraView.FLASH_ON -> {
-        flashMsg = R.string.flash_on
-        flashImage = R.drawable.ic_flash_on_24dp
-      }
-      CameraView.FLASH_OFF -> {
-        flashMsg = R.string.flash_off
-        flashImage = R.drawable.ic_flash_off_24dp
-      }
-      else -> {
-        flashMsg = R.string.flash_auto
-        flashImage = R.drawable.ic_flash_auto_24dp
-      }
-    }
-
-    Toast.makeText(btn.context, flashMsg, Toast.LENGTH_SHORT).show()
-    btn.setImageResource(flashImage)
   }
 
   protected open fun onCameraError(e: Exception, message: String) {
@@ -377,7 +388,9 @@ open class CameraFragment : PermissionsFragment() {
 
     private val TAG = CameraFragment::class.java.canonicalName
 
-    val REQUEST_IMAGE_CAPTURE = 4567
+    private const val PREF_FLASH_STATE = "FLASH_STATE"
+
+    const val REQUEST_IMAGE_CAPTURE = 4567
 
     /**
      * This is a hack to allow the file provider API to still
