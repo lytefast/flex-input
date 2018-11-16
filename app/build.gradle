@@ -19,11 +19,16 @@ android {
 dependencies {
     implementation project(':flexinput')
 
-    implementation 'androidx.appcompat:appcompat:1.0.0'
-    implementation 'com.google.android.material:material:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
+    implementation "androidx.annotation:annotation:$androidxVersion"
+    implementation "androidx.appcompat:appcompat:$appCompatVersion"
+    implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
+    implementation "androidx.core:core:$androidxCoreVersion"
+    implementation "androidx.fragment:fragment:$androidxVersion"
+    implementation "androidx.legacy:legacy-support-core-ui:$androidxLegacyVersion"
+    implementation "androidx.legacy:legacy-support-core-utils:$androidxLegacyVersion"
+    implementation "androidx.legacy:legacy-support-v13:$androidxLegacyVersion"
+    implementation "androidx.recyclerview:recyclerview:$androidxVersion"
+    implementation "com.google.android.material:material:$materialVersion"
 
     implementation "com.facebook.fresco:fresco:$frescoVersion"
     implementation "com.facebook.fresco:animated-gif:$frescoVersion"
