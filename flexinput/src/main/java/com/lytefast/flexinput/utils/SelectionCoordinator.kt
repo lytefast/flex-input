@@ -6,7 +6,7 @@ import java.util.*
 
 
 /**
- * Manages selection logic for [android.support.v7.widget.RecyclerView.Adapter]s.
+ * Manages selection logic for [RecyclerView.Adapter]s.
  *
  * @param I The base acceptable type. Used as the type for all notifications. Usually [com.lytefast.flexinput.model.Attachment<Any>]
  * @param T The type that this class primarily handles.
@@ -26,7 +26,7 @@ open class SelectionCoordinator<I, T: I>(
     }) {
 
   /**
-   * The [android.support.v7.widget.RecyclerView.Adapter] that should be notified when selection changes occur.
+   * The [RecyclerView.Adapter] that should be notified when selection changes occur.
    */
   protected var adapter: RecyclerView.Adapter<*>? = null
 
@@ -37,7 +37,7 @@ open class SelectionCoordinator<I, T: I>(
 
   /**
    * @return List of positions which were previously selected. This should be used to update the
-   * UI via [android.support.v7.widget.RecyclerView.Adapter.notifyItemChanged]
+   * UI via [RecyclerView.Adapter.notifyItemChanged]
    */
   fun clear(): ArrayList<Int> {
     val oldSelection = ArrayList(selectedItemPositionMap.values)
@@ -65,9 +65,9 @@ open class SelectionCoordinator<I, T: I>(
    * Convenience method to toggle the selection state for the item.
    *
    * @param item     instance of the item to be toggled. This must have [.equals]
-   * and [.hashCode] equivalancy for equal items.
+   *                 and [.hashCode] equivalancy for equal items.
    * @param position the position in the list where the item appears. Inspected only on adds and
-   * used to notify the adapter on removals.
+   *                 used to notify the adapter on removals.
    *
    * @return True if the item was added. False otherwise.
    */
@@ -86,7 +86,7 @@ open class SelectionCoordinator<I, T: I>(
    * Mark an item as selected.
    *
    * @param item     instance of the item to be toggled. This must have [.equals]
-   * and [.hashCode] equivalancy for equal items.
+   *                 and [.hashCode] equivalancy for equal items.
    * @param position the position in the list where the item appears
    */
   fun selectItem(item: T, position: Int) {
@@ -99,7 +99,7 @@ open class SelectionCoordinator<I, T: I>(
    * Mark an item as unselected.
    *
    * @param item     instance of the item to be toggled. This must have [.equals]
-   * and [.hashCode] equivalancy for equal items.
+   *                 and [.hashCode] equivalancy for equal items.
    *
    * @return True if the item was unselected. False otherwise.
    */

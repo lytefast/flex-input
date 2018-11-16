@@ -251,13 +251,16 @@ open class CameraFragment : PermissionsFragment() {
     val context = context ?: return
     cameraView.stop()
 
-    photoFile = flexInputCoordinator!!.fileManager.newImageFile()
-    val photoUri = flexInputCoordinator!!.fileManager.toFileProviderUri(context, photoFile)
+    val fileManager = flexInputCoordinator?.fileManager ?: return
+
+    val newPhotoFile = fileManager.newImageFile()
+    val photoUri = fileManager.toFileProviderUri(context, newPhotoFile)
     val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         .putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
         .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
 
     if (takePictureIntent.resolveActivity(context.packageManager) != null) {
+      this.photoFile = newPhotoFile
       context.grantWriteAccessToURI(takePictureIntent, photoUri)
       startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
     }
