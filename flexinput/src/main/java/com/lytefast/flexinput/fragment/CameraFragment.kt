@@ -120,12 +120,10 @@ open class CameraFragment : PermissionsFragment() {
       cameraFacingBtn = findViewById(R.id.camera_facing_btn)
       cameraFacingBtn.setOnClickListener { onCameraFacingClick() }
 
-
       if (isSingleCamera) {
         cameraFacingBtn.visibility = View.GONE
       }
     }
-//    tryStartCamera()
   }
 
   private val isSingleCamera by lazy {
@@ -209,7 +207,7 @@ open class CameraFragment : PermissionsFragment() {
 
 
   private fun onCameraFacingClick() {
-    val currentFlashState = cameraView?.facing
+    val currentFlashState = cameraView.facing
     val currentStateIndex = FACING_STATE_CYCLE_LIST.indices.firstOrNull {
       currentFlashState == FACING_STATE_CYCLE_LIST[it]
     } ?: 0
@@ -220,12 +218,11 @@ open class CameraFragment : PermissionsFragment() {
 
   @UiThread
   private fun CameraKitView.onTakePhotoClick() {
-    captureImage { cameraKitView, imageData->
+    captureImage { cameraKitView, imageData ->
       Log.d(TAG, "onPictureTaken ${imageData?.size}")
       if (imageData == null) return@captureImage
 
-      val context = cameraKitView.context?: return@captureImage
-      Toast.makeText(context, "Picture saved", Toast.LENGTH_SHORT).show()
+      val context = cameraKitView.context ?: return@captureImage
 
       AsyncTask.execute {
         flexInputCoordinator?.fileManager?.newImageFile()?.also { file ->
@@ -248,7 +245,6 @@ open class CameraFragment : PermissionsFragment() {
 
   private fun onLaunchCameraClick() {
     val context = context ?: return
-//    cameraView.stop()
 
     val fileManager = flexInputCoordinator?.fileManager ?: return
 
@@ -277,7 +273,6 @@ open class CameraFragment : PermissionsFragment() {
         Activity.RESULT_OK -> {
           context?.addToMediaStore(it)
           flexInputCoordinator?.addExternalAttachment(it.toAttachment())
-//          cameraView.stop()  // make sure we stop the camera since we are just going to exit
         }
         else -> {
           Toast.makeText(context, R.string.camera_intent_result_error, Toast.LENGTH_SHORT).show()
@@ -287,11 +282,10 @@ open class CameraFragment : PermissionsFragment() {
     }
   }
 
-  private val cameraErrorListener = object : CameraKitView.ErrorListener {
-    override fun onError(cameraView: CameraKitView?, cameraException: CameraKitView.CameraException?) {
-      Log.d(TAG, "onCameraError: $cameraException")
-    }
-  }
+  private val cameraErrorListener =
+      CameraKitView.ErrorListener { _, cameraException ->
+        Log.d(TAG, "onCameraError: $cameraException")
+      }
 
   private val cameraListener = object : CameraKitView.CameraListener  {
     override fun onOpened() {
@@ -325,7 +319,7 @@ open class CameraFragment : PermissionsFragment() {
   }
 
   private fun setFlash(btn: ImageView, newFlashState: Int, notify: Boolean = true) {
-    if (cameraView?.flash == newFlashState) {
+    if (cameraView.flash == newFlashState) {
       return
     }
     flashState = newFlashState
