@@ -19,10 +19,12 @@ object IntentUtil {
       return null
     }
 
+    val clipData = this.clipData
+
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
-        && this.clipData != null
-        && this.clipData.itemCount > 0) {
-      val item = this.clipData.getItemAt(0)
+        && clipData != null
+        && clipData.itemCount > 0) {
+      val item = clipData.getItemAt(0)
       this.clipData = ClipData.newPlainText("", "")
 
       item.uri.toAttachment(contentResolver)

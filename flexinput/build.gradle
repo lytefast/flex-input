@@ -20,7 +20,9 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':cameraview-aar')
+
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutine_version"
 
     implementation "androidx.annotation:annotation:$androidxVersion"
     implementation "androidx.appcompat:appcompat:$appCompatVersion"
@@ -37,8 +39,9 @@ dependencies {
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0-alpha4', {
         exclude group: "com.android.support", module: "support-annotations"
     })
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     implementation "com.facebook.fresco:fresco:$frescoVersion"
+    implementation "com.camerakit:camerakit:$cameraKitVersion"
+    implementation "com.camerakit:jpegkit:$cameraKitJpegKitVersion"
 
 }

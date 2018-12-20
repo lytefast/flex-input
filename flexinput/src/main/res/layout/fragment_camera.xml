@@ -14,24 +14,17 @@
         android:visibility="gone"
         tools:visibility="visible">
 
-        <ScrollView
-            android:id="@+id/camera_view_cropper"
+        <com.camerakit.CameraKitView
+            android:id="@+id/camera_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fillViewport="true"
-            android:scrollbars="none">
-
-            <com.google.android.cameraview.CameraView
-                android:id="@+id/camera_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:adjustViewBounds="true"
-                android:gravity="center"
-                app:autoFocus="true"
-                app:facing="back"
-                app:flash="auto"/>
-        </ScrollView>
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:gravity="center"
+            app:camera_facing="back"
+            app:camera_flash="auto"
+            app:camera_focus="continuous"
+            app:camera_imageJpegQuality="100" />
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/camera_flash_btn"
