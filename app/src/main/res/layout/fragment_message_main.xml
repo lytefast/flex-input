@@ -38,7 +38,6 @@
             android:focusableInTouchMode="true"
             app:hint="@string/msg_hint"
             app:hintColor="@color/colorHint"
-            app:previewBackground="@drawable/rect_rounded_highlight_alpha_20"
             tools:layout="@layout/flex_input_widget"/>
 
     </LinearLayout>

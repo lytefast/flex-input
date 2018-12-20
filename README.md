@@ -17,20 +17,21 @@ Used in the [Discord](www.discordapp.com) android app!
 <details>
  <summary>Image Examples</summary>
 
-  ![Keyboard Entry with attachment preview](/images/keyboard.png?raw=true "Keyboard Entry with attachment preview")
-  ![Emoji Entry](/images/emojiPicker.png?raw=true "Emoji Entry")
+  Input mode
+  | Keyboard | Emojis |
+  | - | - |
+  | ![Keyboard Entry with attachment preview](/images/keyboard.png?raw=true "Keyboard Entry with attachment preview") | ![Emoji Entry](/images/emojiPicker.png?raw=true "Emoji Entry") |
 
-  ![Files tab](/images/tabFiles.png?raw=true "Files tab")
-  ![Photos tab](/images/tabPhotos.png?raw=true "Photos tab")
-  ![Camera tab](/images/tabCamera.png?raw=true "Camera tab")
+  Tabs
+
+  | Files | Photos | Camera |
+  | - | - | - |
+  | ![Files tab](/images/tabFiles.png?raw=true "Files tab") | ![Photos tab](/images/tabPhotos.png?raw=true "Photos tab") | ![Camera tab](/images/tabCamera.png?raw=true "Camera tab") |
 </details>
 
 # Dependencies
-- [Fresco](http://frescolib.org/)
-- This is currently using the still in development [cameraview](https://github.com/google/cameraview/)
-  - at the current moment the cameraview project is just a symlink to the [camereaview/library project](https://github.com/google/cameraview/tree/master/library)
-  - you must do the same (include as a local project module dependency) in you project
-  - this is not actively maintained/developed and will likely be replaced before 1.0 release. Tracked in [#37](https://github.com/lytefast/flex-input/issues/37
+- [Fresco](https://frescolib.org/)
+- [CameraKit](https://github.com/CameraKit/camerakit-android)
 
 # Usage
 For more details refer to the sample app included in this project.
@@ -45,6 +46,8 @@ repositories {
 
 dependencies {
     implementation "com.lytefast:flexinput:0.9.18@aar"
+    implementation "com.camerakit:camerakit:$cameraKitVersion"
+    implementation "com.camerakit:jpegkit:$cameraKitJpegKitVersion"
 }
 ```
 
@@ -58,9 +61,7 @@ To use the widget, you can just include it in your layout `my_layout.xml`:
     android:layout_height="wrap_content"
     android:focusable="true"
 
-    app:inputBackground="@drawable/rect_rounded_highlight_alpha_20"
     app:previewBackground="@drawable/rect_rounded_highlight_alpha_20"
-    app:tabsBackground="@drawable/content_tab_background"
     app:hint="@string/msg_hint"
     app:hintColor="@color/colorHint"
 
@@ -141,8 +142,14 @@ Or the same attributes in [`styles.xml`](flexinput/src/main/res/values/styles.xm
   <style name="FlexInput.Main" parent="AppTheme">
     <item name="android:background">@color/app_input_background_color</item>
   </style>
+  <style name="FlexInput.AddContent" parent="FlexInput">
+    <item name="android:background">@color/flexinput_background</item>
+  </style>
   <style name="FlexInput.AddContent.TabLayout" parent="FlexInput.AddContent.Base.TabLayout">
-    <item name="android:background">@drawable/rounded_rect</item>
+      <item name="android:background">@drawable/content_tab_background</item>
+  </style>
+  <style name="FlexInput.AddContent.Button.Send" parent="FlexInput.AddContent.Button.Base.Send">
+    <item name="backgroundTint">@color/send_color</item>
   </style>
   ```
 
@@ -151,7 +158,6 @@ Or the same attributes in [`styles.xml`](flexinput/src/main/res/values/styles.xm
 There are also `styles.xml` overrides that you can provide. All styles are prefixed by `FlexInput`. See [`styles.xml`](flexinput/src/main/res/values/styles.xml) for the full set of styles.
 
 Addtionally there are special `app` attributes that you may set to customize the appearance of the widget.
-- `inputBackground` defines the background for the text input row
 - `previewBackground` defines the background for the attachment preview row
 
 # Optional Features
