@@ -1,13 +1,16 @@
 package com.lytefast.flexinput.model
 
+import android.annotation.TargetApi
 import android.content.ContentResolver
 import android.content.ContentUris
 import android.net.Uri
 import android.os.AsyncTask
+import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
 import android.provider.MediaStore
 import android.util.Log
+import android.util.Size
 
 
 /**
@@ -17,29 +20,34 @@ import android.util.Log
  */
 class Photo : Attachment<String> {
 
-  constructor(id: Long, uri: Uri, displayName: String, photoDataLocation: String?)
-      : super(id, uri, displayName, photoDataLocation)
+    constructor(id: Long, uri: Uri, displayName: String, photoDataLocation: String?)
+            : super(id, uri, displayName, photoDataLocation)
 
-  constructor(parcelIn: Parcel) : super(parcelIn)
+    constructor(parcelIn: Parcel) : super(parcelIn)
 
-  fun getThumbnailUri(contentResolver: ContentResolver): Uri? {
-    val cursor = contentResolver.query(
-        MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
-        arrayOf(MediaStore.Images.Thumbnails._ID),
-        "${MediaStore.Images.Thumbnails.IMAGE_ID} = ? AND KIND = ?",
-        arrayOf(id.toString(), Integer.toString(MediaStore.Images.Thumbnails.MINI_KIND)), null)
+    @TargetApi(Build.VERSION_CODES.Q)
+    fun getThumbnailQ(contentResolver: ContentResolver, width: Int, height: Int) =
+            contentResolver.loadThumbnail(uri, Size(width, height), null)
 
-    if (cursor == null || !cursor.moveToFirst()) {
-      asyncGenerateThumbnail(contentResolver)
-      cursor?.close()
-      return uri  // Slow due to photo size and manipulation but better than nothing
+
+    fun getThumbnailUri(contentResolver: ContentResolver): Uri? {
+        val cursor = contentResolver.query(
+                MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
+                arrayOf(MediaStore.Images.Thumbnails._ID),
+                "${MediaStore.Images.Thumbnails.IMAGE_ID} = ? AND KIND = ?",
+                arrayOf(id.toString(), Integer.toString(MediaStore.Images.Thumbnails.MINI_KIND)), null)
+
+        if (cursor == null || !cursor.moveToFirst()) {
+            asyncGenerateThumbnail(contentResolver)
+            cursor?.close()
+            return uri  // Slow due to photo size and manipulation but better than nothing
+        }
+        cursor.use {
+            val thumbId = it.getLong(0)
+            return ContentUris.withAppendedId(
+                    MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, thumbId)
+        }
     }
-    cursor.use {
-      val thumbId = it.getLong(0)
-      return ContentUris.withAppendedId(
-          MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, thumbId)
-    }
-  }
 
   /**
    * Generate thumbnail for next time.
@@ -53,14 +61,13 @@ class Photo : Attachment<String> {
         Log.v(Photo::class.java.name, "Error generating thumbnail for photo $id.")
       }
     }
-  }
 
-  companion object {
-    @Suppress("unused")  // Used as part of Parcellable
-    @JvmField
-    val CREATOR = object : Parcelable.Creator<Photo> {
-      override fun createFromParcel(parcel: Parcel): Photo = Photo(parcel)
-      override fun newArray(size: Int): Array<Photo?> = arrayOfNulls(size)
+    companion object {
+        @Suppress("unused")  // Used as part of Parcellable
+        @JvmField
+        val CREATOR = object : Parcelable.Creator<Photo> {
+            override fun createFromParcel(parcel: Parcel): Photo = Photo(parcel)
+            override fun newArray(size: Int): Array<Photo?> = arrayOfNulls(size)
+        }
     }
-  }
 }

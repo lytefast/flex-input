@@ -1,6 +1,7 @@
 package com.lytefast.flexinput.fragment
 
 import android.Manifest
+import android.graphics.Point
 import android.os.Bundle
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.recyclerview.widget.GridLayoutManager
@@ -49,7 +50,14 @@ open class PhotosFragment : PermissionsFragment() {
     return view?.apply {
       recyclerView = findViewById(R.id.list)
 
-      val photoAdapter = PhotoCursorAdapter(context.contentResolver, selectionCoordinator!!)
+
+      val display = activity?.windowManager?.defaultDisplay
+      val size = Point()
+      display?.getSize(size)
+
+      val width = (size.x / 3f).toInt()
+
+      val photoAdapter = PhotoCursorAdapter(context.contentResolver, selectionCoordinator!!, width, width * 2 )
 
       if (hasPermissions(REQUIRED_PERMISSION)) {
         recyclerView?.layoutManager = GridLayoutManager(context, 3)
