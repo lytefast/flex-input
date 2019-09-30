@@ -26,7 +26,9 @@ import com.lytefast.flexinput.utils.SelectionCoordinator
  * @author Sam Shih
  */
 class PhotoCursorAdapter(private val contentResolver: ContentResolver,
-                         selectionCoordinator: SelectionCoordinator<*, Photo>)
+                         selectionCoordinator: SelectionCoordinator<*, Photo>,
+                         val thumbnailWidth: Int,
+                         val thumbnailHeight: Int)
   : RecyclerView.Adapter<PhotoCursorAdapter.ViewHolder>() {
   private val selectionCoordinator: SelectionCoordinator<*, Photo> = selectionCoordinator.bind(this)
   private var cursor: Cursor? = null
@@ -112,136 +114,69 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
             photoDataLocation = it.getString(colData))
       }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoCursorAdapter.ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.view_grid_image, parent, false)
-        return ViewHolder(view)
+  inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    private val shrinkAnim: AnimatorSet
+    private val growAnim: AnimatorSet
+
+    private val imageView: SimpleDraweeView = itemView.findViewById(R.id.content_iv)
+    private val checkIndicator: SimpleDraweeView = itemView.findViewById(R.id.item_check_indicator)
+
+    private var photo: Photo? = null
+
+
+    init {
+      this.itemView.setOnClickListener(this)
+
+      //region Perf: Load animations once
+      this.shrinkAnim = AnimatorInflater.loadAnimator(
+          itemView.context, R.animator.selection_shrink) as AnimatorSet
+      this.shrinkAnim.setTarget(imageView)
+
+      this.growAnim = AnimatorInflater.loadAnimator(
+          itemView.context, R.animator.selection_grow) as AnimatorSet
+      this.growAnim.setTarget(imageView)
+      //endregion
     }
 
-    override fun onBindViewHolder(holder: PhotoCursorAdapter.ViewHolder, position: Int) {
-        val photo = this[position]
-        holder.bind(photo)
-    }
+    fun bind(photo: Photo?) {
+      this.photo = photo
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
-        payloads
-                .firstOrNull { it is SelectionCoordinator.SelectionEvent<*> }
-                ?.let { it as? SelectionCoordinator.SelectionEvent<*> }
-                ?.also {
-                    holder.setSelected(it.isSelected, isAnimationRequested = true)
-                    return
-                }
-        super.onBindViewHolder(holder, position, payloads)
-    }
-
-    override fun getItemCount(): Int = cursor?.count ?: 0
-
-    override fun getItemId(position: Int): Long = this[position]?.id ?: -1
-
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
-        cursor?.close()
-        super.onDetachedFromRecyclerView(recyclerView)
-    }
-
-    fun loadPhotos() {
-        class LoadQueryHandler : AsyncQueryHandler(contentResolver) {
-            override fun onQueryComplete(token: Int, cookie: Any, cursor: Cursor?) {
-                if (cursor == null) {
-                    return
-                }
-                this@PhotoCursorAdapter.apply {
-                    this.colId = cursor.getColumnIndex(MediaStore.Images.Media._ID)
-                    this.colData = cursor.getColumnIndex(MediaStore.Images.Media.DATA)
-                    this.colName = cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME)
-                    this.cursor = cursor
-                }
-                notifyDataSetChanged()
-            }
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        (imageView as ImageView).setImageBitmap(photo?.getThumbnailQ(contentResolver, thumbnailWidth, thumbnailHeight))
+      } else {
+        val thumbnailUri = photo?.let {
+          setSelected(selectionCoordinator.isSelected(photo, adapterPosition), false)
+          it.getThumbnailUri(contentResolver)
         }
 
-        LoadQueryHandler().startQuery(1, this,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                arrayOf(MediaStore.Images.Media._ID,
-                        MediaStore.Images.Media.DATA,
-                        MediaStore.Images.Media.DISPLAY_NAME),
-                null, null, "${MediaStore.Images.Media.DATE_ADDED} DESC")
+        imageView.setImageURI(thumbnailUri, imageView.context)
+      }
     }
 
-    private operator fun get(position: Int): Photo? =
-            cursor?.let {
-                it.moveToPosition(position)
-                val photoId = it.getLong(colId)
-                val fileUri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, photoId.toString())
-                Photo(
-                        id = photoId,
-                        uri = fileUri,
-                        displayName = it.getString(colName) ?: "img-$photoId",
-                        photoDataLocation = it.getString(colData))
-            }
+    fun setSelected(isSelected: Boolean, isAnimationRequested: Boolean = true) {
+      itemView.isSelected = isSelected
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        private val shrinkAnim: AnimatorSet
-        private val growAnim: AnimatorSet
-
-        private val imageView: SimpleDraweeView = itemView.findViewById(R.id.content_iv)
-        private val checkIndicator: SimpleDraweeView = itemView.findViewById(R.id.item_check_indicator)
-
-        private var photo: Photo? = null
-
-
-        init {
-            this.itemView.setOnClickListener(this)
-
-            //region Perf: Load animations once
-            this.shrinkAnim = AnimatorInflater.loadAnimator(
-                    itemView.context, R.animator.selection_shrink) as AnimatorSet
-            this.shrinkAnim.setTarget(imageView)
-
-            this.growAnim = AnimatorInflater.loadAnimator(
-                    itemView.context, R.animator.selection_grow) as AnimatorSet
-            this.growAnim.setTarget(imageView)
-            //endregion
+      fun scaleImage(animation: AnimatorSet) {
+        animation.start()
+        if (!isAnimationRequested) {
+          animation.end()
         }
+      }
 
-        fun bind(photo: Photo?) {
-            this.photo = photo
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                (imageView as ImageView).setImageBitmap(photo?.getThumbnailQ(contentResolver, thumbnailWidth, thumbnailHeight))
-            } else {
-                val thumbnailUri = photo?.let {
-                    setSelected(selectionCoordinator.isSelected(photo, adapterPosition), false)
-                    it.getThumbnailUri(contentResolver)
-                }
-
-                imageView.setImageURI(thumbnailUri, imageView.context)
-            }
-        }
-
-        fun setSelected(isSelected: Boolean, isAnimationRequested: Boolean = true) {
-            itemView.isSelected = isSelected
-
-            fun scaleImage(animation: AnimatorSet) {
-                animation.start()
-                if (!isAnimationRequested) {
-                    animation.end()
-                }
-            }
-
-            if (isSelected) {
-                checkIndicator.visibility = View.VISIBLE
-                if (imageView.scaleX == 1.0f) scaleImage(shrinkAnim)
-            } else {
-                checkIndicator.visibility = View.GONE
-                if (imageView.scaleX != 1.0f) scaleImage(growAnim)
-            }
-        }
-
-        override fun onClick(v: View) {
-            Log.d("uri", photo?.uri.toString())
-            Log.d("uri", "${photo?.getThumbnailUri(contentResolver)}")
-
-            selectionCoordinator.toggleItem(photo, adapterPosition)
-        }
+      if (isSelected) {
+        checkIndicator.visibility = View.VISIBLE
+        if (imageView.scaleX == 1.0f) scaleImage(shrinkAnim)
+      } else {
+        checkIndicator.visibility = View.GONE
+        if (imageView.scaleX != 1.0f) scaleImage(growAnim)
+      }
     }
+
+    override fun onClick(v: View) {
+      Log.d("uri", photo?.uri.toString())
+      Log.d("uri", "${photo?.getThumbnailUri(contentResolver)}")
+
+      selectionCoordinator.toggleItem(photo, adapterPosition)
+    }
+  }
 }

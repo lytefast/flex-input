@@ -55,9 +55,9 @@ open class PhotosFragment : PermissionsFragment() {
       val size = Point()
       display?.getSize(size)
 
-      val width = (size.x / 3f).toInt()
+      val thumbnailWidth = (size.x / 3f).toInt()
 
-      val photoAdapter = PhotoCursorAdapter(context.contentResolver, selectionCoordinator!!, width, width * 2 )
+      val photoAdapter = PhotoCursorAdapter(context.contentResolver, selectionCoordinator!!, thumbnailWidth, thumbnailWidth * 2)
 
       if (hasPermissions(REQUIRED_PERMISSION)) {
         recyclerView?.layoutManager = GridLayoutManager(context, 3)
