@@ -3,6 +3,7 @@ package com.lytefast.flexinput.model
 import android.annotation.TargetApi
 import android.content.ContentResolver
 import android.content.ContentUris
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Build
@@ -26,8 +27,14 @@ class Photo : Attachment<String> {
   constructor(parcelIn: Parcel) : super(parcelIn)
 
   @TargetApi(Build.VERSION_CODES.Q)
-  fun getThumbnailQ(contentResolver: ContentResolver, width: Int, height: Int) =
+  fun getThumbnailQ(contentResolver: ContentResolver, width: Int, height: Int): Bitmap? {
+    return try {
       contentResolver.loadThumbnail(uri, Size(width, height), null)
+    } catch (e: java.lang.Exception) {
+      Log.e("Thumbnail", "Thumbnail Failed to load $e")
+      null
+    }
+  }
 
   fun getThumbnailUri(contentResolver: ContentResolver): Uri? {
     val cursor = contentResolver.query(

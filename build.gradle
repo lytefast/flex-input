@@ -29,7 +29,7 @@ buildscript {
         // 3rd party libs
         cameraKitVersion = '1.0.0-beta3.10'
         cameraKitJpegKitVersion = '0.2.0'
-        frescoVersion = '1.11.0'
+        frescoVersion = '2.0.0'
     }
 
     repositories {

@@ -54,12 +54,12 @@ open class PhotosFragment : PermissionsFragment() {
       val size = Point()
       display?.getSize(size)
 
-      val thumbnailWidth = (size.x / 3f).toInt()
-
-      val photoAdapter = PhotoCursorAdapter(context.contentResolver, selectionCoordinator!!, thumbnailWidth, thumbnailWidth * 2)
+      // We want the images to be square so use same value for height and width
+      val thumbnailSide = (size.x / GRID_LAYOUT_SPAN_COUNT.toFloat()).toInt()
+      val photoAdapter = PhotoCursorAdapter(context.contentResolver, selectionCoordinator!!, thumbnailSide, thumbnailSide)
 
       if (hasPermissions(REQUIRED_PERMISSION)) {
-        recyclerView?.layoutManager = GridLayoutManager(context, 3)
+        recyclerView?.layoutManager = GridLayoutManager(context, GRID_LAYOUT_SPAN_COUNT)
         recyclerView?.adapter = photoAdapter
       } else {
         recyclerView?.adapter = newPermissionsRequestAdapter(
@@ -98,7 +98,7 @@ open class PhotosFragment : PermissionsFragment() {
   private fun requestPermissions(photoAdapter: PhotoCursorAdapter) {
     requestPermissions(object : PermissionsFragment.PermissionsResultCallback {
       override fun granted() {
-        recyclerView!!.layoutManager = GridLayoutManager(context, 3)
+        recyclerView!!.layoutManager = GridLayoutManager(context, GRID_LAYOUT_SPAN_COUNT)
         recyclerView!!.adapter = photoAdapter
         recyclerView!!.invalidateItemDecorations()
       }
@@ -112,6 +112,8 @@ open class PhotosFragment : PermissionsFragment() {
 
   companion object {
 
-    private val REQUIRED_PERMISSION = Manifest.permission.READ_EXTERNAL_STORAGE
+    private const val REQUIRED_PERMISSION = Manifest.permission.READ_EXTERNAL_STORAGE
+    private const val GRID_LAYOUT_SPAN_COUNT = 3
+
   }
 }

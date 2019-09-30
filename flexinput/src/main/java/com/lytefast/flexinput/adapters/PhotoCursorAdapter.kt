@@ -5,6 +5,8 @@ import android.animation.AnimatorSet
 import android.content.AsyncQueryHandler
 import android.content.ContentResolver
 import android.database.Cursor
+import android.graphics.drawable.BitmapDrawable
+import android.media.Image
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -15,9 +17,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.drawee.view.SimpleDraweeView
+import com.facebook.imagepipeline.drawable.DrawableFactory
 import com.lytefast.flexinput.R
 import com.lytefast.flexinput.model.Photo
 import com.lytefast.flexinput.utils.SelectionCoordinator
+import kotlinx.coroutines.*
 
 
 /**
@@ -140,9 +144,12 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
 
     fun bind(photo: Photo?) {
       this.photo = photo
+      imageView.setImageURI(null as String?, imageView.context)
 
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        (imageView as ImageView).setImageBitmap(photo?.getThumbnailQ(contentResolver, thumbnailWidth, thumbnailHeight))
+        runBlocking {
+          imageView.hierarchy.setPlaceholderImage(BitmapDrawable(imageView.resources, getThumbnail()))
+        }
       } else {
         val thumbnailUri = photo?.let {
           setSelected(selectionCoordinator.isSelected(photo, adapterPosition), false)
@@ -174,6 +181,10 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
 
     override fun onClick(v: View) {
       selectionCoordinator.toggleItem(photo, adapterPosition)
+    }
+
+    private suspend fun getThumbnail() = withContext(Dispatchers.IO) {
+      photo?.getThumbnailQ(contentResolver, thumbnailWidth, thumbnailHeight)
     }
   }
 }
