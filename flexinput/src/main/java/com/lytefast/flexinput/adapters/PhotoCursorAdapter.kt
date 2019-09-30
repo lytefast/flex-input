@@ -6,18 +6,15 @@ import android.content.AsyncQueryHandler
 import android.content.ContentResolver
 import android.database.Cursor
 import android.graphics.drawable.BitmapDrawable
-import android.media.Image
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.drawee.view.SimpleDraweeView
-import com.facebook.imagepipeline.drawable.DrawableFactory
 import com.lytefast.flexinput.R
 import com.lytefast.flexinput.model.Photo
 import com.lytefast.flexinput.utils.SelectionCoordinator
@@ -148,7 +145,8 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
 
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
         runBlocking {
-          imageView.hierarchy.setPlaceholderImage(BitmapDrawable(imageView.resources, getThumbnail()))
+          val thumbnail = getThumbnailAsync()
+          imageView.hierarchy.setPlaceholderImage(BitmapDrawable(imageView.resources, thumbnail))
         }
       } else {
         val thumbnailUri = photo?.let {
@@ -183,7 +181,8 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
       selectionCoordinator.toggleItem(photo, adapterPosition)
     }
 
-    private suspend fun getThumbnail() = withContext(Dispatchers.IO) {
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private suspend fun getThumbnailAsync() = withContext(Dispatchers.IO) {
       photo?.getThumbnailQ(contentResolver, thumbnailWidth, thumbnailHeight)
     }
   }

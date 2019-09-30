@@ -1,6 +1,5 @@
 package com.lytefast.flexinput.model
 
-import android.annotation.TargetApi
 import android.content.ContentResolver
 import android.content.ContentUris
 import android.graphics.Bitmap
@@ -12,6 +11,7 @@ import android.os.Parcelable
 import android.provider.MediaStore
 import android.util.Log
 import android.util.Size
+import androidx.annotation.RequiresApi
 
 
 /**
@@ -26,7 +26,7 @@ class Photo : Attachment<String> {
 
   constructor(parcelIn: Parcel) : super(parcelIn)
 
-  @TargetApi(Build.VERSION_CODES.Q)
+  @RequiresApi(Build.VERSION_CODES.Q)
   fun getThumbnailQ(contentResolver: ContentResolver, width: Int, height: Int): Bitmap? {
     return try {
       contentResolver.loadThumbnail(uri, Size(width, height), null)
