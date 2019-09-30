@@ -50,7 +50,6 @@ open class PhotosFragment : PermissionsFragment() {
     return view?.apply {
       recyclerView = findViewById(R.id.list)
 
-
       val display = activity?.windowManager?.defaultDisplay
       val size = Point()
       display?.getSize(size)

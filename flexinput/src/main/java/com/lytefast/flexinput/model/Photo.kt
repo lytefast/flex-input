@@ -29,7 +29,6 @@ class Photo : Attachment<String> {
   fun getThumbnailQ(contentResolver: ContentResolver, width: Int, height: Int) =
       contentResolver.loadThumbnail(uri, Size(width, height), null)
 
-
   fun getThumbnailUri(contentResolver: ContentResolver): Uri? {
     val cursor = contentResolver.query(
         MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,

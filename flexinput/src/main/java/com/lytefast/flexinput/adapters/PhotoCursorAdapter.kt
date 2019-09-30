@@ -173,9 +173,6 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
     }
 
     override fun onClick(v: View) {
-      Log.d("uri", photo?.uri.toString())
-      Log.d("uri", "${photo?.getThumbnailUri(contentResolver)}")
-
       selectionCoordinator.toggleItem(photo, adapterPosition)
     }
   }
