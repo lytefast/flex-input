@@ -49,7 +49,7 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoCursorAdapter.ViewHolder {
     val view = LayoutInflater.from(parent.context)
-      .inflate(R.layout.view_grid_image, parent, false)
+        .inflate(R.layout.view_grid_image, parent, false)
     return ViewHolder(view)
   }
 
@@ -60,12 +60,12 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
 
   override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
     payloads
-      .firstOrNull { it is SelectionCoordinator.SelectionEvent<*> }
-      ?.let { it as? SelectionCoordinator.SelectionEvent<*> }
-      ?.also {
-        holder.setSelected(it.isSelected, isAnimationRequested = true)
-        return
-      }
+        .firstOrNull { it is SelectionCoordinator.SelectionEvent<*> }
+        ?.let { it as? SelectionCoordinator.SelectionEvent<*> }
+        ?.also {
+          holder.setSelected(it.isSelected, isAnimationRequested = true)
+          return
+        }
     super.onBindViewHolder(holder, position, payloads)
   }
 
@@ -95,24 +95,24 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
     }
 
     LoadQueryHandler().startQuery(1, this,
-      MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-      arrayOf(MediaStore.Images.Media._ID,
-        MediaStore.Images.Media.DATA,
-        MediaStore.Images.Media.DISPLAY_NAME),
-      null, null, "${MediaStore.Images.Media.DATE_ADDED} DESC")
+        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+        arrayOf(MediaStore.Images.Media._ID,
+            MediaStore.Images.Media.DATA,
+            MediaStore.Images.Media.DISPLAY_NAME),
+        null, null, "${MediaStore.Images.Media.DATE_ADDED} DESC")
   }
 
   private operator fun get(position: Int): Photo? =
-    cursor?.let {
-      it.moveToPosition(position)
-      val photoId = it.getLong(colId)
-      val fileUri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, photoId.toString())
-      Photo(
-        id = photoId,
-        uri = fileUri,
-        displayName = it.getString(colName) ?: "img-$photoId",
-        photoDataLocation = it.getString(colData))
-    }
+      cursor?.let {
+        it.moveToPosition(position)
+        val photoId = it.getLong(colId)
+        val fileUri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, photoId.toString())
+        Photo(
+            id = photoId,
+            uri = fileUri,
+            displayName = it.getString(colName) ?: "img-$photoId",
+            photoDataLocation = it.getString(colData))
+      }
 
   inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
     private val shrinkAnim: AnimatorSet
@@ -129,11 +129,11 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
 
       //region Perf: Load animations once
       this.shrinkAnim = AnimatorInflater.loadAnimator(
-        itemView.context, R.animator.selection_shrink) as AnimatorSet
+          itemView.context, R.animator.selection_shrink) as AnimatorSet
       this.shrinkAnim.setTarget(imageView)
 
       this.growAnim = AnimatorInflater.loadAnimator(
-        itemView.context, R.animator.selection_grow) as AnimatorSet
+          itemView.context, R.animator.selection_grow) as AnimatorSet
       this.growAnim.setTarget(imageView)
       //endregion
     }
