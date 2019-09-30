@@ -8,6 +8,7 @@ import android.os.Build
 import com.lytefast.flexinput.model.Attachment
 import com.lytefast.flexinput.model.Attachment.Companion.toAttachment
 
+
 /**
  * @author Sam Shih
  */

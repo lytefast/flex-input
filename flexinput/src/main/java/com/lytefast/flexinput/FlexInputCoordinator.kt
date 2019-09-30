@@ -12,7 +12,7 @@ import com.lytefast.flexinput.utils.SelectionAggregator
  * @param <T> Type of item that can be selected.
  *
  * @author Sam Shih
-*/
+ */
 interface FlexInputCoordinator<T : Any> {
   val fileManager: FileManager
 

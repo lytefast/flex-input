@@ -4,6 +4,7 @@ import android.util.Log
 import com.lytefast.flexinput.fragment.FlexInputFragment
 import com.lytefast.flexinput.model.Attachment
 
+
 /**
  * @author Sam Shih
  */

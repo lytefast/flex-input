@@ -2,10 +2,6 @@ package com.lytefast.flexinput.fragment;
 
 import android.content.res.Resources;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +12,11 @@ import android.widget.Toast;
 import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.model.Emoji;
 import com.lytefast.flexinput.model.EmojiCategory;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 /**

@@ -1,8 +1,6 @@
 package com.lytefast.flexinput.sampleapp;
 
 import android.net.Uri;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +16,13 @@ import java.util.List;
 
 import com.lytefast.flexinput.model.Attachment;
 
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
+
 
 /**
  * Simple string message display adapter.
+ *
  * @author Sam Shih
  */
 
@@ -51,7 +53,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
   public static class Data {
     final Editable editable;
-    @Nullable final Attachment attachment;
+    @Nullable
+    final Attachment attachment;
 
     public Data(Editable editable, Attachment attachment) {
       this.editable = editable;
@@ -61,9 +64,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
   static class ViewHolder extends RecyclerView.ViewHolder {
     private final TextView indexTv;
-    private final  TextView messageTv;
-    private final  TextView attachmentTv;
-    private final  SimpleDraweeView imageView;
+    private final TextView messageTv;
+    private final TextView attachmentTv;
+    private final SimpleDraweeView imageView;
 
     ViewHolder(final View itemView) {
       super(itemView);

@@ -50,12 +50,12 @@ class FileListAdapter(private val contentResolver: ContentResolver,
 
   override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
     payloads
-      .firstOrNull { it is SelectionCoordinator.SelectionEvent<*> }
-      ?.let { it as? SelectionCoordinator.SelectionEvent<*> }
-      ?.also {
-        holder.setSelected(it.isSelected, isAnimationRequested = true)
-        return
-      }
+        .firstOrNull { it is SelectionCoordinator.SelectionEvent<*> }
+        ?.let { it as? SelectionCoordinator.SelectionEvent<*> }
+        ?.also {
+          holder.setSelected(it.isSelected, isAnimationRequested = true)
+          return
+        }
     super.onBindViewHolder(holder, position, payloads)
   }
 
@@ -191,7 +191,7 @@ class FileListAdapter(private val contentResolver: ContentResolver,
     return type
   }
 
-  private class FileLoaderTask(val adapter : FileListAdapter) : AsyncTask<File, Boolean, List<Attachment<File>>>() {
+  private class FileLoaderTask(val adapter: FileListAdapter) : AsyncTask<File, Boolean, List<Attachment<File>>>() {
 
     override fun doInBackground(vararg rootFiles: File): List<Attachment<File>> {
       val files = flattenFileList(rootFiles[0])

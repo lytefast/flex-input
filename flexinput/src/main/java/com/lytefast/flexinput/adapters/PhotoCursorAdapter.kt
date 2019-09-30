@@ -55,12 +55,12 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
 
   override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
     payloads
-      .firstOrNull { it is SelectionCoordinator.SelectionEvent<*> }
-      ?.let { it as? SelectionCoordinator.SelectionEvent<*> }
-      ?.also {
-        holder.setSelected(it.isSelected, isAnimationRequested = true)
-        return
-      }
+        .firstOrNull { it is SelectionCoordinator.SelectionEvent<*> }
+        ?.let { it as? SelectionCoordinator.SelectionEvent<*> }
+        ?.also {
+          holder.setSelected(it.isSelected, isAnimationRequested = true)
+          return
+        }
     super.onBindViewHolder(holder, position, payloads)
   }
 
@@ -98,16 +98,16 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
   }
 
   private operator fun get(position: Int): Photo? =
-    cursor?.let {
-      it.moveToPosition(position)
-      val photoId = it.getLong(colId)
-      val fileUri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, photoId.toString())
-      Photo(
-          id = photoId,
-          uri = fileUri,
-          displayName = it.getString(colName) ?: "img-$photoId",
-          photoDataLocation = it.getString(colData))
-    }
+      cursor?.let {
+        it.moveToPosition(position)
+        val photoId = it.getLong(colId)
+        val fileUri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, photoId.toString())
+        Photo(
+            id = photoId,
+            uri = fileUri,
+            displayName = it.getString(colName) ?: "img-$photoId",
+            photoDataLocation = it.getString(colData))
+      }
 
   inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
     private val shrinkAnim: AnimatorSet

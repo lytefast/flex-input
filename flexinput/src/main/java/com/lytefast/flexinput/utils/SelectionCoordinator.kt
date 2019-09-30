@@ -13,7 +13,7 @@ import java.util.*
  *
  * @author Sam Shih
  */
-open class SelectionCoordinator<I, T: I>(
+open class SelectionCoordinator<I, T : I>(
     /**
      * Maintains a mapping from the selected item to the position in the adapter.
      */

@@ -8,16 +8,6 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcelable;
-import androidx.annotation.ColorInt;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.view.inputmethod.InputContentInfoCompat;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.appcompat.widget.AppCompatEditText;
-import androidx.appcompat.widget.AppCompatImageButton;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -48,13 +38,23 @@ import com.lytefast.flexinput.utils.SelectionAggregator;
 import com.lytefast.flexinput.utils.SelectionCoordinator;
 import com.lytefast.flexinput.widget.FlexEditText;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.core.view.inputmethod.InputContentInfoCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 
 
 /**
  * Main widget fragment that controls all aspects of the FlexInput widget.
- *
+ * <p>
  * This is the controller which maintains all the interactions between the various components.
  *
  * @author Sam Shih
@@ -134,7 +134,8 @@ public class FlexInputFragment extends Fragment
           }
 
           @Override
-          public void unregister() { }
+          public void unregister() {
+          }
 
           private void updateUi() {
             final View rootView = getView();
@@ -188,7 +189,7 @@ public class FlexInputFragment extends Fragment
 
   @Override
   public void onViewCreated(@NonNull final View view, @Nullable final Bundle savedInstanceState) {
-    if (savedInstanceState != null ) {
+    if (savedInstanceState != null) {
       ArrayList<Parcelable> savedAttachments =
           savedInstanceState.getParcelableArrayList(EXTRA_ATTACHMENTS);
       if (savedAttachments != null && savedAttachments.size() > 0) {
@@ -320,9 +321,10 @@ public class FlexInputFragment extends Fragment
   //endregion
 
   //region Functional Getters/Setters
+
   /**
    * Set the custom emoji {@link Fragment} for the input.
-   *
+   * <p>
    * Note that this should only be set once for the life of the containing fragment. Make sure to
    * check the <code>savedInstanceState</code> before creating and saving another fragment.
    */
@@ -348,7 +350,6 @@ public class FlexInputFragment extends Fragment
    * @param previewAdapter An adapter that knows how to display {@link Attachment}s
    *
    * @return the current instance of {@link FlexInputFragment} for chaining commands
-   *
    * @see AttachmentPreviewAdapter#AttachmentPreviewAdapter(ContentResolver) for a default implementation of attachment previews
    */
   public FlexInputFragment setAttachmentPreviewAdapter(@NonNull final AttachmentPreviewAdapter<Attachment<Object>> previewAdapter) {
@@ -388,7 +389,7 @@ public class FlexInputFragment extends Fragment
 
   /**
    * Allows overriding the default {@link AppCompatEditText} to a custom component.
-   *
+   * <p>
    * Use at your own risk.
    *
    * @param customEditText the custom {@link AppCompatEditText} which you wish to use instead.
@@ -420,7 +421,7 @@ public class FlexInputFragment extends Fragment
             customEditText.getLayoutParams() instanceof LinearLayout.LayoutParams
                 ? (LinearLayout.LayoutParams) customEditText.getLayoutParams()
                 : new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f);
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f);
         customEditText.setLayoutParams(params);
         customEditText.requestLayout();
 
@@ -615,12 +616,14 @@ public class FlexInputFragment extends Fragment
   }
 
 
-  @Override @NotNull
+  @Override
+  @NotNull
   public FileManager getFileManager() {
     return fileManager;
   }
 
-  @Override @NonNull
+  @Override
+  @NonNull
   public SelectionAggregator<Attachment<Object>> getSelectionAggregator() {
     return attachmentPreviewAdapter.getSelectionAggregator();
   }

@@ -14,7 +14,7 @@ import java.util.*
  * @author Sam Shih
  */
 @Suppress("MemberVisibilityCanBePrivate")
-open class SelectionAggregator<T: Attachment<Any>> @JvmOverloads constructor(
+open class SelectionAggregator<T : Attachment<Any>> @JvmOverloads constructor(
     val adapter: AttachmentPreviewAdapter<T>,
     val attachments: ArrayList<T> = arrayListOf(),
     protected val childSelectionCoordinators: ArrayList<SelectionCoordinator<T, *>> = ArrayList(4),

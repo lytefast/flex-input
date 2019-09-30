@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:color="@color/flexInputIconColorDisabled"
-          android:state_enabled="false"/>
+    <item android:color="@color/flexInputIconColorDisabled" android:state_enabled="false" />
 
-    <item android:color="@color/flexInputIconColorActivated"
-          android:state_selected="true"/>
+    <item android:color="@color/flexInputIconColorActivated" android:state_selected="true" />
 
-    <item android:color="@color/flexInputIconColor"/>
+    <item android:color="@color/flexInputIconColor" />
 </selector>

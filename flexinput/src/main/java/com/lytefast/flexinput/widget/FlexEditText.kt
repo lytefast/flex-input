@@ -2,13 +2,13 @@ package com.lytefast.flexinput.widget
 
 import android.content.Context
 import android.os.Build
-import androidx.core.view.inputmethod.EditorInfoCompat
-import androidx.core.view.inputmethod.InputConnectionCompat
-import androidx.core.view.inputmethod.InputContentInfoCompat
-import androidx.appcompat.widget.AppCompatEditText
 import android.util.AttributeSet
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
+import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.view.inputmethod.EditorInfoCompat
+import androidx.core.view.inputmethod.InputConnectionCompat
+import androidx.core.view.inputmethod.InputContentInfoCompat
 
 
 /**
@@ -30,23 +30,23 @@ open class FlexEditText : AppCompatEditText {
   var inputContentHandler: ((InputContentInfoCompat) -> Unit)? = null
 
   override fun onCreateInputConnection(editorInfo: EditorInfo): InputConnection? =
-    super.onCreateInputConnection(editorInfo)?.let {
-      EditorInfoCompat.setContentMimeTypes(editorInfo, arrayOf("image/*"))
+      super.onCreateInputConnection(editorInfo)?.let {
+        EditorInfoCompat.setContentMimeTypes(editorInfo, arrayOf("image/*"))
 
-      val callback = InputConnectionCompat.OnCommitContentListener { inputContentInfo, flags, _ ->
-        // read and display inputContentInfo asynchronously
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1
-            && (flags and InputConnectionCompat.INPUT_CONTENT_GRANT_READ_URI_PERMISSION) != 0) {
-          try {
-            inputContentInfo.requestPermission()
-          } catch (e: Exception) {
-            return@OnCommitContentListener false // return false if failed
+        val callback = InputConnectionCompat.OnCommitContentListener { inputContentInfo, flags, _ ->
+          // read and display inputContentInfo asynchronously
+          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1
+              && (flags and InputConnectionCompat.INPUT_CONTENT_GRANT_READ_URI_PERMISSION) != 0) {
+            try {
+              inputContentInfo.requestPermission()
+            } catch (e: Exception) {
+              return@OnCommitContentListener false // return false if failed
+            }
           }
-        }
 
-        inputContentHandler?.invoke(inputContentInfo)
-        true  // return true if succeeded
+          inputContentHandler?.invoke(inputContentInfo)
+          true  // return true if succeeded
+        }
+        InputConnectionCompat.createWrapper(it, editorInfo, callback)
       }
-      InputConnectionCompat.createWrapper(it, editorInfo, callback)
-    }
 }

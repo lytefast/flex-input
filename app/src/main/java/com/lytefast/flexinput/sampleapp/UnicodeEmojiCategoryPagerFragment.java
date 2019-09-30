@@ -1,6 +1,5 @@
 package com.lytefast.flexinput.sampleapp;
 
-import androidx.annotation.DrawableRes;
 import android.util.JsonReader;
 import android.util.Log;
 
@@ -16,6 +15,8 @@ import com.lytefast.flexinput.model.Emoji;
 import com.lytefast.flexinput.model.EmojiCategory;
 import com.lytefast.flexinput.utils.FlexInputEmojiStateChangeListener;
 
+import androidx.annotation.DrawableRes;
+
 
 /**
  * Loads and ordered {@link EmojiCategory} list from the asset folder.
@@ -24,7 +25,7 @@ import com.lytefast.flexinput.utils.FlexInputEmojiStateChangeListener;
  * @author Sam Shih
  */
 public class UnicodeEmojiCategoryPagerFragment extends EmojiCategoryPagerFragment
-  implements FlexInputEmojiStateChangeListener {
+    implements FlexInputEmojiStateChangeListener {
 
   private static final String ASSET_PATH_EMOJIS = "emojis.json";
 

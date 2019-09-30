@@ -2,18 +2,20 @@ package com.lytefast.flexinput.sampleapp;
 
 
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CompoundButton;
+
+import com.facebook.drawee.backends.pipeline.Fresco;
+
+import com.lytefast.flexinput.adapters.EmptyListAdapter;
+
 import androidx.annotation.IdRes;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CompoundButton;
-
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.lytefast.flexinput.adapters.EmptyListAdapter;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -52,7 +54,8 @@ public class MainActivity extends AppCompatActivity {
       super(itemLayoutId, actionBtnId, onClickListener);
     }
 
-    @Override @NonNull
+    @Override
+    @NonNull
     public EmptyListAdapter.ViewHolder onCreateViewHolder(final @NonNull ViewGroup parent, final int viewType) {
       return super.onCreateViewHolder(parent, viewType);
     }

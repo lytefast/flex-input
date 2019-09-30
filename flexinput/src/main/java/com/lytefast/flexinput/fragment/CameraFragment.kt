@@ -132,7 +132,7 @@ open class CameraFragment : PermissionsFragment() {
       in 0..Build.VERSION_CODES.KITKAT_WATCH -> Camera.getNumberOfCameras() == 1
       else -> {
         (context!!.getSystemService(CAMERA_SERVICE) as CameraManager)
-          .cameraIdList.size == 1
+            .cameraIdList.size == 1
       }
     }
   }
@@ -268,8 +268,9 @@ open class CameraFragment : PermissionsFragment() {
     }
 
     photoFile?.also {
-      when(resultCode) {
-        Activity.RESULT_CANCELED -> { /* Do nothing*/ }
+      when (resultCode) {
+        Activity.RESULT_CANCELED -> { /* Do nothing*/
+        }
         Activity.RESULT_OK -> {
           context?.addToMediaStore(it)
           flexInputCoordinator?.addExternalAttachment(it.toAttachment())
@@ -287,7 +288,7 @@ open class CameraFragment : PermissionsFragment() {
         Log.d(TAG, "onCameraError: $cameraException")
       }
 
-  private val cameraListener = object : CameraKitView.CameraListener  {
+  private val cameraListener = object : CameraKitView.CameraListener {
     override fun onOpened() {
       Log.d(TAG, "onCameraOpened")
       cameraView.apply { onFacingChanged(facing) }

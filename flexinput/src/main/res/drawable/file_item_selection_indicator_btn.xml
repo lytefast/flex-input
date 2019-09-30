@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:drawable="@drawable/ic_done_activated_24dp"
-          android:state_selected="true"/>
+    <item android:drawable="@drawable/ic_done_activated_24dp" android:state_selected="true" />
 
-    <item android:drawable="@drawable/ic_file_upload_24dp"/>
+    <item android:drawable="@drawable/ic_file_upload_24dp" />
 
 </selector>

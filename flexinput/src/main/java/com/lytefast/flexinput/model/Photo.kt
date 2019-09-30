@@ -48,7 +48,7 @@ class Photo : Attachment<String> {
     AsyncTask.execute {
       try {
         MediaStore.Images.Thumbnails.getThumbnail(
-                contentResolver, id, MediaStore.Images.Thumbnails.MINI_KIND, null)
+            contentResolver, id, MediaStore.Images.Thumbnails.MINI_KIND, null)
       } catch (e: Exception) {
         Log.v(Photo::class.java.name, "Error generating thumbnail for photo $id.")
       }

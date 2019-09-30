@@ -16,18 +16,18 @@ import java.io.File
  *
  * @author Sam Shih
  */
-open class Attachment<out T> (
-  val id: Long,
-  val uri: Uri,
-  val displayName: String,
-  val data: T? = null
-): Parcelable {
+open class Attachment<out T>(
+    val id: Long,
+    val uri: Uri,
+    val displayName: String,
+    val data: T? = null
+) : Parcelable {
 
   constructor(parcelIn: Parcel) : this(
-    id = parcelIn.readLong(),
-    uri = parcelIn.readParcelable(Uri::class.java.classLoader) ?: Uri.EMPTY,
-    displayName = parcelIn.readString() ?: "",
-    data = null  // this shouldn't be required anyways.
+      id = parcelIn.readLong(),
+      uri = parcelIn.readParcelable(Uri::class.java.classLoader) ?: Uri.EMPTY,
+      displayName = parcelIn.readString() ?: "",
+      data = null  // this shouldn't be required anyways.
   )
 
   override fun equals(other: Any?): Boolean {
@@ -68,7 +68,7 @@ open class Attachment<out T> (
     @JvmStatic
     fun InputContentInfoCompat.toAttachment(
         resolver: ContentResolver,
-        appendExtension: Boolean= false,
+        appendExtension: Boolean = false,
         defaultName: String = "unknown"): Attachment<InputContentInfoCompat> {
       val rawFileName = contentUri.getQueryParameter("fileName") ?: defaultName
       val fileName = rawFileName.substringAfterLast(File.separatorChar)

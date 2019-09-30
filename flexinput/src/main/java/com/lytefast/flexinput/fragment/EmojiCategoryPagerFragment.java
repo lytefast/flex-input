@@ -3,17 +3,11 @@ package com.lytefast.flexinput.fragment;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.tabs.TabLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.content.res.AppCompatResources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.List;
 
@@ -21,10 +15,18 @@ import com.lytefast.flexinput.R;
 import com.lytefast.flexinput.model.Emoji;
 import com.lytefast.flexinput.model.EmojiCategory;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 
 /**
  * Default fragment to display various categories of unicode emojis.
- *
+ * <p>
  * Any overriding classes should trigger
  * {@link com.lytefast.flexinput.fragment.FlexInputFragment#append(CharSequence)}
  * with an {@link Emoji} to ensure proper appending of emojis to the edit text.

@@ -51,7 +51,7 @@ class AddContentPagerAdapter(childFragmentManager: FragmentManager,
         .forEach { tabLayout.addTab(it) }
   }
 
-  private fun TabLayout.Tab.setIconColor(iconColors: ColorStateList) : TabLayout.Tab {
+  private fun TabLayout.Tab.setIconColor(iconColors: ColorStateList): TabLayout.Tab {
     this.icon?.let {
       val icon = DrawableCompat.wrap(it)
       DrawableCompat.setTintList(icon, iconColors)

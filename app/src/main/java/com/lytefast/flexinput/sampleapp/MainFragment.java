@@ -178,10 +178,11 @@ public class MainFragment extends Fragment {
   }
 
   public static class CustomFilesFragment extends FilesFragment {
-    @Override @NotNull
+    @Override
+    @NotNull
     protected EmptyListAdapter newPermissionsRequestAdapter(final View.OnClickListener onClickListener) {
-       return new EmptyListAdapter(
-        R.layout.custom_permission_storage, R.id.permissions_req_btn, onClickListener);
+      return new EmptyListAdapter(
+          R.layout.custom_permission_storage, R.id.permissions_req_btn, onClickListener);
     }
   }
 
@@ -197,8 +198,8 @@ public class MainFragment extends Fragment {
 
       for (int i = 0; i < attachments.size(); i++) {
         msgAdapter.addMessage(new MessageAdapter.Data(
-                Editable.Factory.getInstance().newEditable(String.format("[%d] Attachment", i)),
-                attachments.get(i)));
+            Editable.Factory.getInstance().newEditable(String.format("[%d] Attachment", i)),
+            attachments.get(i)));
       }
       return true;
     }
