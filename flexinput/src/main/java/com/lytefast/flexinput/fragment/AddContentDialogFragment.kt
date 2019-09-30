@@ -137,7 +137,7 @@ open class AddContentDialogFragment : AppCompatDialogFragment() {
 
       return when {
         customString.isNullOrBlank() -> getString(R.string.choose_an_application)
-        else -> customString!!
+        else -> customString
       }
     }
 
@@ -159,7 +159,7 @@ open class AddContentDialogFragment : AppCompatDialogFragment() {
   }
 
   @SuppressLint("PrivateResource")
-  override fun show(transaction: FragmentTransaction, tag: String): Int {
+  override fun show(transaction: FragmentTransaction, tag: String?): Int {
     transaction.setCustomAnimations(
         com.google.android.material.R.anim.abc_grow_fade_in_from_bottom,
         com.google.android.material.R.anim.abc_shrink_fade_out_from_bottom)
