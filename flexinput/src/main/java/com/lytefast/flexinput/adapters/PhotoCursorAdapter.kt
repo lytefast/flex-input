@@ -55,7 +55,6 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
   override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
     super.onAttachedToRecyclerView(recyclerView)
 
-    placeholderDrawable = ContextCompat.getDrawable(recyclerView.context, R.drawable.ic_image_24dp)
     emptyColorDrawable = ColorDrawable(ContextCompat.getColor(recyclerView.context, R.color.flexInputThumbnailBackground))
 
     shrinkAnim = AnimatorInflater.loadAnimator(recyclerView.context, R.animator.selection_shrink) as AnimatorSet
@@ -159,7 +158,7 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
       if (isAndroidQ()) {
         clear()
 
-        imageView.hierarchy.setPlaceholderImage(placeholderDrawable, ScalingUtils.ScaleType.CENTER)
+        imageView.hierarchy.setPlaceholderImage(emptyColorDrawable, ScalingUtils.ScaleType.CENTER)
 
         // Ensure this executes on the main thread for UI interaction (as opposed to IO)
         loadThumbnailJob = GlobalScope.launch(context = Dispatchers.Main) {
