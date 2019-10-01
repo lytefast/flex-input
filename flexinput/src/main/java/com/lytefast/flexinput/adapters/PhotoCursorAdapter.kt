@@ -5,6 +5,7 @@ import android.animation.AnimatorSet
 import android.content.AsyncQueryHandler
 import android.content.ContentResolver
 import android.database.Cursor
+import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
@@ -14,17 +15,11 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AlphaAnimation
-import android.view.animation.Animation
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.drawee.drawable.FadeDrawable
 import com.facebook.drawee.drawable.ScalingUtils
-import com.facebook.drawee.generic.GenericDraweeHierarchy
-import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder
-import com.facebook.drawee.view.DraweeHolder
-import com.facebook.drawee.view.MultiDraweeHolder
 import com.facebook.drawee.view.SimpleDraweeView
 import com.lytefast.flexinput.R
 import com.lytefast.flexinput.model.Photo
@@ -58,18 +53,23 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
     super.onAttachedToRecyclerView(recyclerView)
 
     placeholderDrawable = ContextCompat.getDrawable(recyclerView.context, R.drawable.ic_image_24dp)
-    emptyColorDrawable = ColorDrawable()
+    emptyColorDrawable = ColorDrawable(ContextCompat.getColor(recyclerView.context, R.color.flexInputThumbnailBackground))
+
+    shrinkAnim = AnimatorInflater.loadAnimator(recyclerView.context, R.animator.selection_shrink) as AnimatorSet
+    growAnim = AnimatorInflater.loadAnimator(recyclerView.context, R.animator.selection_grow) as AnimatorSet
 
     loadPhotos()
   }
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoCursorAdapter.ViewHolder {
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
     val view = LayoutInflater.from(parent.context)
         .inflate(R.layout.view_grid_image, parent, false)
     return ViewHolder(view)
   }
 
-  override fun onBindViewHolder(holder: PhotoCursorAdapter.ViewHolder, position: Int) {
+  override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    holder.cancelLoadThumbnailJob()
+    holder.recycleBitmaps()
     val photo = this[position]
     holder.bind(photo)
   }
@@ -86,7 +86,8 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
   }
 
   override fun onViewRecycled(holder: ViewHolder) {
-    holder.loadingThumbnailJob?.cancel()
+    holder.cancelLoadThumbnailJob()
+    holder.recycleBitmaps()
     super.onViewRecycled(holder)
   }
 
@@ -136,45 +137,38 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
       }
 
   inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-    private val shrinkAnim: AnimatorSet
-    private val growAnim: AnimatorSet
-
     private val imageView: SimpleDraweeView = itemView.findViewById(R.id.content_iv)
     private val checkIndicator: SimpleDraweeView = itemView.findViewById(R.id.item_check_indicator)
 
     private var photo: Photo? = null
-
-    var loadingThumbnailJob: Job? = null
-      private set
-
+    private var loadThumbnailJob: Job? = null
+    private var thumbnailBitmap: Bitmap? = null
+    private var thumbnailDrawable: BitmapDrawable? = null
+    private var holderFadeDrawable: FadeDrawable? = null
 
     init {
       this.itemView.setOnClickListener(this)
-
-      //region Perf: Load animations once
-      this.shrinkAnim = AnimatorInflater.loadAnimator(
-          itemView.context, R.animator.selection_shrink) as AnimatorSet
-      this.shrinkAnim.setTarget(imageView)
-
-      this.growAnim = AnimatorInflater.loadAnimator(
-          itemView.context, R.animator.selection_grow) as AnimatorSet
-      this.growAnim.setTarget(imageView)
-      //endregion
     }
 
     fun bind(photo: Photo?) {
+      shrinkAnim?.setTarget(imageView)
+      growAnim?.setTarget(imageView)
+
       this.photo = photo
 
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
         imageView.hierarchy.setPlaceholderImage(placeholderDrawable, ScalingUtils.ScaleType.CENTER)
 
-        loadingThumbnailJob = GlobalScope.launch(context = Dispatchers.Main) {
-          val thumbnailDrawable = BitmapDrawable(imageView.resources, getThumbnailAsync())
+        cancelLoadThumbnailJob()
+        loadThumbnailJob = GlobalScope.launch(context = Dispatchers.Main) {
+          thumbnailBitmap = getThumbnailAsync()
+          thumbnailDrawable = BitmapDrawable(imageView.resources, thumbnailBitmap)
           val fadeDrawable = FadeDrawable(arrayOf(emptyColorDrawable, thumbnailDrawable))
 
           fadeDrawable.transitionDuration = 300
           imageView.hierarchy.setPlaceholderImage(fadeDrawable, ScalingUtils.ScaleType.CENTER_CROP)
           fadeDrawable.fadeToLayer(1)
+          holderFadeDrawable = fadeDrawable
         }
       } else {
         val thumbnailUri = photo?.let {
@@ -198,11 +192,25 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
 
       if (isSelected) {
         checkIndicator.visibility = View.VISIBLE
-        if (imageView.scaleX == 1.0f) scaleImage(shrinkAnim)
+        if (imageView.scaleX == 1.0f) shrinkAnim?.let { scaleImage(it) }
       } else {
         checkIndicator.visibility = View.GONE
-        if (imageView.scaleX != 1.0f) scaleImage(growAnim)
+        if (imageView.scaleX != 1.0f) growAnim?.let { scaleImage(it) }
       }
+    }
+
+    fun cancelLoadThumbnailJob() {
+      loadThumbnailJob?.cancel()
+    }
+
+    fun recycleBitmaps() {
+      thumbnailDrawable?.bitmap?.recycle()
+      thumbnailDrawable = null
+      thumbnailBitmap?.recycle()
+      thumbnailBitmap = null
+      val fadeBitmapDrawable = holderFadeDrawable?.getDrawable(1) as? BitmapDrawable
+      fadeBitmapDrawable?.bitmap?.recycle()
+      holderFadeDrawable = null
     }
 
     override fun onClick(v: View) {
@@ -218,5 +226,8 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
   companion object {
     private var placeholderDrawable: Drawable? = null
     private var emptyColorDrawable: Drawable? = null
+
+    private var shrinkAnim: AnimatorSet? = null
+    private var growAnim: AnimatorSet? = null
   }
 }
