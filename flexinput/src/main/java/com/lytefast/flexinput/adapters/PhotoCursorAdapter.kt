@@ -71,10 +71,6 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
   }
 
   override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-    if (isAndroidQorHigher()) {
-      holder.cancelLoadThumbnailJob()
-      holder.recycleBitmaps()
-    }
     val photo = this[position]
     holder.bind(photo)
   }
@@ -91,11 +87,8 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
   }
 
   override fun onViewRecycled(holder: ViewHolder) {
-    if (isAndroidQorHigher()) {
-      holder.cancelLoadThumbnailJob()
-      holder.recycleBitmaps()
-    }
     super.onViewRecycled(holder)
+    holder.onViewRecycled()
   }
 
   override fun getItemCount(): Int = cursor?.count ?: 0
@@ -143,8 +136,6 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
             photoDataLocation = it.getString(colData))
       }
 
-  private fun isAndroidQorHigher() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
-
   inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
     private val imageView: SimpleDraweeView = itemView.findViewById(R.id.content_iv)
     private val checkIndicator: SimpleDraweeView = itemView.findViewById(R.id.item_check_indicator)
@@ -165,10 +156,11 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
 
       this.photo = photo
 
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+      if (isAndroidQ()) {
+        clear()
+
         imageView.hierarchy.setPlaceholderImage(placeholderDrawable, ScalingUtils.ScaleType.CENTER)
 
-        cancelLoadThumbnailJob()
         // Ensure this executes on the main thread for UI interaction (as opposed to IO)
         loadThumbnailJob = GlobalScope.launch(context = Dispatchers.Main) {
           thumbnailBitmap = getThumbnailAsync()
@@ -212,22 +204,6 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
       }
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
-    fun cancelLoadThumbnailJob() {
-      loadThumbnailJob?.cancel()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.Q)
-    fun recycleBitmaps() {
-      thumbnailDrawable?.bitmap?.recycle()
-      thumbnailDrawable = null
-      thumbnailBitmap?.recycle()
-      thumbnailBitmap = null
-      val fadeBitmapDrawable = holderFadeDrawable?.getDrawable(1) as? BitmapDrawable
-      fadeBitmapDrawable?.bitmap?.recycle()
-      holderFadeDrawable = null
-    }
-
     override fun onClick(v: View) {
       selectionCoordinator.toggleItem(photo, adapterPosition)
     }
@@ -235,6 +211,24 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
     @RequiresApi(Build.VERSION_CODES.Q)
     private suspend fun getThumbnailAsync() = withContext(Dispatchers.IO) {
       photo?.getThumbnailQ(contentResolver, thumbnailWidth, thumbnailHeight)
+    }
+
+    fun onViewRecycled() {
+      clear()
+    }
+
+    private fun clear() {
+      if (isAndroidQ()) {
+        loadThumbnailJob?.cancel()
+
+        thumbnailDrawable?.bitmap?.recycle()
+        thumbnailDrawable = null
+        thumbnailBitmap?.recycle()
+        thumbnailBitmap = null
+        val fadeBitmapDrawable = holderFadeDrawable?.getDrawable(1) as? BitmapDrawable
+        fadeBitmapDrawable?.bitmap?.recycle()
+        holderFadeDrawable = null
+      }
     }
   }
 
@@ -247,5 +241,7 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
 
     fun Context.dpToPixels(dipValue: Float) =
         TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, resources.displayMetrics)
+
+    fun isAndroidQ() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
   }
 }
