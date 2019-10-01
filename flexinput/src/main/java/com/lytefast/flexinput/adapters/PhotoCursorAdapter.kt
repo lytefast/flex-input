@@ -169,6 +169,7 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
         imageView.hierarchy.setPlaceholderImage(placeholderDrawable, ScalingUtils.ScaleType.CENTER)
 
         cancelLoadThumbnailJob()
+        // Ensure this executes on the main thread for UI interaction (as opposed to IO)
         loadThumbnailJob = GlobalScope.launch(context = Dispatchers.Main) {
           thumbnailBitmap = getThumbnailAsync()
           thumbnailDrawable = BitmapDrawable(imageView.resources, thumbnailBitmap)

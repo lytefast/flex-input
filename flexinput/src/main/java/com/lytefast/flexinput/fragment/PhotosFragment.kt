@@ -51,11 +51,11 @@ open class PhotosFragment : PermissionsFragment() {
       recyclerView = findViewById(R.id.list)
 
       val display = activity?.windowManager?.defaultDisplay
-      val size = Point()
-      display?.getSize(size)
+      val displaySize = Point()
+      display?.getSize(displaySize)
 
       // We want the images to be square so use same value for height and width
-      val thumbnailSide = (size.x / GRID_LAYOUT_SPAN_COUNT.toFloat()).toInt()
+      val thumbnailSide = (displaySize.x / GRID_LAYOUT_SPAN_COUNT.toFloat()).toInt()
       val photoAdapter = PhotoCursorAdapter(context.contentResolver, selectionCoordinator!!, thumbnailSide, thumbnailSide)
 
       if (hasPermissions(REQUIRED_PERMISSION)) {
