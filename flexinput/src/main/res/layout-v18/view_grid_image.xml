@@ -1,28 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/FlexInput.Items.Photo"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="true"
-    tools:layout_width="120dp"
-    tools:gravity="center_horizontal">
+    android:focusable="true"
+    tools:gravity="center_horizontal"
+    tools:layout_width="120dp">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/content_iv"
-        style="FlexInput.Items.Photo.Image"
+        style="@style/FlexInput.Items.Photo.Image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        app:placeholderImageScaleType="centerCrop"
         android:adjustViewBounds="true"
         app:roundedCornerRadius="4dp"
-        tools:src="@drawable/ic_image_24dp"/>
+        tools:src="@drawable/ic_image_24dp" />
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/item_check_indicator"
         style="@style/FlexInput.Items.Photo.Selection"
         android:visibility="gone"
         tools:src="@drawable/ic_check_circle_24dp"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 </FrameLayout>
