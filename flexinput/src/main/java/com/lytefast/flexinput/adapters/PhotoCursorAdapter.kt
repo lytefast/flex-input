@@ -6,14 +6,25 @@ import android.content.AsyncQueryHandler
 import android.content.ContentResolver
 import android.database.Cursor
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.facebook.drawee.drawable.FadeDrawable
+import com.facebook.drawee.drawable.ScalingUtils
+import com.facebook.drawee.generic.GenericDraweeHierarchy
+import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder
+import com.facebook.drawee.view.DraweeHolder
+import com.facebook.drawee.view.MultiDraweeHolder
 import com.facebook.drawee.view.SimpleDraweeView
 import com.lytefast.flexinput.R
 import com.lytefast.flexinput.model.Photo
@@ -45,6 +56,10 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
 
   override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
     super.onAttachedToRecyclerView(recyclerView)
+
+    placeholderDrawable = ContextCompat.getDrawable(recyclerView.context, R.drawable.ic_image_24dp)
+    emptyColorDrawable = ColorDrawable()
+
     loadPhotos()
   }
 
@@ -68,6 +83,11 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
           return
         }
     super.onBindViewHolder(holder, position, payloads)
+  }
+
+  override fun onViewRecycled(holder: ViewHolder) {
+    holder.loadingThumbnailJob?.cancel()
+    super.onViewRecycled(holder)
   }
 
   override fun getItemCount(): Int = cursor?.count ?: 0
@@ -124,6 +144,9 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
 
     private var photo: Photo? = null
 
+    var loadingThumbnailJob: Job? = null
+      private set
+
 
     init {
       this.itemView.setOnClickListener(this)
@@ -141,12 +164,17 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
 
     fun bind(photo: Photo?) {
       this.photo = photo
-      imageView.setImageURI(null as String?, imageView.context)
 
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        runBlocking {
-          val thumbnail = getThumbnailAsync()
-          imageView.hierarchy.setPlaceholderImage(BitmapDrawable(imageView.resources, thumbnail))
+        imageView.hierarchy.setPlaceholderImage(placeholderDrawable, ScalingUtils.ScaleType.CENTER)
+
+        loadingThumbnailJob = GlobalScope.launch(context = Dispatchers.Main) {
+          val thumbnailDrawable = BitmapDrawable(imageView.resources, getThumbnailAsync())
+          val fadeDrawable = FadeDrawable(arrayOf(emptyColorDrawable, thumbnailDrawable))
+
+          fadeDrawable.transitionDuration = 300
+          imageView.hierarchy.setPlaceholderImage(fadeDrawable, ScalingUtils.ScaleType.CENTER_CROP)
+          fadeDrawable.fadeToLayer(1)
         }
       } else {
         val thumbnailUri = photo?.let {
@@ -185,5 +213,10 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
     private suspend fun getThumbnailAsync() = withContext(Dispatchers.IO) {
       photo?.getThumbnailQ(contentResolver, thumbnailWidth, thumbnailHeight)
     }
+  }
+
+  companion object {
+    private var placeholderDrawable: Drawable? = null
+    private var emptyColorDrawable: Drawable? = null
   }
 }

@@ -16,6 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="centerCrop"
+        app:placeholderImageScaleType="centerCrop"
         android:adjustViewBounds="true"
         app:roundedCornerRadius="4dp"
         tools:src="@drawable/ic_image_24dp" />
