@@ -4,6 +4,7 @@ import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.content.AsyncQueryHandler
 import android.content.ContentResolver
+import android.content.Context
 import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -12,6 +13,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +22,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.drawee.drawable.FadeDrawable
 import com.facebook.drawee.drawable.ScalingUtils
+import com.facebook.drawee.generic.RoundingParams
 import com.facebook.drawee.view.SimpleDraweeView
 import com.lytefast.flexinput.R
 import com.lytefast.flexinput.model.Photo
@@ -68,8 +71,10 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
   }
 
   override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-    holder.cancelLoadThumbnailJob()
-    holder.recycleBitmaps()
+    if (isAndroidQorHigher()) {
+      holder.cancelLoadThumbnailJob()
+      holder.recycleBitmaps()
+    }
     val photo = this[position]
     holder.bind(photo)
   }
@@ -86,8 +91,10 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
   }
 
   override fun onViewRecycled(holder: ViewHolder) {
-    holder.cancelLoadThumbnailJob()
-    holder.recycleBitmaps()
+    if (isAndroidQorHigher()) {
+      holder.cancelLoadThumbnailJob()
+      holder.recycleBitmaps()
+    }
     super.onViewRecycled(holder)
   }
 
@@ -136,6 +143,8 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
             photoDataLocation = it.getString(colData))
       }
 
+  private fun isAndroidQorHigher() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+
   inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
     private val imageView: SimpleDraweeView = itemView.findViewById(R.id.content_iv)
     private val checkIndicator: SimpleDraweeView = itemView.findViewById(R.id.item_check_indicator)
@@ -166,6 +175,9 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
           val fadeDrawable = FadeDrawable(arrayOf(emptyColorDrawable, thumbnailDrawable))
 
           fadeDrawable.transitionDuration = 300
+          val roundingParams = RoundingParams.fromCornersRadius(imageView.context.dpToPixels(4f))
+          roundingParams.overlayColor = ContextCompat.getColor(imageView.context, R.color.flexInputThumbnailBackground)
+          imageView.hierarchy.roundingParams = roundingParams
           imageView.hierarchy.setPlaceholderImage(fadeDrawable, ScalingUtils.ScaleType.CENTER_CROP)
           fadeDrawable.fadeToLayer(1)
           holderFadeDrawable = fadeDrawable
@@ -199,10 +211,12 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
       }
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     fun cancelLoadThumbnailJob() {
       loadThumbnailJob?.cancel()
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     fun recycleBitmaps() {
       thumbnailDrawable?.bitmap?.recycle()
       thumbnailDrawable = null
@@ -229,5 +243,8 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
 
     private var shrinkAnim: AnimatorSet? = null
     private var growAnim: AnimatorSet? = null
+
+    fun Context.dpToPixels(dipValue: Float) =
+        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, resources.displayMetrics)
   }
 }
