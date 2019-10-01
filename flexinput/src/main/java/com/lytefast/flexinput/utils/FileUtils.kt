@@ -20,10 +20,10 @@ object FileUtils {
 
   @JvmStatic
   @Throws(IllegalArgumentException::class)
-  fun Uri.getFileName(contentResolver: ContentResolver): String {
+  fun Uri.getFileName(contentResolver: ContentResolver): String? {
     when (this.scheme) {
       ContentResolver.SCHEME_FILE -> {
-        val file = File(this.path)
+        val file = File(this.path ?: return null)
         return file.name
       }
       ContentResolver.SCHEME_CONTENT -> {

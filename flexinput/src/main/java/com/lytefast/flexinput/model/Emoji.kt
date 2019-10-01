@@ -23,8 +23,8 @@ class Emoji : Parcelable {
 
   //region Parcelable Impl
   constructor(parcelIn: Parcel) {
-    strValue = parcelIn.readString()
-    aliases = parcelIn.createStringArray()
+    strValue = parcelIn.readString()!!
+    aliases = parcelIn.createStringArray() ?: emptyArray()
   }
 
   override fun describeContents(): Int = 0
@@ -64,7 +64,7 @@ class EmojiCategory(
 
   //region Parcelable Impl
   constructor(parcelIn: Parcel)
-      : this(parcelIn.readString(), parcelIn.readInt(), listOf<Emoji>()) {
+      : this(parcelIn.readString()!!, parcelIn.readInt(), listOf<Emoji>()) {
     parcelIn.readTypedList(emojis, Emoji.CREATOR)
   }
 
