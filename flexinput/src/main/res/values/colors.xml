@@ -7,6 +7,5 @@
     <color name="flexInputIconColor">?colorButtonNormal</color>
     <color name="flexInputIconColorActivated">?colorControlActivated</color>
     <color name="flexInputIconColorDisabled">?colorControlHighlight</color>
-    <color name="flexInputThumbnailBackground">#000000</color>
 
 </resources>

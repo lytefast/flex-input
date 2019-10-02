@@ -18,7 +18,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.drawee.drawable.FadeDrawable
 import com.facebook.drawee.drawable.ScalingUtils
@@ -28,6 +27,7 @@ import com.lytefast.flexinput.R
 import com.lytefast.flexinput.model.Photo
 import com.lytefast.flexinput.utils.SelectionCoordinator
 import kotlinx.coroutines.*
+import androidx.core.content.ContextCompat
 
 
 /**
@@ -55,7 +55,7 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
   override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
     super.onAttachedToRecyclerView(recyclerView)
 
-    emptyColorDrawable = ColorDrawable(ContextCompat.getColor(recyclerView.context, R.color.flexInputThumbnailBackground))
+    emptyColorDrawable = ColorDrawable(recyclerView.context.themeColor(R.attr.flexInputDialogBackground))
 
     shrinkAnim = AnimatorInflater.loadAnimator(recyclerView.context, R.animator.selection_shrink) as AnimatorSet
     growAnim = AnimatorInflater.loadAnimator(recyclerView.context, R.animator.selection_grow) as AnimatorSet
@@ -168,7 +168,7 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
 
           fadeDrawable.transitionDuration = 300
           val roundingParams = RoundingParams.fromCornersRadius(imageView.context.dpToPixels(4f))
-          roundingParams.overlayColor = ContextCompat.getColor(imageView.context, R.color.flexInputThumbnailBackground)
+          roundingParams.overlayColor = imageView.context.themeColor(R.attr.flexInputDialogBackground)
           imageView.hierarchy.roundingParams = roundingParams
           imageView.hierarchy.setPlaceholderImage(fadeDrawable, ScalingUtils.ScaleType.CENTER_CROP)
           fadeDrawable.fadeToLayer(1)
@@ -232,7 +232,6 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
   }
 
   companion object {
-    private var placeholderDrawable: Drawable? = null
     private var emptyColorDrawable: Drawable? = null
 
     private var shrinkAnim: AnimatorSet? = null
@@ -242,5 +241,15 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
         TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, resources.displayMetrics)
 
     fun isAndroidQ() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+
+    fun Context.themeColor(themeAttributeId: Int): Int {
+      val outValue = TypedValue()
+      val wasResolved = theme.resolveAttribute(themeAttributeId, outValue, true)
+      return if (wasResolved) {
+        ContextCompat.getColor(this, outValue.resourceId)
+      } else {
+        0
+      }
+    }
   }
 }
