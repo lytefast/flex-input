@@ -27,7 +27,7 @@ import com.lytefast.flexinput.R
 import com.lytefast.flexinput.model.Photo
 import com.lytefast.flexinput.utils.SelectionCoordinator
 import kotlinx.coroutines.*
-import androidx.annotation.AttrRes
+import androidx.core.content.ContextCompat
 
 
 /**
@@ -242,10 +242,14 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
 
     fun isAndroidQ() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
 
-    fun Context.themeColor(@AttrRes attrRes: Int): Int {
-      val typedValue = TypedValue()
-      theme.resolveAttribute(attrRes, typedValue, true)
-      return typedValue.data
+    fun Context.themeColor(themeAttributeId: Int): Int {
+      val outValue = TypedValue()
+      val wasResolved = theme.resolveAttribute(themeAttributeId, outValue, true)
+      return if (wasResolved) {
+        ContextCompat.getColor(this, outValue.resourceId)
+      } else {
+        0
+      }
     }
   }
 }
