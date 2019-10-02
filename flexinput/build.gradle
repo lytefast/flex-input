@@ -9,7 +9,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "0.9.8"
+        versionName "0.10.2"
 
         proguardFiles getDefaultProguardFile('proguard-android-optimize.txt')
         consumerProguardFiles(
