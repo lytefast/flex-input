@@ -18,7 +18,6 @@ import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
 import com.lytefast.flexinput.R
 import com.lytefast.flexinput.model.Attachment
-import com.lytefast.flexinput.utils.BuildUtils
 import com.lytefast.flexinput.utils.FileUtils.getFileSize
 import com.lytefast.flexinput.utils.FileUtils.toAttachment
 import com.lytefast.flexinput.utils.SelectionCoordinator
@@ -39,12 +38,6 @@ class FileListAdapter(private val contentResolver: ContentResolver,
   private val selectionCoordinator: SelectionCoordinator<*, in Attachment<File>> =
       selectionCoordinator.bind(this)
   private var files: List<Attachment<File>> = listOf()
-
-  override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-    super.onAttachedToRecyclerView(recyclerView)
-    shrinkAnim = AnimatorInflater.loadAnimator(recyclerView.context, R.animator.selection_shrink) as AnimatorSet
-    growAnim = AnimatorInflater.loadAnimator(recyclerView.context, R.animator.selection_grow) as AnimatorSet
-  }
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
     val view = LayoutInflater.from(parent.context)
@@ -81,17 +74,27 @@ class FileListAdapter(private val contentResolver: ContentResolver,
 
     private var attachmentFile: Attachment<File>? = null
 
+    private val shrinkAnim: AnimatorSet
+    private val growAnim: AnimatorSet
+
     init {
       this.itemView.isClickable = true
       this.itemView.setOnClickListener {
         setSelected(selectionCoordinator.toggleItem(attachmentFile, adapterPosition), true)
       }
+
+      //region Perf: Load animations once
+      this.shrinkAnim = AnimatorInflater.loadAnimator(
+          itemView.context, R.animator.selection_shrink) as AnimatorSet
+      this.shrinkAnim.setTarget(thumbIv)
+
+      this.growAnim = AnimatorInflater.loadAnimator(
+          itemView.context, R.animator.selection_grow) as AnimatorSet
+      this.growAnim.setTarget(thumbIv)
+      //endregion
     }
 
     fun bind(fileAttachment: Attachment<File>) {
-      shrinkAnim?.setTarget(thumbIv)
-      growAnim?.setTarget(thumbIv)
-
       this.attachmentFile = fileAttachment
       setSelected(selectionCoordinator.isSelected(fileAttachment, adapterPosition), false)
 
@@ -238,10 +241,5 @@ class FileListAdapter(private val contentResolver: ContentResolver,
 
     private val Attachment<File>.lastModified
       get() = data?.lastModified() ?: 0
-  }
-
-  companion object {
-    private var shrinkAnim: AnimatorSet? = null
-    private var growAnim: AnimatorSet? = null
   }
 }

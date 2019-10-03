@@ -59,9 +59,6 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
     super.onAttachedToRecyclerView(recyclerView)
 
     emptyColorDrawable = ColorDrawable(recyclerView.context.themeColor(R.attr.flexInputDialogBackground))
-    shrinkAnim = AnimatorInflater.loadAnimator(recyclerView.context, R.animator.selection_shrink) as AnimatorSet
-    growAnim = AnimatorInflater.loadAnimator(recyclerView.context, R.animator.selection_grow) as AnimatorSet
-
     loadPhotos()
   }
 
@@ -147,14 +144,24 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
     private var thumbnailDrawable: BitmapDrawable? = null
     private var holderFadeDrawable: FadeDrawable? = null
 
+    private val shrinkAnim: AnimatorSet
+    private val growAnim: AnimatorSet
+
     init {
       this.itemView.setOnClickListener(this)
+
+      //region Perf: Load animations once
+      this.shrinkAnim = AnimatorInflater.loadAnimator(
+          imageView.context, R.animator.selection_shrink) as AnimatorSet
+      this.shrinkAnim.setTarget(imageView)
+
+      this.growAnim = AnimatorInflater.loadAnimator(
+          itemView.context, R.animator.selection_grow) as AnimatorSet
+      this.growAnim.setTarget(imageView)
+      //endregion
     }
 
     fun bind(photo: Photo?) {
-      shrinkAnim?.setTarget(imageView)
-      growAnim?.setTarget(imageView)
-
       this.photo = photo
 
       if (BuildUtils.isAndroidQ()) {
@@ -165,7 +172,7 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
         // Ensure this executes on the main thread for UI interaction (as opposed to IO)
         loadThumbnailJob = GlobalScope.launch(context = Dispatchers.Main) {
           thumbnailBitmap = photo?.uri?.let { uri ->
-            ThumbnailUtils.getThumbnailQAsync(contentResolver, uri, thumbnailWidth, thumbnailHeight)
+            ThumbnailUtils.getThumbnailQ(contentResolver, uri, thumbnailWidth, thumbnailHeight)
           }
           thumbnailDrawable = BitmapDrawable(imageView.resources, thumbnailBitmap)
           val fadeDrawable = FadeDrawable(arrayOf(emptyColorDrawable, thumbnailDrawable))
@@ -232,9 +239,6 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
 
   companion object {
     private var emptyColorDrawable: Drawable? = null
-
-    private var shrinkAnim: AnimatorSet? = null
-    private var growAnim: AnimatorSet? = null
 
     fun Context.dpToPixels(dipValue: Float) =
         TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, resources.displayMetrics)
