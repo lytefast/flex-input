@@ -18,6 +18,7 @@ import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
 import com.lytefast.flexinput.R
 import com.lytefast.flexinput.model.Attachment
+import com.lytefast.flexinput.utils.BuildUtils
 import com.lytefast.flexinput.utils.FileUtils.getFileSize
 import com.lytefast.flexinput.utils.FileUtils.toAttachment
 import com.lytefast.flexinput.utils.SelectionCoordinator
@@ -34,18 +35,24 @@ class FileListAdapter(private val contentResolver: ContentResolver,
                       selectionCoordinator: SelectionCoordinator<*, Attachment<File>>)
   : RecyclerView.Adapter<FileListAdapter.ViewHolder>() {
 
+
   private val selectionCoordinator: SelectionCoordinator<*, in Attachment<File>> =
       selectionCoordinator.bind(this)
   private var files: List<Attachment<File>> = listOf()
 
+  override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+    super.onAttachedToRecyclerView(recyclerView)
+    shrinkAnim = AnimatorInflater.loadAnimator(recyclerView.context, R.animator.selection_shrink) as AnimatorSet
+    growAnim = AnimatorInflater.loadAnimator(recyclerView.context, R.animator.selection_grow) as AnimatorSet
+  }
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileListAdapter.ViewHolder {
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
     val view = LayoutInflater.from(parent.context)
         .inflate(R.layout.view_file_item, parent, false)
     return ViewHolder(view)
   }
 
-  override fun onBindViewHolder(holder: FileListAdapter.ViewHolder, position: Int) =
+  override fun onBindViewHolder(holder: ViewHolder, position: Int) =
       holder.bind(files[position])
 
   override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
@@ -67,9 +74,6 @@ class FileListAdapter(private val contentResolver: ContentResolver,
 
   @Suppress("MemberVisibilityCanBePrivate")
   open inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    private val shrinkAnim: AnimatorSet
-    private val growAnim: AnimatorSet
-
     protected var thumbIv: SimpleDraweeView = itemView.findViewById(R.id.thumb_iv)
     protected var typeIv: ImageView = itemView.findViewById(R.id.type_iv)
     protected var fileNameTv: TextView = itemView.findViewById(R.id.file_name_tv)
@@ -77,25 +81,17 @@ class FileListAdapter(private val contentResolver: ContentResolver,
 
     private var attachmentFile: Attachment<File>? = null
 
-
     init {
       this.itemView.isClickable = true
       this.itemView.setOnClickListener {
         setSelected(selectionCoordinator.toggleItem(attachmentFile, adapterPosition), true)
       }
-
-      //region Perf: Load animations once
-      this.shrinkAnim = AnimatorInflater.loadAnimator(
-          itemView.context, R.animator.selection_shrink) as AnimatorSet
-      this.shrinkAnim.setTarget(thumbIv)
-
-      this.growAnim = AnimatorInflater.loadAnimator(
-          itemView.context, R.animator.selection_grow) as AnimatorSet
-      this.growAnim.setTarget(thumbIv)
-      //endregion
     }
 
     fun bind(fileAttachment: Attachment<File>) {
+      shrinkAnim?.setTarget(thumbIv)
+      growAnim?.setTarget(thumbIv)
+
       this.attachmentFile = fileAttachment
       setSelected(selectionCoordinator.isSelected(fileAttachment, adapterPosition), false)
 
@@ -109,58 +105,69 @@ class FileListAdapter(private val contentResolver: ContentResolver,
       }
 
       // Set defaults
-      thumbIv.setImageURI(null as Uri?)
+      thumbIv.setImageURI(null as Uri?, thumbIv.context)
       typeIv.visibility = View.GONE
 
       val mimeType = file?.getMimeType()
       if (mimeType.isNullOrEmpty()) return
 
-      if (mimeType!!.startsWith("image")) {
-        typeIv.setImageResource(R.drawable.ic_image_24dp)
-        typeIv.visibility = View.VISIBLE
-        bindThumbIvWithImage(file)
-      } else if (mimeType.startsWith("video")) {
-        typeIv.setImageResource(R.drawable.ic_movie_24dp)
-        typeIv.visibility = View.VISIBLE
-        thumbIv.setImageURI(Uri.fromFile(file))
+      thumbIv.setImageURI(Uri.fromFile(file), thumbIv.context)
+
+      when {
+        mimeType.startsWith("image") -> {
+          typeIv.setImageResource(R.drawable.ic_image_24dp)
+          typeIv.visibility = View.VISIBLE
+          bindThumbIvWithImage(file)
+        }
+        mimeType.startsWith("video") -> {
+          typeIv.setImageResource(R.drawable.ic_movie_24dp)
+          typeIv.visibility = View.VISIBLE
+          bindThumbIvWithImage(file)
+        }
+        mimeType.startsWith("audio") -> {
+          //TODO audio icon
+          bindThumbIvWithImage(file)
+        }
       }
     }
 
     private fun bindThumbIvWithImage(file: File) {
-      contentResolver.query(
-          MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-          arrayOf(MediaStore.Images.Media._ID, MediaStore.Images.Media.MINI_THUMB_MAGIC),
-          "${MediaStore.Images.Media.DATA}=?",
-          arrayOf(file.path), null/* sortOrder */)
-          ?.use { cursor ->
-            if (!cursor.moveToFirst()) return
-            val imageId = cursor.getLong(0)
-            val thumbMagic = cursor.getLong(1)
+      if (!BuildUtils.isAndroidQ()) {
+        contentResolver.query(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            arrayOf(MediaStore.Images.Media._ID, MediaStore.Images.Media.MINI_THUMB_MAGIC),
+            "${MediaStore.Images.Media.DATA}=?",
+            arrayOf(file.path), null/* sortOrder */)
+            ?.use { cursor ->
+              if (!cursor.moveToFirst()) return
+              val imageId = cursor.getLong(0)
+              val thumbMagic = cursor.getLong(1)
 
-            if (thumbMagic == 0L) {
-              // Force thumbnail generation
-              val genThumb = MediaStore.Images.Thumbnails.getThumbnail(
-                  contentResolver, imageId, MediaStore.Images.Thumbnails.MINI_KIND, null)
-              genThumb?.recycle()
+              if (thumbMagic == 0L) {
+                // Force thumbnail generation
+                val genThumb = MediaStore.Images.Thumbnails.getThumbnail(
+                    contentResolver, imageId, MediaStore.Images.Thumbnails.MINI_KIND, null)
+                genThumb?.recycle()
+              }
+
+              contentResolver.query(
+                  MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
+                  arrayOf(MediaStore.Images.Thumbnails._ID),
+                  "${MediaStore.Images.Thumbnails.IMAGE_ID}=?",
+                  arrayOf(java.lang.Long.toString(imageId)),
+                  null)
+                  ?.use { thumbnailCursor ->
+                    if (!thumbnailCursor.moveToFirst()) return
+                    val thumbId = thumbnailCursor.getString(0)
+
+                    thumbIv.controller = Fresco.newDraweeControllerBuilder()
+                        .setOldController(thumbIv.controller)
+                        .setUri(Uri.withAppendedPath(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, thumbId))
+                        .setTapToRetryEnabled(true)
+                        .build()
+                  }
             }
-
-            contentResolver.query(
-                MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
-                arrayOf(MediaStore.Images.Thumbnails._ID),
-                "${MediaStore.Images.Thumbnails.IMAGE_ID}=?",
-                arrayOf(java.lang.Long.toString(imageId)),
-                null)
-                ?.use { thumbnailCursor ->
-                  if (!thumbnailCursor.moveToFirst()) return
-                  val thumbId = thumbnailCursor.getString(0)
-
-                  thumbIv.controller = Fresco.newDraweeControllerBuilder()
-                      .setOldController(thumbIv.controller)
-                      .setUri(Uri.withAppendedPath(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, thumbId))
-                      .setTapToRetryEnabled(true)
-                      .build()
-                }
-          }
+      }
     }
 
     fun setSelected(isSelected: Boolean, isAnimationRequested: Boolean) {
@@ -174,9 +181,9 @@ class FileListAdapter(private val contentResolver: ContentResolver,
       }
 
       if (isSelected) {
-        if (thumbIv.scaleX == 1.0f) scaleImage(shrinkAnim)
+        if (thumbIv.scaleX == 1.0f) shrinkAnim?.let { scaleImage(it) }
       } else {
-        if (thumbIv.scaleX != 1.0f) scaleImage(growAnim)
+        if (thumbIv.scaleX != 1.0f) growAnim?.let { scaleImage(it) }
       }
     }
   }
@@ -232,5 +239,10 @@ class FileListAdapter(private val contentResolver: ContentResolver,
 
     private val Attachment<File>.lastModified
       get() = data?.lastModified() ?: 0
+  }
+
+  companion object {
+    private var shrinkAnim: AnimatorSet? = null
+    private var growAnim: AnimatorSet? = null
   }
 }
