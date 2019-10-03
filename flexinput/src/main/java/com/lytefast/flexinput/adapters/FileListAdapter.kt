@@ -34,7 +34,6 @@ class FileListAdapter(private val contentResolver: ContentResolver,
                       selectionCoordinator: SelectionCoordinator<*, Attachment<File>>)
   : RecyclerView.Adapter<FileListAdapter.ViewHolder>() {
 
-
   private val selectionCoordinator: SelectionCoordinator<*, in Attachment<File>> =
       selectionCoordinator.bind(this)
   private var files: List<Attachment<File>> = listOf()
@@ -67,6 +66,9 @@ class FileListAdapter(private val contentResolver: ContentResolver,
 
   @Suppress("MemberVisibilityCanBePrivate")
   open inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    private val shrinkAnim: AnimatorSet
+    private val growAnim: AnimatorSet
+
     protected var thumbIv: SimpleDraweeView = itemView.findViewById(R.id.thumb_iv)
     protected var typeIv: ImageView = itemView.findViewById(R.id.type_iv)
     protected var fileNameTv: TextView = itemView.findViewById(R.id.file_name_tv)
@@ -74,8 +76,6 @@ class FileListAdapter(private val contentResolver: ContentResolver,
 
     private var attachmentFile: Attachment<File>? = null
 
-    private val shrinkAnim: AnimatorSet
-    private val growAnim: AnimatorSet
 
     init {
       this.itemView.isClickable = true
@@ -183,9 +183,9 @@ class FileListAdapter(private val contentResolver: ContentResolver,
       }
 
       if (isSelected) {
-        if (thumbIv.scaleX == 1.0f) shrinkAnim?.let { scaleImage(it) }
+        if (thumbIv.scaleX == 1.0f) scaleImage(shrinkAnim)
       } else {
-        if (thumbIv.scaleX != 1.0f) growAnim?.let { scaleImage(it) }
+        if (thumbIv.scaleX != 1.0f) scaleImage(growAnim)
       }
     }
   }
