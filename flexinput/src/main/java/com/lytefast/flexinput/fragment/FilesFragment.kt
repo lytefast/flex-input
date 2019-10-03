@@ -3,12 +3,12 @@ package com.lytefast.flexinput.fragment
 import android.Manifest
 import android.os.Bundle
 import android.os.Environment
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.lytefast.flexinput.FlexInputCoordinator
 import com.lytefast.flexinput.R
 import com.lytefast.flexinput.adapters.EmptyListAdapter
@@ -97,9 +97,8 @@ open class FilesFragment : PermissionsFragment() {
     swipeRefreshLayout!!.isRefreshing = false
   }
 
-
   private fun requestPermissions() {
-    requestPermissions(object : PermissionsResultCallback {
+    requestPermissions(object : PermissionsFragment.PermissionsResultCallback {
       override fun granted() {
         context?.contentResolver?.let { contentResolver ->
           adapter = FileListAdapter(contentResolver, selectionCoordinator!!)
