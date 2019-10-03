@@ -11,13 +11,12 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.os.Build
 import android.provider.MediaStore
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.drawee.drawable.FadeDrawable
 import com.facebook.drawee.drawable.ScalingUtils
@@ -25,9 +24,13 @@ import com.facebook.drawee.generic.RoundingParams
 import com.facebook.drawee.view.SimpleDraweeView
 import com.lytefast.flexinput.R
 import com.lytefast.flexinput.model.Photo
+import com.lytefast.flexinput.utils.BuildUtils
 import com.lytefast.flexinput.utils.SelectionCoordinator
-import kotlinx.coroutines.*
-import androidx.core.content.ContextCompat
+import com.lytefast.flexinput.utils.ThumbnailUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 
 /**
@@ -56,10 +59,6 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
     super.onAttachedToRecyclerView(recyclerView)
 
     emptyColorDrawable = ColorDrawable(recyclerView.context.themeColor(R.attr.flexInputDialogBackground))
-
-    shrinkAnim = AnimatorInflater.loadAnimator(recyclerView.context, R.animator.selection_shrink) as AnimatorSet
-    growAnim = AnimatorInflater.loadAnimator(recyclerView.context, R.animator.selection_grow) as AnimatorSet
-
     loadPhotos()
   }
 
@@ -145,24 +144,36 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
     private var thumbnailDrawable: BitmapDrawable? = null
     private var holderFadeDrawable: FadeDrawable? = null
 
+    private val shrinkAnim: AnimatorSet
+    private val growAnim: AnimatorSet
+
     init {
       this.itemView.setOnClickListener(this)
+
+      //region Perf: Load animations once
+      this.shrinkAnim = AnimatorInflater.loadAnimator(
+          imageView.context, R.animator.selection_shrink) as AnimatorSet
+      this.shrinkAnim.setTarget(imageView)
+
+      this.growAnim = AnimatorInflater.loadAnimator(
+          itemView.context, R.animator.selection_grow) as AnimatorSet
+      this.growAnim.setTarget(imageView)
+      //endregion
     }
 
     fun bind(photo: Photo?) {
-      shrinkAnim?.setTarget(imageView)
-      growAnim?.setTarget(imageView)
-
       this.photo = photo
 
-      if (isAndroidQ()) {
+      if (BuildUtils.isAndroidQ()) {
         clear()
 
         imageView.hierarchy.setPlaceholderImage(emptyColorDrawable, ScalingUtils.ScaleType.CENTER)
 
         // Ensure this executes on the main thread for UI interaction (as opposed to IO)
         loadThumbnailJob = GlobalScope.launch(context = Dispatchers.Main) {
-          thumbnailBitmap = getThumbnailAsync()
+          thumbnailBitmap = photo?.uri?.let { uri ->
+            ThumbnailUtils.getThumbnailQ(contentResolver, uri, thumbnailWidth, thumbnailHeight)
+          }
           thumbnailDrawable = BitmapDrawable(imageView.resources, thumbnailBitmap)
           val fadeDrawable = FadeDrawable(arrayOf(emptyColorDrawable, thumbnailDrawable))
 
@@ -207,17 +218,12 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
       selectionCoordinator.toggleItem(photo, adapterPosition)
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
-    private suspend fun getThumbnailAsync() = withContext(Dispatchers.IO) {
-      photo?.getThumbnailQ(contentResolver, thumbnailWidth, thumbnailHeight)
-    }
-
     fun onViewRecycled() {
       clear()
     }
 
     private fun clear() {
-      if (isAndroidQ()) {
+      if (BuildUtils.isAndroidQ()) {
         loadThumbnailJob?.cancel()
 
         thumbnailDrawable?.bitmap?.recycle()
@@ -234,13 +240,8 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
   companion object {
     private var emptyColorDrawable: Drawable? = null
 
-    private var shrinkAnim: AnimatorSet? = null
-    private var growAnim: AnimatorSet? = null
-
     fun Context.dpToPixels(dipValue: Float) =
         TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, resources.displayMetrics)
-
-    fun isAndroidQ() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
 
     fun Context.themeColor(themeAttributeId: Int): Int {
       val outValue = TypedValue()

@@ -38,14 +38,13 @@ class FileListAdapter(private val contentResolver: ContentResolver,
       selectionCoordinator.bind(this)
   private var files: List<Attachment<File>> = listOf()
 
-
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileListAdapter.ViewHolder {
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
     val view = LayoutInflater.from(parent.context)
         .inflate(R.layout.view_file_item, parent, false)
     return ViewHolder(view)
   }
 
-  override fun onBindViewHolder(holder: FileListAdapter.ViewHolder, position: Int) =
+  override fun onBindViewHolder(holder: ViewHolder, position: Int) =
       holder.bind(files[position])
 
   override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
@@ -109,20 +108,30 @@ class FileListAdapter(private val contentResolver: ContentResolver,
       }
 
       // Set defaults
-      thumbIv.setImageURI(null as Uri?)
+      thumbIv.setImageURI(null as Uri?, thumbIv.context)
       typeIv.visibility = View.GONE
 
       val mimeType = file?.getMimeType()
       if (mimeType.isNullOrEmpty()) return
 
-      if (mimeType!!.startsWith("image")) {
-        typeIv.setImageResource(R.drawable.ic_image_24dp)
-        typeIv.visibility = View.VISIBLE
-        bindThumbIvWithImage(file)
-      } else if (mimeType.startsWith("video")) {
-        typeIv.setImageResource(R.drawable.ic_movie_24dp)
-        typeIv.visibility = View.VISIBLE
-        thumbIv.setImageURI(Uri.fromFile(file))
+      thumbIv.setImageURI(Uri.fromFile(file), thumbIv.context)
+
+      when {
+        mimeType.startsWith("image") -> {
+          typeIv.setImageResource(R.drawable.ic_image_24dp)
+          typeIv.visibility = View.VISIBLE
+          bindThumbIvWithImage(file)
+        }
+        mimeType.startsWith("video") -> {
+          typeIv.setImageResource(R.drawable.ic_movie_24dp)
+          typeIv.visibility = View.VISIBLE
+          bindThumbIvWithImage(file)
+        }
+        mimeType.startsWith("audio") -> {
+          typeIv.setImageResource(R.drawable.ic_audio_24dp)
+          typeIv.visibility = View.VISIBLE
+          bindThumbIvWithImage(file)
+        }
       }
     }
 
