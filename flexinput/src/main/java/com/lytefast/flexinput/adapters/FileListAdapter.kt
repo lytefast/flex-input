@@ -125,49 +125,48 @@ class FileListAdapter(private val contentResolver: ContentResolver,
           bindThumbIvWithImage(file)
         }
         mimeType.startsWith("audio") -> {
-          //TODO audio icon
+          typeIv.setImageResource(R.drawable.ic_audio_24dp)
+          typeIv.visibility = View.VISIBLE
           bindThumbIvWithImage(file)
         }
       }
     }
 
     private fun bindThumbIvWithImage(file: File) {
-      if (!BuildUtils.isAndroidQ()) {
-        contentResolver.query(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-            arrayOf(MediaStore.Images.Media._ID, MediaStore.Images.Media.MINI_THUMB_MAGIC),
-            "${MediaStore.Images.Media.DATA}=?",
-            arrayOf(file.path), null/* sortOrder */)
-            ?.use { cursor ->
-              if (!cursor.moveToFirst()) return
-              val imageId = cursor.getLong(0)
-              val thumbMagic = cursor.getLong(1)
+      contentResolver.query(
+          MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+          arrayOf(MediaStore.Images.Media._ID, MediaStore.Images.Media.MINI_THUMB_MAGIC),
+          "${MediaStore.Images.Media.DATA}=?",
+          arrayOf(file.path), null/* sortOrder */)
+          ?.use { cursor ->
+            if (!cursor.moveToFirst()) return
+            val imageId = cursor.getLong(0)
+            val thumbMagic = cursor.getLong(1)
 
-              if (thumbMagic == 0L) {
-                // Force thumbnail generation
-                val genThumb = MediaStore.Images.Thumbnails.getThumbnail(
-                    contentResolver, imageId, MediaStore.Images.Thumbnails.MINI_KIND, null)
-                genThumb?.recycle()
-              }
-
-              contentResolver.query(
-                  MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
-                  arrayOf(MediaStore.Images.Thumbnails._ID),
-                  "${MediaStore.Images.Thumbnails.IMAGE_ID}=?",
-                  arrayOf(java.lang.Long.toString(imageId)),
-                  null)
-                  ?.use { thumbnailCursor ->
-                    if (!thumbnailCursor.moveToFirst()) return
-                    val thumbId = thumbnailCursor.getString(0)
-
-                    thumbIv.controller = Fresco.newDraweeControllerBuilder()
-                        .setOldController(thumbIv.controller)
-                        .setUri(Uri.withAppendedPath(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, thumbId))
-                        .setTapToRetryEnabled(true)
-                        .build()
-                  }
+            if (thumbMagic == 0L) {
+              // Force thumbnail generation
+              val genThumb = MediaStore.Images.Thumbnails.getThumbnail(
+                  contentResolver, imageId, MediaStore.Images.Thumbnails.MINI_KIND, null)
+              genThumb?.recycle()
             }
-      }
+
+            contentResolver.query(
+                MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
+                arrayOf(MediaStore.Images.Thumbnails._ID),
+                "${MediaStore.Images.Thumbnails.IMAGE_ID}=?",
+                arrayOf(java.lang.Long.toString(imageId)),
+                null)
+                ?.use { thumbnailCursor ->
+                  if (!thumbnailCursor.moveToFirst()) return
+                  val thumbId = thumbnailCursor.getString(0)
+
+                  thumbIv.controller = Fresco.newDraweeControllerBuilder()
+                      .setOldController(thumbIv.controller)
+                      .setUri(Uri.withAppendedPath(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, thumbId))
+                      .setTapToRetryEnabled(true)
+                      .build()
+                }
+          }
     }
 
     fun setSelected(isSelected: Boolean, isAnimationRequested: Boolean) {
