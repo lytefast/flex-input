@@ -28,7 +28,7 @@ buildscript {
         //</editor-fold>
 
         // 3rd party libs
-        cameraKitVersion = '1.0.0-beta3.11'
+        cameraKitVersion = '1.0.0-beta3.10'
         cameraKitJpegKitVersion = '0.1.0'
         frescoVersion = '2.0.0'
     }
