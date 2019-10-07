@@ -175,7 +175,7 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
         // Ensure this executes on the main thread for UI interaction (as opposed to IO)
         loadThumbnailJob = GlobalScope.launch(context = Dispatchers.Main) {
           val thumbnailUri = photo?.uri ?: return@launch
-          ThumbnailUtils.getThumbnailQ(contentResolver, thumbnailUri, thumbnailWidth, thumbnailHeight, cancelGetThumbnailSignal)
+          thumbnailBitmap = ThumbnailUtils.getThumbnailQ(contentResolver, thumbnailUri, thumbnailWidth, thumbnailHeight, cancelGetThumbnailSignal)
 
           thumbnailDrawable = BitmapDrawable(imageView.resources, thumbnailBitmap)
           val fadeDrawable = FadeDrawable(arrayOf(emptyColorDrawable, thumbnailDrawable))
