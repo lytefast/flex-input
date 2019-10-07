@@ -11,6 +11,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.CancellationSignal
 import android.provider.MediaStore
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -143,6 +144,7 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
     private var thumbnailBitmap: Bitmap? = null
     private var thumbnailDrawable: BitmapDrawable? = null
     private var holderFadeDrawable: FadeDrawable? = null
+    private var cancelGetThumbnailSignal: CancellationSignal? = null
 
     private val shrinkAnim: AnimatorSet
     private val growAnim: AnimatorSet
@@ -168,12 +170,13 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
         clear()
 
         imageView.hierarchy.setPlaceholderImage(emptyColorDrawable, ScalingUtils.ScaleType.CENTER)
+        cancelGetThumbnailSignal = CancellationSignal()
 
         // Ensure this executes on the main thread for UI interaction (as opposed to IO)
         loadThumbnailJob = GlobalScope.launch(context = Dispatchers.Main) {
-          thumbnailBitmap = photo?.uri?.let { uri ->
-            ThumbnailUtils.getThumbnailQ(contentResolver, uri, thumbnailWidth, thumbnailHeight)
-          }
+          val thumbnailUri = photo?.uri ?: return@launch
+          ThumbnailUtils.getThumbnailQ(contentResolver, thumbnailUri, thumbnailWidth, thumbnailHeight, cancelGetThumbnailSignal)
+
           thumbnailDrawable = BitmapDrawable(imageView.resources, thumbnailBitmap)
           val fadeDrawable = FadeDrawable(arrayOf(emptyColorDrawable, thumbnailDrawable))
 
@@ -207,10 +210,10 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
 
       if (isSelected) {
         checkIndicator.visibility = View.VISIBLE
-        if (imageView.scaleX == 1.0f) shrinkAnim?.let { scaleImage(it) }
+        if (imageView.scaleX == 1.0f) scaleImage(shrinkAnim)
       } else {
         checkIndicator.visibility = View.GONE
-        if (imageView.scaleX != 1.0f) growAnim?.let { scaleImage(it) }
+        if (imageView.scaleX != 1.0f) scaleImage(growAnim)
       }
     }
 
@@ -225,6 +228,7 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
     private fun clear() {
       if (BuildUtils.isAndroidQ()) {
         loadThumbnailJob?.cancel()
+        cancelGetThumbnailSignal?.cancel()
 
         thumbnailDrawable?.bitmap?.recycle()
         thumbnailDrawable = null
