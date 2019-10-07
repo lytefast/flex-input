@@ -10,7 +10,7 @@ Android EditText wrapper to support text/emoji/camera/media input.
 - file/attachment preview
 - multi-file support
 
-Used in the [Discord](www.discordapp.com) android app!
+Used in the [Discord](https://discordapp.com) android app!
 
 <img src="/images/keyboard.png" width="240">
   
