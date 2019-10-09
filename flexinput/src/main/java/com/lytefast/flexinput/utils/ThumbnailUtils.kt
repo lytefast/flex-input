@@ -14,7 +14,10 @@ import kotlinx.coroutines.withContext
 object ThumbnailUtils {
 
   @RequiresApi(Build.VERSION_CODES.Q)
-  suspend fun getThumbnailQ(contentResolver: ContentResolver, uri: Uri, width: Int, height: Int, cancelSignal: CancellationSignal? = null): Bitmap? = withContext(Dispatchers.IO) {
+  suspend fun getThumbnailQ(contentResolver: ContentResolver, uri: Uri,
+                            width: Int, height: Int,
+                            cancelSignal: CancellationSignal? = null)
+      : Bitmap? = withContext(Dispatchers.IO) {
     try {
       Log.d("Thumbnail", "Loading thumbnail $uri")
       contentResolver.loadThumbnail(uri, Size(width, height), cancelSignal)
