@@ -48,7 +48,9 @@ buildscript {
 
     configurations.all {
         resolutionStrategy {
-            // Want to force this proguard release.
+            // Want to force this proguard release because it contains bugfixes related to
+            // coroutines. Feel free to remove this code when the gradle-bundled is 6.2.0+.
+            // For more information: https://github.com/lytefast/flex-input/pull/50
             force 'net.sf.proguard:proguard-gradle:6.2.0'
         }
     }
