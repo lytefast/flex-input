@@ -39,11 +39,18 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0'
+        classpath 'com.android.tools.build:gradle:3.5.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+    }
+
+    configurations.all {
+        resolutionStrategy {
+            // Want to force this proguard release.
+            force 'net.sf.proguard:proguard-gradle:6.2.0'
+        }
     }
 }
 
