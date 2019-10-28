@@ -166,6 +166,10 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
     fun bind(photo: Photo?) {
       this.photo = photo
 
+      if (photo != null) {
+        setSelected(selectionCoordinator.isSelected(photo, adapterPosition), false)
+      }
+
       if (BuildUtils.isAndroidQ()) {
         clear()
 
@@ -192,11 +196,7 @@ class PhotoCursorAdapter(private val contentResolver: ContentResolver,
           holderFadeDrawable = fadeDrawable
         }
       } else {
-        val thumbnailUri = photo?.let {
-          setSelected(selectionCoordinator.isSelected(photo, adapterPosition), false)
-          it.getThumbnailUri(contentResolver)
-        }
-
+        val thumbnailUri = photo?.getThumbnailUri(contentResolver)
         imageView.setImageURI(thumbnailUri, imageView.context)
       }
     }
