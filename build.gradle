@@ -19,7 +19,7 @@ buildscript {
         // Latest versions here: https://developer.android.com/jetpack/androidx/migrate
         ext.androidxVersion = '1.1.0'
         ext.androidxCoreVersion = '1.1.0'
-        ext.androidxRecyclerView = '1.1.0-beta04'
+        ext.androidxRecyclerView = '1.1.0-rc01'
         ext.appCompatVersion = '1.1.0'
         ext.constraintLayoutVersion = '1.1.3'
         ext.materialVersion = '1.0.0'
