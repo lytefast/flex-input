@@ -30,6 +30,7 @@ dependencies {
     implementation "androidx.core:core:$androidxCoreVersion"
     implementation "androidx.fragment:fragment:$androidxVersion"
     implementation "androidx.recyclerview:recyclerview:$androidxRecyclerView"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swipeRefreshLayoutVersion"
     implementation "com.google.android.material:material:$materialVersion"
 
     testImplementation "junit:junit:$junitVersion"
