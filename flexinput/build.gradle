@@ -31,6 +31,7 @@ dependencies {
     implementation "androidx.fragment:fragment:$androidxVersion"
     implementation "androidx.recyclerview:recyclerview:$androidxRecyclerView"
     implementation "com.google.android.material:material:$materialVersion"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swipeRefreshLayoutVersion"
 
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0-alpha4', {
