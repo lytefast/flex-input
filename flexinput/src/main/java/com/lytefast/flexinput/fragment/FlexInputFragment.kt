@@ -25,6 +25,7 @@ import androidx.core.view.inputmethod.InputContentInfoCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.lytefast.flexinput.FlexInputCoordinator
 import com.lytefast.flexinput.InputListener
@@ -69,7 +70,7 @@ open class FlexInputFragment : Fragment(), FlexInputCoordinator<Any> {
    */
   private var initializeUiAttributes: Runnable? = null
   private var keyboardManager: KeyboardManager? = null
-  private var inputListener: InputListener? = null
+  private var inputListener: InputListener<Any>? = null
 
   @Suppress("MemberVisibilityCanBePrivate")
   protected lateinit var attachmentPreviewAdapter: AttachmentPreviewAdapter<Attachment<Any>>
@@ -228,26 +229,24 @@ open class FlexInputFragment : Fragment(), FlexInputCoordinator<Any> {
     }
   }
   //endregion
+
   //region Functional Getters/Setters
   /**
    * Set the custom emoji [Fragment] for the input.
    *
-   *
    * Note that this should only be set once for the life of the containing fragment. Make sure to
    * check the `savedInstanceState` before creating and saving another fragment.
    */
-  fun setEmojiFragment(emojiFragment: Fragment?): FlexInputFragment {
+  fun setEmojiFragment(emojiFragment: Fragment?) = this.apply {
     childFragmentManager
         .beginTransaction()
         .replace(R.id.emoji_container, emojiFragment!!)
         .commit()
-    emojiBtn!!.visibility = View.VISIBLE
-    return this
+    emojiBtn.visibility = View.VISIBLE
   }
 
-  fun setInputListener(inputListener: InputListener): FlexInputFragment {
+  fun setInputListener(inputListener: InputListener<Any>) = this.apply {
     this.inputListener = inputListener
-    return this
   }
 
   /**
@@ -299,21 +298,29 @@ open class FlexInputFragment : Fragment(), FlexInputCoordinator<Any> {
     customEditText.id = R.id.text_input
     customEditText.isFocusable = true
     customEditText.isFocusableInTouchMode = true
+
     inputContainer.post {
       Log.d(TAG, "Replacing EditText component")
+
       if (customEditText.text.isNullOrEmpty()) {
         val prevText = textEt.text
         customEditText.text = prevText
         Log.d(TAG, "Replacing EditText component: text copied")
       }
+
       val editTextIndex = inputContainer.indexOfChild(textEt)
       inputContainer.removeView(textEt)
       inputContainer.addView(customEditText, editTextIndex)
+
       textEt = customEditText
-      val params = if (customEditText.layoutParams is LinearLayout.LayoutParams) customEditText.layoutParams as LinearLayout.LayoutParams else LinearLayout.LayoutParams(
-          ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f)
+      val params = when (customEditText.layoutParams) {
+        is LinearLayout.LayoutParams -> customEditText.layoutParams as LinearLayout.LayoutParams
+        else -> LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f)
+      }
       customEditText.layoutParams = params
       customEditText.requestLayout()
+
       Log.d(TAG, "Binding EditText hooks")
       bindTextInput(customEditText)
       updateSendBtnEnableState(customEditText.text)
@@ -335,10 +342,10 @@ open class FlexInputFragment : Fragment(), FlexInputCoordinator<Any> {
 
   fun requestFocus() {
     textEt.requestFocus()
-    if (emojiContainer!!.visibility == View.VISIBLE) {
+    if (emojiContainer.isVisible) {
       return
     }
-    textEt.post { keyboardManager!!.requestDisplay(textEt) }
+    textEt.post { keyboardManager?.requestDisplay(textEt) }
   }
 
   // region UI Event Handlers
@@ -353,7 +360,7 @@ open class FlexInputFragment : Fragment(), FlexInputCoordinator<Any> {
 
   fun clearAttachments() {
     attachmentPreviewAdapter.clear()
-    attachmentPreviewContainer!!.visibility = View.GONE
+    attachmentPreviewContainer.visibility = View.GONE
     updateSendBtnEnableState(textEt.text)
   }
 
@@ -372,7 +379,7 @@ open class FlexInputFragment : Fragment(), FlexInputCoordinator<Any> {
   fun onEmojiToggle() {
     if (emojiContainer.isVisible) {
       hideEmojiTray()
-      keyboardManager!!.requestDisplay(textEt)
+      keyboardManager?.requestDisplay(textEt)
     } else {
       showEmojiTray()
     }
@@ -380,7 +387,7 @@ open class FlexInputFragment : Fragment(), FlexInputCoordinator<Any> {
 
   fun onAddToggle() {
     hideEmojiTray()
-    keyboardManager!!.requestHide() // Make sure the keyboard is hidden
+    keyboardManager?.requestHide() // Make sure the keyboard is hidden
     try {
       attachContentDialogFragment()
     } catch (e: Exception) {
@@ -419,7 +426,7 @@ open class FlexInputFragment : Fragment(), FlexInputCoordinator<Any> {
 
   fun showEmojiTray() {
     emojiContainer.visibility = View.VISIBLE
-    keyboardManager!!.requestHide()
+    keyboardManager?.requestHide()
     emojiBtn.setImageResource(R.drawable.ic_keyboard_24dp)
     onEmojiStateChange(true)
   }
@@ -441,19 +448,22 @@ open class FlexInputFragment : Fragment(), FlexInputCoordinator<Any> {
   }
 
   private fun updateAttachmentPreviewContainer() {
-    attachmentPreviewContainer.visibility = if (attachmentPreviewAdapter.itemCount > 0) View.VISIBLE else View.GONE
+    attachmentPreviewContainer.visibility = when {
+      attachmentPreviewAdapter.itemCount > 0 -> View.VISIBLE
+      else -> View.GONE
+    }
   }
 
   // region FlexInputCoordinator methods
   override fun addExternalAttachment(attachment: Attachment<Any>) {
-    val dialogFragment = childFragmentManager.findFragmentByTag(ADD_CONTENT_FRAG_TAG) as DialogFragment?
-
     // Create a temporary SelectionCoordinator to add attachment
     val coord = SelectionCoordinator<Attachment<Any>, Attachment<Any>>()
     attachmentPreviewAdapter.selectionAggregator.registerSelectionCoordinator(coord)
     coord.selectItem(attachment, 0)
     coord.close()
-    attachmentPreviewList.post {
+
+    lifecycleScope.launchWhenResumed {
+      val dialogFragment = childFragmentManager.findFragmentByTag(ADD_CONTENT_FRAG_TAG) as? DialogFragment
       if (dialogFragment != null && dialogFragment.isAdded
           && !dialogFragment.isRemoving && !dialogFragment.isDetached) {
         try {

@@ -33,6 +33,7 @@ class MainFragment : Fragment() {
 
   private lateinit var recyclerView: RecyclerView
   private lateinit var flexInput: FlexInputFragment
+
   private val msgAdapter: MessageAdapter = MessageAdapter()
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -119,10 +120,11 @@ class MainFragment : Fragment() {
   /**
    * Main point of interaction between the [FlexInputFragment] widget and the client.
    */
-  private val flexInputListener = InputListener { data, attachments ->
-    if (data.isNotEmpty()) {
+  private val flexInputListener = InputListener<Any> { data, attachments ->
+    if (!data.isNullOrEmpty()) {
       msgAdapter.addMessage(MessageAdapter.Data(data, null))
     }
+
     for (i in attachments.indices) {
       msgAdapter.addMessage(MessageAdapter.Data(
           Editable.Factory.getInstance().newEditable(String.format("[%d] Attachment", i)),

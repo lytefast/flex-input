@@ -8,11 +8,11 @@ import com.lytefast.flexinput.model.Attachment
  *
  * @author Sam Shih
  */
-fun interface InputListener {
+fun interface InputListener<T> {
   /**
    * User has chosen to send the current contents of the [FlexInputFragment]
    *
    * @return True if the attaachment and data should be cleared. False to keep
    */
-  fun onSend(data: Editable?, attachments: List<Attachment<*>?>?): Boolean
+  fun onSend(data: Editable?, attachments: List<Attachment<T>>): Boolean
 }
