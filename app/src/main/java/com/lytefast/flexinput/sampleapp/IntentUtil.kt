@@ -15,25 +15,22 @@ import com.lytefast.flexinput.model.Attachment.Companion.toAttachment
 object IntentUtil {
 
   @JvmStatic
-  fun Intent.consumeSendIntent(contentResolver: ContentResolver): Attachment<*>? {
+  fun Intent.consumeSendIntent(contentResolver: ContentResolver): Attachment<Uri>? {
     if (this.action !== Intent.ACTION_SEND) {
       return null
     }
 
     val clipData = this.clipData
 
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
-        && clipData != null
-        && clipData.itemCount > 0) {
+    return if (clipData != null && clipData.itemCount > 0) {
       val item = clipData.getItemAt(0)
       this.clipData = ClipData.newPlainText("", "")
 
       item.uri.toAttachment(contentResolver)
     } else {
-      val uri = this.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
-      uri?.let {
+      this.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)?.let { uri ->
         this.removeExtra(Intent.EXTRA_STREAM)
-        it.toAttachment(contentResolver)
+        uri.toAttachment(contentResolver)
       }
     }
 

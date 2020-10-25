@@ -19,7 +19,8 @@ open class SelectionCoordinator<I, T : I>(
      */
     @Suppress("MemberVisibilityCanPrivate")
     protected val selectedItemPositionMap: ArrayMap<T, Int> = ArrayMap(4),
-    var itemSelectionListener: ItemSelectionListener<in I> = object : ItemSelectionListener<I> {
+
+    var itemSelectionListener: ItemSelectionListener<I> = object : ItemSelectionListener<I> {
       override fun onItemSelected(item: I) {}
       override fun onItemUnselected(item: I) {}
       override fun unregister() {}

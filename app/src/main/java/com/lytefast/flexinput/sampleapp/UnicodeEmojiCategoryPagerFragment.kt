@@ -19,14 +19,15 @@ import java.util.*
  * @author Sam Shih
  */
 class UnicodeEmojiCategoryPagerFragment : EmojiCategoryPagerFragment(), FlexInputEmojiStateChangeListener {
-  override fun buildEmojiCategoryData(): List<EmojiCategory?> {
+
+  override fun buildEmojiCategoryData(): List<EmojiCategory> {
     var jsonReader: JsonReader? = null
     try {
       val reader: Reader = InputStreamReader(
           requireContext().assets.open(ASSET_PATH_EMOJIS), "UTF-8")
       jsonReader = JsonReader(reader)
       jsonReader.beginObject()
-      val emojiCategories = ArrayList<EmojiCategory?>()
+      val emojiCategories = ArrayList<EmojiCategory>()
       while (jsonReader.hasNext()) {
         emojiCategories.add(readEmojiCategory(jsonReader))
       }

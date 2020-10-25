@@ -13,11 +13,11 @@ class CustomFlexInputFragment : FlexInputFragment() {
   /**
    * Do not use this directly. Use the tracked [#addExternalAttachment(Attachment, String)]
    */
-  override fun addExternalAttachment(attachment: Attachment<*>) {
+  override fun addExternalAttachment(attachment: Attachment<Any>) {
     addExternalAttachment(attachment, "default")
   }
 
-  fun addExternalAttachment(attachment: Attachment<*>, source: String) {
+  fun addExternalAttachment(attachment: Attachment<Any>, source: String) {
     super.addExternalAttachment(attachment)
 
     Log.i(javaClass.simpleName, "Attachment[${attachment.uri}] sent from $source")
