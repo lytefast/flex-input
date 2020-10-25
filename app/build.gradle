@@ -24,11 +24,11 @@ android {
 dependencies {
     implementation project(':flexinput')
 
-    implementation "androidx.annotation:annotation:$androidxVersion"
-    implementation "androidx.appcompat:appcompat:$appCompatVersion"
+    implementation "androidx.annotation:annotation:$androidxAnnotationVersion"
+    implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
     implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
     implementation "androidx.core:core:$androidxCoreVersion"
-    implementation "androidx.fragment:fragment:$androidxVersion"
+    implementation "androidx.fragment:fragment:$androidxFragmentVersion"
     implementation "androidx.recyclerview:recyclerview:$androidxRecyclerView"
     implementation "com.google.android.material:material:$materialVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$androidCoroutineVersion"

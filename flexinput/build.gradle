@@ -9,7 +9,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "0.10.8"
+        versionName "0.10.9"
 
         proguardFiles getDefaultProguardFile('proguard-android-optimize.txt')
         consumerProguardFiles(
@@ -24,11 +24,11 @@ dependencies {
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutine_version"
 
-    implementation "androidx.annotation:annotation:$androidxVersion"
-    implementation "androidx.appcompat:appcompat:$appCompatVersion"
+    implementation "androidx.annotation:annotation:$androidxAnnotationVersion"
+    implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
     implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
-    implementation "androidx.core:core:$androidxCoreVersion"
-    implementation "androidx.fragment:fragment:$androidxVersion"
+    implementation "androidx.core:core-ktx:$androidxCoreVersion"
+    implementation "androidx.fragment:fragment-ktx:$androidxFragmentVersion"
     implementation "androidx.recyclerview:recyclerview:$androidxRecyclerView"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swipeRefreshLayoutVersion"
     implementation "com.google.android.material:material:$materialVersion"

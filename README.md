@@ -37,15 +37,17 @@ Used in the [Discord](https://discordapp.com) android app!
 For more details refer to the sample app included in this project.
 
 ## Gradle
+See how to include the depedency via [Jitpack](https://jitpack.io/#lytefast/flex-input)
+You can find `release_version`s on the [release page](https://github.com/lytefast/flex-input/releases)
+
 ```gradle
 repositories {
-    jcenter()
-    google()
-    maven { url 'http://dl.bintray.com/lytefast/android' }
+    ...
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-    implementation "com.lytefast:flexinput:0.9.18@aar"
+    implementation 'com.github.lytefast:flex-input:{release_version}}'
     implementation "com.camerakit:camerakit:$cameraKitVersion"
     implementation "com.camerakit:jpegkit:$cameraKitJpegKitVersion"
 }
