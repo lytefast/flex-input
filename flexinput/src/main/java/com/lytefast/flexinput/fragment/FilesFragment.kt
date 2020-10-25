@@ -9,12 +9,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import com.lytefast.flexinput.FlexInputCoordinator
 import com.lytefast.flexinput.R
 import com.lytefast.flexinput.adapters.EmptyListAdapter
 import com.lytefast.flexinput.adapters.FileListAdapter
 import com.lytefast.flexinput.model.Attachment
 import com.lytefast.flexinput.utils.SelectionCoordinator
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 
@@ -31,7 +36,7 @@ open class FilesFragment : PermissionsFragment() {
 
   private var selectionCoordinator: SelectionCoordinator<Attachment<Any>, Attachment<File>>? = null
 
-  internal var swipeRefreshLayout: SwipeRefreshLayout? = null
+  protected lateinit var swipeRefreshLayout: SwipeRefreshLayout
   internal var recyclerView: RecyclerView? = null
 
   private var adapter: FileListAdapter? = null
@@ -48,7 +53,7 @@ open class FilesFragment : PermissionsFragment() {
     }
 
     val view = inflater.inflate(R.layout.fragment_recycler_view, container, false)
-    return view?.apply {
+    return view.apply {
       recyclerView = findViewById(R.id.list)
 
       if (hasPermissions(REQUIRED_PERMISSION)) {
@@ -59,7 +64,7 @@ open class FilesFragment : PermissionsFragment() {
       }
 
       swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout)
-      swipeRefreshLayout?.setOnRefreshListener(this@FilesFragment::loadDownloadFolder)
+      swipeRefreshLayout.setOnRefreshListener(this@FilesFragment::loadDownloadFolder)
     }
   }
 
@@ -88,13 +93,19 @@ open class FilesFragment : PermissionsFragment() {
   }
 
   private fun loadDownloadFolder() {
-    if (adapter == null) {
-      swipeRefreshLayout!!.isRefreshing = false
-      return
+    val adapter = this.adapter.let {
+      if (it == null) {
+        swipeRefreshLayout.isRefreshing = false
+        return
+      }
+      it
     }
+
     val downloadFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-    adapter!!.load(downloadFolder)
-    swipeRefreshLayout!!.isRefreshing = false
+    viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+      adapter.load(downloadFolder)
+    }
+    swipeRefreshLayout.isRefreshing = false
   }
 
   private fun requestPermissions() {

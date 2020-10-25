@@ -39,6 +39,7 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
     implementation "androidx.core:core-ktx:$androidxCoreVersion"
     implementation "androidx.fragment:fragment-ktx:$androidxFragmentVersion"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$androidxLifecycleVersion"
     implementation "androidx.recyclerview:recyclerview:$androidxRecyclerView"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swipeRefreshLayoutVersion"
     implementation "com.google.android.material:material:$materialVersion"

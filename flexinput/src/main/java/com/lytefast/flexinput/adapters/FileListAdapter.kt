@@ -21,6 +21,10 @@ import com.lytefast.flexinput.model.Attachment
 import com.lytefast.flexinput.utils.FileUtils.getFileSize
 import com.lytefast.flexinput.utils.FileUtils.toAttachment
 import com.lytefast.flexinput.utils.SelectionCoordinator
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.*
 
@@ -60,8 +64,18 @@ class FileListAdapter(private val contentResolver: ContentResolver,
 
   override fun getItemCount(): Int = files.size
 
-  fun load(root: File) {
-    FileLoaderTask(this).execute(root)
+  suspend fun load(root: File) = withContext(Dispatchers.IO) {
+    val files = flattenFileList(root)
+
+    files.sortWith(
+        compareByDescending<Attachment<File>> { it.lastModified }
+            .then(compareBy { it.uri })
+    )
+
+    withContext(Dispatchers.Main) {
+      this@FileListAdapter.files = files
+      this@FileListAdapter.notifyDataSetChanged()
+    }
   }
 
   @Suppress("MemberVisibilityCanBePrivate")
@@ -199,6 +213,35 @@ class FileListAdapter(private val contentResolver: ContentResolver,
     }
     return type
   }
+
+  private fun flattenFileList(parentDir: File): MutableList<Attachment<File>> {
+    fun File.getFileList() = listFiles()?.asSequence() ?: emptySequence()
+
+    val flattenedFileList = ArrayList<Attachment<File>>()
+    val files = LinkedList<File>()
+
+    files.addAll(parentDir.getFileList())
+    while (!files.isEmpty()) {
+      val file = files.remove()
+      if (file.isHidden) {
+        continue
+      }
+
+      if (file.isDirectory) {
+        files.addAll(file.getFileList())
+      } else {
+        flattenedFileList.add(file.toAttachment())
+      }
+    }
+    return flattenedFileList
+  }
+
+  private val Attachment<File>.lastModified
+    get() = data?.lastModified() ?: 0
+
+
+
+
 
   private class FileLoaderTask(val adapter: FileListAdapter) : AsyncTask<File, Boolean, List<Attachment<File>>>() {
 

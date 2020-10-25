@@ -20,6 +20,7 @@ buildscript {
         ext.androidxAnnotationVersion = '1.1.0'
         ext.androidxCoreVersion = '1.3.2'
         ext.androidxFragmentVersion = '1.2.5'
+        ext.androidxLifecycleVersion = "2.2.0"
         ext.androidxRecyclerView = '1.1.0'
         ext.androidxAppCompatVersion = '1.2.0'
         ext.constraintLayoutVersion = '2.0.2'
